@@ -60,6 +60,7 @@ export function HomeShortenDock() {
 
   const onCopy = async () => {
     if (!shortUrl) return;
+    setError(null);
     try {
       await navigator.clipboard.writeText(shortUrl);
       clearCopiedTimeout();

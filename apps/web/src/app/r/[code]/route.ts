@@ -5,7 +5,7 @@ type Props = { params: Promise<{ code: string }> };
 
 export async function GET(_req: NextRequest, { params }: Props) {
   const { code } = await params;
-  const link = hitLink(code);
+  const link = await hitLink(code);
   if (!link) {
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }

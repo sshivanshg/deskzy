@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { linkStore, putLink } from "@/lib/links-store";
+import { hasLink, putLink } from "@/lib/links-store";
 
 function normalizeUrl(raw: string): string {
   const trimmed = raw.trim();
@@ -32,12 +32,11 @@ export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as { url?: string };
     const dest = normalizeUrl(body.url || "");
-    const links = linkStore();
 
     let code = "";
     for (let i = 0; i < 8; i++) {
       const candidate = randomCode(7);
-      if (!links.has(candidate)) {
+      if (!(await hasLink(candidate))) {
         code = candidate;
         break;
       }
@@ -49,7 +48,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const record = putLink(code, dest);
+    const record = await putLink(code, dest);
     const origin = req.nextUrl.origin;
 
     return NextResponse.json(

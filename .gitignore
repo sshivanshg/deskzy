@@ -1,5 +1,6 @@
 node_modules
 .next
+.open-next
 .dist
 dist
 bin
@@ -7,7 +8,10 @@ bin
 *.log
 .env
 .env.local
+.dev.vars
 apps/web/.next
+apps/web/.open-next
+apps/web/.wrangler
 apps/web/node_modules
 apps/web/playwright-report
 apps/web/test-results

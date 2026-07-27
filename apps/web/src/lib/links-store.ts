@@ -1,4 +1,4 @@
-/** Shared in-memory short-link store for local/dev Next.js path. */
+/** Short-link store: Cloudflare KV in production, in-memory for local next dev. */
 
 export type LinkRecord = {
   code: string;
@@ -7,36 +7,66 @@ export type LinkRecord = {
   createdAt: string;
 };
 
-const globalStore = globalThis as typeof globalThis & {
-  __deskzyLinks?: Map<string, LinkRecord>;
+type KvLike = {
+  get(key: string): Promise<string | null>;
+  put(key: string, value: string): Promise<void>;
 };
 
-export function linkStore() {
-  if (!globalStore.__deskzyLinks) {
-    globalStore.__deskzyLinks = new Map();
+const memory = new Map<string, LinkRecord>();
+
+async function getKv(): Promise<KvLike | null> {
+  try {
+    const { getCloudflareContext } = await import("@opennextjs/cloudflare");
+    const { env } = getCloudflareContext();
+    const links = (env as { LINKS?: KvLike }).LINKS;
+    return links ?? null;
+  } catch {
+    return null;
   }
-  return globalStore.__deskzyLinks;
 }
 
-export function getLink(code: string): LinkRecord | undefined {
-  return linkStore().get(code);
+export async function getLink(code: string): Promise<LinkRecord | undefined> {
+  const kv = await getKv();
+  if (kv) {
+    const raw = await kv.get(code);
+    if (!raw) return undefined;
+    try {
+      return JSON.parse(raw) as LinkRecord;
+    } catch {
+      return undefined;
+    }
+  }
+  return memory.get(code);
 }
 
-export function hitLink(code: string): LinkRecord | undefined {
-  const link = linkStore().get(code);
+export async function hitLink(code: string): Promise<LinkRecord | undefined> {
+  const link = await getLink(code);
   if (!link) return undefined;
   link.hits += 1;
-  linkStore().set(code, link);
+  await putLinkRecord(link);
   return link;
 }
 
-export function putLink(code: string, dest: string): LinkRecord {
+export async function putLink(code: string, dest: string): Promise<LinkRecord> {
   const record: LinkRecord = {
     code,
     dest,
     hits: 0,
     createdAt: new Date().toISOString(),
   };
-  linkStore().set(code, record);
+  await putLinkRecord(record);
   return record;
+}
+
+export async function hasLink(code: string): Promise<boolean> {
+  return (await getLink(code)) !== undefined;
+}
+
+async function putLinkRecord(record: LinkRecord): Promise<void> {
+  const kv = await getKv();
+  if (kv) {
+    await kv.put(record.code, JSON.stringify(record));
+    return;
+  }
+  memory.set(record.code, record);
 }

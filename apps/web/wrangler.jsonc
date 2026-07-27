@@ -1,0 +1,38 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "deskzy",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-07-27",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "deskzy"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "LINKS",
+      "id": "4960283f9d774cef8ab13f686a93d602"
+    }
+  ],
+  "routes": [
+    {
+      "pattern": "deskzy.xyz",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.deskzy.xyz",
+      "custom_domain": true
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

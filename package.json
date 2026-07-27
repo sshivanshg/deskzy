@@ -13,5 +13,8 @@
     "build:api": "cd services/api && go build -o bin/api ./cmd/api",
     "lint": "npm run lint -w @deskzy/web",
     "test:e2e": "npm run test:e2e -w @deskzy/web"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }

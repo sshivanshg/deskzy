@@ -42,4 +42,23 @@ test.describe("Mobile home launcher", () => {
       }),
     ).toBeAttached();
   });
+
+  test("shorten on home shows copyable short link", async ({
+    page,
+    request,
+    context,
+  }) => {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    await page.goto("/");
+    await page.locator("#home-shorten-url").fill("https://example.com/home-dock-e2e");
+    await page.getByRole("button", { name: /^Shorten$/i }).click();
+    await expect(page.getByText(/Short link ready/i)).toBeVisible();
+    const shortText = await page.locator("p.font-mono").innerText();
+    expect(shortText.trim()).toMatch(/\/r\/[A-Za-z0-9]+$/);
+    await page.getByRole("button", { name: /^Copy$/i }).click();
+    await expect(page.getByRole("button", { name: /^Copied$/i })).toBeVisible();
+
+    const res = await request.get(shortText.trim(), { maxRedirects: 0 });
+    expect(res.status()).toBe(302);
+  });
 });

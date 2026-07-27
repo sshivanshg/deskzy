@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LinkSimple } from "@phosphor-icons/react";
 import { shortenUrl } from "@/lib/tools/text";
 
@@ -23,8 +23,19 @@ export function HomeShortenDock() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
+  const copiedTimeoutRef = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+
+  const clearCopiedTimeout = () => {
+    if (copiedTimeoutRef.current !== null) {
+      window.clearTimeout(copiedTimeoutRef.current);
+      copiedTimeoutRef.current = null;
+    }
+  };
+
+  useEffect(() => () => clearCopiedTimeout(), []);
 
   const reset = () => {
+    clearCopiedTimeout();
     setShortUrl(null);
     setError(null);
     setCopied(false);
@@ -51,8 +62,12 @@ export function HomeShortenDock() {
     if (!shortUrl) return;
     try {
       await navigator.clipboard.writeText(shortUrl);
+      clearCopiedTimeout();
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
+      copiedTimeoutRef.current = window.setTimeout(() => {
+        setCopied(false);
+        copiedTimeoutRef.current = null;
+      }, 1600);
     } catch {
       setError("Could not copy — select the link and copy manually");
     }
@@ -76,6 +91,11 @@ export function HomeShortenDock() {
             Shorten another
           </button>
         </div>
+        {error ? (
+          <p id="home-shorten-copy-error" className="mt-2 text-sm text-[var(--warn-ink)]" role="alert">
+            {error}
+          </p>
+        ) : null}
         <Link
           href="/tools/url-shortener"
           className="mt-3 inline-block text-xs font-medium text-[var(--accent)] underline-offset-2 hover:underline"
@@ -107,7 +127,7 @@ export function HomeShortenDock() {
           }}
           placeholder="https://…"
           disabled={busy}
-          className="field !rounded-xl !py-2.5 !text-base"
+          className="field min-w-0 flex-1 !rounded-xl !py-2.5 !text-base"
           autoComplete="url"
           inputMode="url"
           aria-invalid={Boolean(error)}

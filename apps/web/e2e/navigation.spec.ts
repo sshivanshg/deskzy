@@ -1,0 +1,77 @@
+import { test, expect } from "@playwright/test";
+
+test.describe("Navigation & shell", () => {
+  test("home shows brand, search, popular, categories", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: "Deskzy" })).toBeVisible();
+    await expect(page.getByText("Every file tool. One place.")).toBeVisible();
+    await expect(page.getByPlaceholder(/compress pdf/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Popular right now" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Browse by category" })).toBeVisible();
+    await expect(page.getByRole("link", { name: /^PDF$/ }).first()).toBeVisible();
+  });
+
+  test("home search finds compress pdf and navigates", async ({ page }) => {
+    await page.goto("/");
+    await page.getByPlaceholder(/compress pdf/i).fill("compress pdf");
+    await expect(page.getByRole("link", { name: /Compress PDF/i }).first()).toBeVisible();
+    await page.getByRole("link", { name: /Compress PDF/i }).first().click();
+    await expect(page).toHaveURL(/\/tools\/compress-pdf/);
+    await expect(page.getByRole("heading", { name: "Compress PDF" })).toBeVisible();
+  });
+
+  test("category pages render tools", async ({ page }) => {
+    for (const cat of ["pdf", "media", "image", "text"] as const) {
+      await page.goto(`/${cat}`);
+      await expect(page.getByRole("heading", { level: 1 })).toContainText(
+        new RegExp(cat === "text" ? "Text" : cat, "i"),
+      );
+      await expect(page.locator('a[href^="/tools/"]').first()).toBeVisible();
+    }
+  });
+
+  test("about / privacy page", async ({ page }) => {
+    await page.goto("/about");
+    await expect(page.getByRole("heading", { name: /About & privacy/i })).toBeVisible();
+    await expect(page.getByText(/Browser-first/i)).toBeVisible();
+  });
+
+  test("header nav links work", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("nav").getByRole("link", { name: "PDF", exact: true }).click();
+    await expect(page).toHaveURL(/\/pdf$/);
+    await page.locator("nav").getByRole("link", { name: "Image", exact: true }).click();
+    await expect(page).toHaveURL(/\/image$/);
+  });
+
+  test("every registered tool page loads", async ({ page }) => {
+    const slugs = [
+      "merge-pdf",
+      "split-pdf",
+      "compress-pdf",
+      "pdf-to-images",
+      "reorder-pdf",
+      "compress-image",
+      "resize-image",
+      "convert-image",
+      "webp-to-png",
+      "json-formatter",
+      "base64",
+      "hash-generator",
+      "uuid-generator",
+      "qr-code",
+      "url-shortener",
+      "url-encode",
+      "word-counter",
+      "case-converter",
+      "markdown-to-html",
+      "password-generator",
+      "video-to-mp3",
+    ];
+    for (const slug of slugs) {
+      await page.goto(`/tools/${slug}`);
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      await expect(page.getByText(/Stays in browser|API for links only|Processed on server/i)).toBeVisible();
+    }
+  });
+});

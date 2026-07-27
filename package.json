@@ -1,0 +1,17 @@
+{
+  "name": "deskzy",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @deskzy/web",
+    "dev:web": "npm run dev -w @deskzy/web",
+    "dev:api": "cd services/api && go run ./cmd/api",
+    "build": "npm run build -w @deskzy/web",
+    "build:api": "cd services/api && go build -o bin/api ./cmd/api",
+    "lint": "npm run lint -w @deskzy/web",
+    "test:e2e": "npm run test:e2e -w @deskzy/web"
+  }
+}

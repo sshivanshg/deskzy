@@ -1,0 +1,1 @@
+Generated fixtures for Playwright E2E

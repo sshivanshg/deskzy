@@ -1,10 +1,22 @@
 import type { Metadata } from "next";
-import { LockSimple, Lightning, GlobeHemisphereWest } from "@phosphor-icons/react/dist/ssr";
+import {
+  LockSimple,
+  Lightning,
+  GlobeHemisphereWest,
+  XLogo,
+} from "@phosphor-icons/react/dist/ssr";
+import {
+  buildPageMetadata,
+  CONTACT_X_HANDLE,
+  CONTACT_X_URL,
+} from "@/lib/seo/site";
 
-export const metadata: Metadata = {
-  title: "About & privacy",
-  description: "How Deskzy handles your files and privacy.",
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: "About Deskzy — privacy-first file tools",
+  description:
+    "How Deskzy handles your files. Browser-first processing, no signup wall, and clear labels for hybrid tools like the URL shortener.",
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (
@@ -13,11 +25,11 @@ export default function AboutPage() {
         Trust
       </p>
       <h1 className="font-display text-4xl font-semibold tracking-tight md:text-5xl">
-        About & privacy
+        About &amp; privacy
       </h1>
       <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
-        Deskzy is a global file toolkit designed to feel fast, calm, and honest —
-        especially with your private documents.
+        Deskzy is a global file toolkit designed to feel fast, calm, and honest
+        — especially with your private documents.
       </p>
 
       <div className="mt-10 grid gap-3">
@@ -35,7 +47,7 @@ export default function AboutPage() {
           {
             icon: GlobeHemisphereWest,
             title: "Hybrid tools are labeled",
-            body: "The URL shortener only sends the URL string to the Go API. When a tool needs a server, we say so clearly.",
+            body: "The URL shortener only sends the URL string to the API. When a tool needs a server, we say so clearly.",
           },
         ].map(({ icon: Icon, title, body }) => (
           <div key={title} className="shell">
@@ -54,6 +66,28 @@ export default function AboutPage() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="mt-10 shell">
+        <div className="shell-core flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="font-display text-lg font-semibold tracking-tight">
+              Contact
+            </h2>
+            <p className="mt-1.5 max-w-md text-sm leading-relaxed text-[var(--muted)]">
+              Feedback, bug reports, or freelance work — DM on X.
+            </p>
+          </div>
+          <a
+            href={CONTACT_X_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          >
+            <XLogo size={18} weight="bold" />
+            @{CONTACT_X_HANDLE}
+          </a>
+        </div>
       </div>
 
       <p className="mt-10 text-sm text-[var(--muted)]">

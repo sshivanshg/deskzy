@@ -18,6 +18,7 @@ import {
   urlEncodeDecode,
   wordCount,
 } from "./text";
+import { runBioLink, runUtmBuilder, runWhatsAppLink } from "./links";
 import type { ProcessResult, TextResult } from "./types";
 
 export type RunInput = {
@@ -113,6 +114,18 @@ export async function runTool(
       return { kind: "text", ...(await generateQr(text)) };
     case "url-shortener":
       return { kind: "text", ...(await shortenUrl(text, apiBase())) };
+    case "utm-builder":
+      return { kind: "text", ...runUtmBuilder(options) };
+    case "whatsapp-link":
+      return { kind: "text", ...runWhatsAppLink(options) };
+    case "bio-link":
+      return {
+        kind: "text",
+        ...runBioLink(
+          options,
+          (options.format as "html" | "markdown") || "html",
+        ),
+      };
     case "url-encode":
       return {
         kind: "text",

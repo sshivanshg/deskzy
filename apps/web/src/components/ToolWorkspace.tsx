@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, type ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   ArrowRight,
   CheckCircle,
@@ -12,6 +13,11 @@ import {
 } from "@phosphor-icons/react";
 import type { ToolDefinition } from "@/lib/tools/registry";
 import { getRelatedTools, getToolsByCategory } from "@/lib/tools/registry";
+import {
+  BioLinkBuilder,
+  UtmBuilderForm,
+  WhatsAppLinkForm,
+} from "./LinkToolForms";
 import { Dropzone } from "./Dropzone";
 import { runTool } from "@/lib/tools/run";
 
@@ -22,6 +28,7 @@ function formatBytes(n: number) {
 }
 
 export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
+  const searchParams = useSearchParams();
   const [files, setFiles] = useState<File[]>([]);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -33,7 +40,29 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
   const [meta, setMeta] = useState<Record<string, string | number> | null>(
     null,
   );
-  const [options, setOptions] = useState<Record<string, string>>({});
+  const [options, setOptions] = useState<Record<string, string>>(() => {
+    if (tool.slug === "whatsapp-link") return { country: "IN", dial: "91" };
+    if (tool.slug === "bio-link") return { theme: "deskzy", format: "html" };
+    return {} as Record<string, string>;
+  });
+
+  useEffect(() => {
+    if (tool.slug === "qr-code") {
+      const fromQuery = searchParams.get("url");
+      if (fromQuery) setText(fromQuery);
+    }
+    if (tool.slug === "url-shortener") {
+      try {
+        const prefill = sessionStorage.getItem("deskzy:prefill-url");
+        if (prefill) {
+          setText(prefill);
+          sessionStorage.removeItem("deskzy:prefill-url");
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [tool.slug, searchParams]);
 
   const siblings = useMemo(
     () => getToolsByCategory(tool.category).filter((t) => t.slug !== tool.slug),
@@ -49,7 +78,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         ? "API for links only"
         : "Processed on server";
 
-  async function onRun() {
+  async function onRun(override?: Record<string, string>) {
     setBusy(true);
     setError(null);
     setCopied(false);
@@ -58,8 +87,10 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
     setResultName(null);
     setResultText(null);
     setMeta(null);
+    const merged = { ...options, ...override };
+    if (override?.format) setOptions(merged);
     try {
-      const out = await runTool(tool.slug, { files, text, options });
+      const out = await runTool(tool.slug, { files, text, options: merged });
       if (out.kind === "file") {
         const url = URL.createObjectURL(out.blob);
         setResultUrl(url);
@@ -72,6 +103,15 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
           const url = URL.createObjectURL(out.download.blob);
           setResultUrl(url);
           setResultName(out.download.filename);
+        }
+        if (tool.slug === "bio-link" && override?.format === "markdown") {
+          try {
+            await navigator.clipboard.writeText(out.text);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1600);
+          } catch {
+            /* clipboard may be blocked */
+          }
         }
       }
     } catch (e) {
@@ -94,13 +134,21 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
   }
 
   const canRun =
-    tool.input === "text"
-      ? tool.slug === "uuid-generator" ||
-        tool.slug === "password-generator" ||
-        text.trim().length > 0
-      : tool.input === "files"
-        ? files.length > 0
-        : files.length === 1;
+    tool.input === "form"
+      ? tool.slug === "utm-builder"
+        ? Boolean(options.baseUrl?.trim())
+        : tool.slug === "whatsapp-link"
+          ? Boolean(options.phone?.trim())
+          : tool.slug === "bio-link"
+            ? Boolean(options.linksJson)
+            : true
+      : tool.input === "text"
+        ? tool.slug === "uuid-generator" ||
+          tool.slug === "password-generator" ||
+          text.trim().length > 0
+        : tool.input === "files"
+          ? files.length > 0
+          : files.length === 1;
 
   const done = Boolean(resultUrl || resultText);
 
@@ -145,6 +193,9 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="font-display text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl">
             {tool.name}
+            <span className="block text-lg font-normal text-[var(--muted)] md:text-xl">
+              Private &amp; free
+            </span>
           </h1>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-xs font-semibold text-[var(--accent)]">
             <LockSimple size={12} weight="bold" />
@@ -156,7 +207,17 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         </p>
 
         <div className="mt-8 space-y-4">
-          {tool.input === "text" ? (
+          {tool.input === "form" ? (
+            <div className="shell">
+              <div className="shell-core p-5 md:p-6">
+                <ToolOptions
+                  slug={tool.slug}
+                  options={options}
+                  setOptions={setOptions}
+                />
+              </div>
+            </div>
+          ) : tool.input === "text" ? (
             tool.slug === "uuid-generator" ||
             tool.slug === "password-generator" ? (
               <div className="shell">
@@ -184,33 +245,68 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
             />
           )}
 
-          <ToolOptions
-            slug={tool.slug}
-            options={options}
-            setOptions={setOptions}
-          />
+          {tool.input !== "form" && (
+            <ToolOptions
+              slug={tool.slug}
+              options={options}
+              setOptions={setOptions}
+            />
+          )}
 
           <div className="flex flex-wrap gap-3 pt-1">
-            <button
-              type="button"
-              disabled={!canRun || busy}
-              onClick={onRun}
-              className="btn-primary"
-            >
-              {busy ? (
-                <>
-                  <span className="busy-dot" />
-                  Working
-                </>
-              ) : (
-                <>
-                  {actionLabel(tool.slug)}
-                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/15">
-                    <ArrowRight size={14} weight="bold" />
-                  </span>
-                </>
-              )}
-            </button>
+            {tool.slug === "bio-link" ? (
+              <>
+                <button
+                  type="button"
+                  disabled={!canRun || busy}
+                  onClick={() => onRun({ format: "html" })}
+                  className="btn-primary"
+                >
+                  {busy ? (
+                    <>
+                      <span className="busy-dot" />
+                      Working
+                    </>
+                  ) : (
+                    <>
+                      Download HTML
+                      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/15">
+                        <ArrowRight size={14} weight="bold" />
+                      </span>
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  disabled={!canRun || busy}
+                  className="btn-secondary"
+                  onClick={() => onRun({ format: "markdown" })}
+                >
+                  {copied ? "Copied Markdown" : "Copy Markdown"}
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                disabled={!canRun || busy}
+                onClick={() => onRun()}
+                className="btn-primary"
+              >
+                {busy ? (
+                  <>
+                    <span className="busy-dot" />
+                    Working
+                  </>
+                ) : (
+                  <>
+                    {actionLabel(tool.slug)}
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/15">
+                      <ArrowRight size={14} weight="bold" />
+                    </span>
+                  </>
+                )}
+              </button>
+            )}
             {done && (
               <button type="button" className="btn-secondary" onClick={reset}>
                 Start over
@@ -291,6 +387,36 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                       {copied ? "Copied" : "Copy"}
                     </button>
                   )}
+                  {(tool.slug === "utm-builder" ||
+                    tool.slug === "whatsapp-link" ||
+                    tool.slug === "url-shortener") &&
+                    resultText &&
+                    !resultText.startsWith("data:image") && (
+                      <Link
+                        href={`/tools/qr-code?url=${encodeURIComponent(resultText)}`}
+                        className="btn-secondary"
+                      >
+                        Make QR
+                      </Link>
+                    )}
+                  {tool.slug === "utm-builder" && resultText && (
+                    <Link
+                      href="/tools/url-shortener"
+                      className="btn-secondary"
+                      onClick={() => {
+                        try {
+                          sessionStorage.setItem(
+                            "deskzy:prefill-url",
+                            resultText,
+                          );
+                        } catch {
+                          /* ignore */
+                        }
+                      }}
+                    >
+                      Shorten
+                    </Link>
+                  )}
                 </div>
 
                 {related.length > 0 && (
@@ -339,6 +465,7 @@ function actionLabel(slug: string) {
   )
     return "Convert";
   if (slug === "url-shortener") return "Shorten";
+  if (slug === "utm-builder" || slug === "whatsapp-link") return "Generate link";
   if (slug.includes("generator") || slug === "qr-code") return "Generate";
   if (slug === "json-formatter") return "Format";
   return "Run";
@@ -608,6 +735,15 @@ function ToolOptions({
         />
       </label>
     );
+  }
+  if (slug === "utm-builder") {
+    return <UtmBuilderForm options={options} setOptions={setOptions} />;
+  }
+  if (slug === "whatsapp-link") {
+    return <WhatsAppLinkForm options={options} setOptions={setOptions} />;
+  }
+  if (slug === "bio-link") {
+    return <BioLinkBuilder options={options} setOptions={setOptions} />;
   }
   return null;
 }

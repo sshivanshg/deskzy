@@ -1,0 +1,7 @@
+# Deskzy robots
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /r/
+
+Sitemap: https://deskzy.xyz/sitemap.xml

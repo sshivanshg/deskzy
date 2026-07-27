@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Outfit, Syne } from "next/font/google";
+import { Analytics } from "@/components/Analytics";
 import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
+import { Outfit, Syne } from "next/font/google";
+import { DEFAULT_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo/site";
 import "./globals.css";
 
 const body = Outfit({
@@ -15,15 +17,53 @@ const display = Syne({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Deskzy — Every file tool. One place.",
-    template: "%s | Deskzy",
+    default: `${SITE_NAME} — Every file tool. One place.`,
+    template: `%s | ${SITE_NAME}`,
   },
-  description:
-    "Fast, private file tools in your browser. PDF, image, and text utilities with no signup wall.",
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://deskzy.xyz",
-  ),
+  description: DEFAULT_DESCRIPTION,
+  applicationName: SITE_NAME,
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/icon-512.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} — Every file tool. One place.`,
+    description: DEFAULT_DESCRIPTION,
+    url: SITE_URL,
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: `${SITE_NAME} — Every file tool. One place.`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} — Every file tool. One place.`,
+    description: DEFAULT_DESCRIPTION,
+    images: ["/og.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
 };
 
 export default function RootLayout({
@@ -36,25 +76,8 @@ export default function RootLayout({
       <body className={`${body.variable} ${display.variable} antialiased`}>
         <SiteHeader />
         <main className="relative z-0 min-h-[70dvh]">{children}</main>
-        <footer className="relative z-0 mx-auto mt-8 max-w-6xl px-4 pb-12 pt-4">
-          <div className="shell">
-            <div className="shell-core flex flex-col gap-4 px-5 py-5 text-sm text-[var(--muted)] md:flex-row md:items-center md:justify-between">
-              <p className="font-display text-base font-semibold tracking-tight text-[var(--ink)]">
-                Deskzy
-              </p>
-              <p className="max-w-md leading-relaxed">
-                Drop. Done. Private. Files stay in your browser whenever
-                possible.
-              </p>
-              <Link
-                href="/about"
-                className="font-medium text-[var(--ink)] underline-offset-4 hover:underline"
-              >
-                About & privacy
-              </Link>
-            </div>
-          </div>
-        </footer>
+        <SiteFooter />
+        <Analytics />
       </body>
     </html>
   );

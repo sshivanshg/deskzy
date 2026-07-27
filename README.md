@@ -59,7 +59,8 @@ In Cloudflare Dashboard → Workers & Pages → `deskzy` → Settings → Builds
 
 PDF: merge, split, compress, reorder, PDF→images  
 Image: compress, resize, convert, WebP→PNG  
-Text: JSON, Base64, hash, UUID, QR, URL shortener, encode, word count, case, markdown, password  
+Text: JSON, Base64, hash, UUID, encode, word count, case, markdown, password  
+Links: URL shortener, QR, UTM builder, WhatsApp link, bio link creator  
 Media: Video→MP3 placeholder (ffmpeg.wasm next)
 
 ## Scripts

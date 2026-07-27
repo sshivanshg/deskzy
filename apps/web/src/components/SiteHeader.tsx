@@ -2,19 +2,25 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  ArrowRight,
+  LinkSimple,
   List,
   MagnifyingGlass,
   ShieldCheck,
   X,
+  XLogo,
 } from "@phosphor-icons/react";
+import { BrandLogo } from "@/components/BrandLogo";
+import { CONTACT_X_HANDLE, CONTACT_X_URL } from "@/lib/seo/site";
 import { searchTools } from "@/lib/tools/registry";
 
 const NAV = [
   { href: "/pdf", label: "PDF" },
   { href: "/media", label: "Media" },
   { href: "/image", label: "Image" },
+  { href: "/links", label: "Links" },
   { href: "/text", label: "Text" },
 ];
 
@@ -22,27 +28,70 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [q, setQ] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [desktopSearchOpen, setDesktopSearchOpen] = useState(false);
+  const mobileSearchRef = useRef<HTMLInputElement>(null);
+
   const results = useMemo(
     () => (q.trim() ? searchTools(q).slice(0, 8) : []),
     [q],
   );
 
+  const closeOverlays = () => {
+    setMenuOpen(false);
+    setMobileSearchOpen(false);
+    setQ("");
+  };
+
+  useEffect(() => {
+    closeOverlays();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- close on route change only
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!menuOpen && !mobileSearchOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [menuOpen, mobileSearchOpen]);
+
+  useEffect(() => {
+    if (mobileSearchOpen) {
+      const t = window.setTimeout(() => mobileSearchRef.current?.focus(), 40);
+      return () => window.clearTimeout(t);
+    }
+  }, [mobileSearchOpen]);
+
+  useEffect(() => {
+    if (!menuOpen && !mobileSearchOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeOverlays();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen, mobileSearchOpen]);
+
+  const openMobileSearch = () => {
+    setMenuOpen(false);
+    setMobileSearchOpen(true);
+  };
+
+  const openMenu = () => {
+    setMobileSearchOpen(false);
+    setMenuOpen(true);
+  };
+
   return (
     <>
-      <div className="sticky top-0 z-40 px-3 pt-3 md:px-4 md:pt-4">
+      <header className="sticky top-0 z-40 px-3 pt-3 md:px-4 md:pt-4">
         <div className="mx-auto max-w-6xl">
-          <div className="shell !rounded-full !p-1.5 backdrop-blur-xl">
-            <div className="shell-core !rounded-full flex items-center gap-2 px-2 py-1.5 md:gap-3 md:px-3">
-              <Link
-                href="/"
-                className="font-display shrink-0 px-2 text-lg font-semibold tracking-tight text-[var(--ink)]"
-                onClick={() => setMenuOpen(false)}
-              >
-                Deskzy
-              </Link>
+          <div className="shell !rounded-2xl !p-1.5 backdrop-blur-xl md:!rounded-full">
+            <div className="shell-core !rounded-[1.1rem] flex items-center gap-1.5 px-2 py-1.5 md:!rounded-full md:gap-3 md:px-3">
+              <BrandLogo onClick={closeOverlays} priority />
 
-              <nav className="hidden items-center gap-0.5 md:flex">
+              <nav className="hidden items-center gap-0.5 md:flex" aria-label="Categories">
                 {NAV.map((item) => {
                   const active = pathname === item.href;
                   return (
@@ -61,115 +110,272 @@ export function SiteHeader() {
                 })}
               </nav>
 
-              <div className="relative ml-auto hidden w-full max-w-[15rem] lg:block">
-                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]">
-                  <MagnifyingGlass size={16} weight="bold" />
-                </span>
-                <input
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  onFocus={() => setSearchOpen(true)}
-                  onBlur={() => setTimeout(() => setSearchOpen(false), 160)}
-                  placeholder="Search tools"
-                  className="field !rounded-full !py-2 !pl-9 !pr-3 !text-sm"
-                />
-                {searchOpen && results.length > 0 && (
-                  <div className="absolute left-0 right-0 top-[calc(100%+0.4rem)] overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--bg-elevated)] shadow-[var(--shadow)]">
-                    {results.map((t) => (
-                      <Link
-                        key={t.slug}
-                        href={`/tools/${t.slug}`}
-                        className="block px-3.5 py-2.5 text-sm transition-colors hover:bg-[var(--surface)]"
-                      >
-                        <span className="font-medium text-[var(--ink)]">
-                          {t.name}
-                        </span>
-                        <span className="mt-0.5 block text-xs text-[var(--muted)]">
-                          {t.category.toUpperCase()}
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                )}
+              <div className="ml-auto flex items-center gap-1 sm:gap-1.5">
+                <div className="relative hidden w-[15rem] lg:block">
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]">
+                    <MagnifyingGlass size={16} weight="bold" />
+                  </span>
+                  <input
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    onFocus={() => setDesktopSearchOpen(true)}
+                    onBlur={() =>
+                      setTimeout(() => setDesktopSearchOpen(false), 160)
+                    }
+                    placeholder="Search tools"
+                    className="field !rounded-full !py-2 !pl-9 !pr-3 !text-sm"
+                    aria-label="Search tools"
+                  />
+                  {desktopSearchOpen && results.length > 0 && (
+                    <div className="absolute left-0 right-0 top-[calc(100%+0.4rem)] z-50 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--bg-elevated)] shadow-[var(--shadow)]">
+                      {results.map((t) => (
+                        <Link
+                          key={t.slug}
+                          href={`/tools/${t.slug}`}
+                          className="block px-3.5 py-2.5 text-sm transition-colors hover:bg-[var(--surface)]"
+                        >
+                          <span className="font-medium text-[var(--ink)]">
+                            {t.name}
+                          </span>
+                          <span className="mt-0.5 block text-xs text-[var(--muted)]">
+                            {t.category.toUpperCase()}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <Link
+                  href="/tools/url-shortener"
+                  className={`hidden items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition-colors sm:inline-flex ${
+                    pathname === "/tools/url-shortener"
+                      ? "bg-[var(--accent)] text-white"
+                      : "bg-[var(--accent)] text-white hover:opacity-90"
+                  }`}
+                >
+                  <LinkSimple size={16} weight="bold" />
+                  Shorten
+                </Link>
+
+                <Link
+                  href="/about"
+                  className="hidden items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-[var(--muted)] transition-colors hover:text-[var(--ink)] lg:inline-flex"
+                >
+                  <ShieldCheck size={16} weight="duotone" />
+                  Privacy
+                </Link>
+
+                <button
+                  type="button"
+                  className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border transition-colors md:rounded-full lg:hidden ${
+                    mobileSearchOpen
+                      ? "border-[var(--accent)]/30 bg-[var(--accent-soft)] text-[var(--accent)]"
+                      : "border-[var(--stroke)] bg-white/55 text-[var(--ink)]"
+                  }`}
+                  onClick={() =>
+                    mobileSearchOpen ? closeOverlays() : openMobileSearch()
+                  }
+                  aria-label={mobileSearchOpen ? "Close search" : "Search tools"}
+                  aria-expanded={mobileSearchOpen}
+                >
+                  {mobileSearchOpen ? (
+                    <X size={18} weight="bold" />
+                  ) : (
+                    <MagnifyingGlass size={18} weight="bold" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border transition-colors md:hidden ${
+                    menuOpen
+                      ? "border-[var(--accent)]/30 bg-[var(--accent-soft)] text-[var(--accent)]"
+                      : "border-[var(--stroke)] bg-white/55 text-[var(--ink)]"
+                  }`}
+                  onClick={() => (menuOpen ? closeOverlays() : openMenu())}
+                  aria-label={menuOpen ? "Close menu" : "Open menu"}
+                  aria-expanded={menuOpen}
+                >
+                  {menuOpen ? (
+                    <X size={18} weight="bold" />
+                  ) : (
+                    <List size={18} weight="bold" />
+                  )}
+                </button>
               </div>
-
-              <Link
-                href="/about"
-                className="hidden items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-[var(--muted)] transition-colors hover:text-[var(--ink)] lg:inline-flex"
-              >
-                <ShieldCheck size={16} weight="duotone" />
-                Privacy
-              </Link>
-
-              <button
-                type="button"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--stroke)] bg-white/50 text-[var(--ink)] md:hidden"
-                onClick={() => setMenuOpen((v) => !v)}
-                aria-label={menuOpen ? "Close menu" : "Open menu"}
-              >
-                {menuOpen ? <X size={18} weight="bold" /> : <List size={18} weight="bold" />}
-              </button>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      {menuOpen && (
-        <div className="fixed inset-0 z-30 bg-[rgba(26,28,25,0.28)] px-3 pt-[4.8rem] backdrop-blur-sm md:hidden">
-          <div className="shell mx-auto max-w-6xl reveal">
-            <div className="shell-core space-y-4 p-4">
+      {/* Mobile / tablet search sheet */}
+      {mobileSearchOpen && (
+        <div className="fixed inset-0 z-30 lg:hidden">
+          <button
+            type="button"
+            className="absolute inset-0 bg-[rgba(26,28,25,0.32)] backdrop-blur-[2px]"
+            aria-label="Dismiss search"
+            onClick={closeOverlays}
+          />
+          <div className="relative mx-3 mt-[4.6rem] max-h-[min(70dvh,28rem)] overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--bg-elevated)] shadow-[var(--shadow)] md:mx-4 md:mt-[5rem]">
+            <div className="border-b border-[var(--stroke)] p-3">
               <div className="relative">
-                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]">
-                  <MagnifyingGlass size={16} weight="bold" />
+                <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)]">
+                  <MagnifyingGlass size={18} weight="bold" />
                 </span>
                 <input
+                  ref={mobileSearchRef}
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search tools"
-                  className="field !pl-9"
-                  autoFocus
+                  placeholder="Search tools…"
+                  className="field !rounded-xl !border-[var(--stroke)] !bg-white !py-3 !pl-11 !pr-10 !text-base"
+                  aria-label="Search tools"
+                  autoComplete="off"
+                  autoCorrect="off"
                 />
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {NAV.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="chip"
+                {q ? (
+                  <button
+                    type="button"
+                    className="absolute right-2.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-[var(--muted)] hover:bg-[var(--surface)] hover:text-[var(--ink)]"
+                    onClick={() => setQ("")}
+                    aria-label="Clear search"
                   >
-                    {item.label}
-                  </Link>
-                ))}
-                <Link
-                  href="/about"
-                  onClick={() => setMenuOpen(false)}
-                  className="chip"
-                >
-                  Privacy
-                </Link>
+                    <X size={16} weight="bold" />
+                  </button>
+                ) : null}
               </div>
-
-              <div className="divide-y divide-[var(--stroke)] overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white/50">
-                {(q.trim() ? results : searchTools("").slice(0, 6)).map((t) => (
+            </div>
+            <div className="max-h-[min(52dvh,20rem)] overflow-y-auto overscroll-contain">
+              {!q.trim() ? (
+                <p className="px-4 py-5 text-sm text-[var(--muted)]">
+                  Try “pdf”, “compress”, “qr”, or “shorten”.
+                </p>
+              ) : results.length === 0 ? (
+                <p className="px-4 py-5 text-sm text-[var(--muted)]">
+                  No tools matched. Try a shorter keyword.
+                </p>
+              ) : (
+                results.map((t) => (
                   <Link
                     key={t.slug}
                     href={`/tools/${t.slug}`}
-                    onClick={() => setMenuOpen(false)}
-                    className="block px-4 py-3 transition-colors hover:bg-[var(--surface)]"
+                    onClick={closeOverlays}
+                    className="flex items-center justify-between gap-3 border-b border-[var(--stroke)] px-4 py-3.5 last:border-b-0 active:bg-[var(--surface)]"
                   >
-                    <p className="text-sm font-medium text-[var(--ink)]">
-                      {t.name}
-                    </p>
-                    <p className="text-xs text-[var(--muted)]">
-                      {t.description}
-                    </p>
+                    <span className="min-w-0">
+                      <span className="block text-[15px] font-medium text-[var(--ink)]">
+                        {t.name}
+                      </span>
+                      <span className="mt-0.5 block truncate text-xs text-[var(--muted)]">
+                        {t.description}
+                      </span>
+                    </span>
+                    <ArrowRight
+                      size={16}
+                      color="var(--muted)"
+                    />
                   </Link>
-                ))}
-              </div>
+                ))
+              )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Phone menu drawer */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-30 md:hidden">
+          <button
+            type="button"
+            className="absolute inset-0 bg-[rgba(26,28,25,0.32)] backdrop-blur-[2px]"
+            aria-label="Dismiss menu"
+            onClick={closeOverlays}
+          />
+          <nav
+            className="relative mx-3 mt-[4.6rem] flex max-h-[min(78dvh,36rem)] flex-col overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--bg-elevated)] shadow-[var(--shadow)]"
+            aria-label="Mobile"
+          >
+            <div className="overflow-y-auto overscroll-contain p-2">
+              <p className="px-3 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+                Categories
+              </p>
+              <ul className="space-y-0.5">
+                {NAV.map((item) => {
+                  const active = pathname === item.href;
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={closeOverlays}
+                        className={`flex items-center justify-between rounded-xl px-3 py-3 text-[15px] transition-colors ${
+                          active
+                            ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
+                            : "text-[var(--ink)] active:bg-[var(--surface)]"
+                        }`}
+                      >
+                        {item.label}
+                        <span className="opacity-40">
+                          <ArrowRight size={14} />
+                        </span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              <div className="my-2 border-t border-[var(--stroke)]" />
+
+              <ul className="space-y-0.5">
+                <li>
+                  <Link
+                    href="/tools/url-shortener"
+                    onClick={closeOverlays}
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium text-[var(--accent)] active:bg-[var(--accent-soft)]"
+                  >
+                    <LinkSimple size={18} weight="bold" />
+                    Shorten URL
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/about"
+                    onClick={closeOverlays}
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] text-[var(--ink)] active:bg-[var(--surface)]"
+                  >
+                    <ShieldCheck size={18} weight="duotone" />
+                    About & privacy
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href={CONTACT_X_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={closeOverlays}
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] text-[var(--ink)] active:bg-[var(--surface)]"
+                  >
+                    <XLogo size={18} weight="bold" />
+                    Contact on X
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="mt-auto border-t border-[var(--stroke)] bg-[var(--surface)]/60 px-4 py-3">
+              <p className="text-xs leading-relaxed text-[var(--muted)]">
+                Questions or feedback? DM{" "}
+                <a
+                  href={CONTACT_X_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-[var(--ink)] underline-offset-2 hover:underline"
+                  onClick={closeOverlays}
+                >
+                  @{CONTACT_X_HANDLE}
+                </a>
+              </p>
+            </div>
+          </nav>
         </div>
       )}
     </>

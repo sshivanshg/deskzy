@@ -3,17 +3,29 @@ import { test, expect } from "@playwright/test";
 test.describe("Navigation & shell", () => {
   test("home shows brand, search, popular, categories", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: "Deskzy" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", {
+        name: /Free online file tools — private & no signup/i,
+      }),
+    ).toBeVisible();
     await expect(page.getByText("Every file tool. One place.")).toBeVisible();
-    await expect(page.getByPlaceholder(/compress pdf/i)).toBeVisible();
+    await expect(page.getByPlaceholder(/shorten url/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: "URL Shortener" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "What do you need?" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Popular right now" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Browse by category" })).toBeVisible();
     await expect(page.getByRole("link", { name: /^PDF$/ }).first()).toBeVisible();
   });
 
+  test("shortcut /shorten lands on url shortener", async ({ page }) => {
+    await page.goto("/shorten");
+    await expect(page).toHaveURL(/\/tools\/url-shortener/);
+    await expect(page.getByRole("heading", { name: "URL Shortener" })).toBeVisible();
+  });
+
   test("home search finds compress pdf and navigates", async ({ page }) => {
     await page.goto("/");
-    await page.getByPlaceholder(/compress pdf/i).fill("compress pdf");
+    await page.getByPlaceholder(/shorten url/i).fill("compress pdf");
     await expect(page.getByRole("link", { name: /Compress PDF/i }).first()).toBeVisible();
     await page.getByRole("link", { name: /Compress PDF/i }).first().click();
     await expect(page).toHaveURL(/\/tools\/compress-pdf/);
@@ -21,13 +33,34 @@ test.describe("Navigation & shell", () => {
   });
 
   test("category pages render tools", async ({ page }) => {
-    for (const cat of ["pdf", "media", "image", "text"] as const) {
+    for (const cat of ["pdf", "media", "image", "text", "links"] as const) {
       await page.goto(`/${cat}`);
       await expect(page.getByRole("heading", { level: 1 })).toContainText(
-        new RegExp(cat === "text" ? "Text" : cat, "i"),
+        new RegExp(
+          cat === "text" ? "Text" : cat === "links" ? "Links" : cat,
+          "i",
+        ),
       );
       await expect(page.locator('a[href^="/tools/"]').first()).toBeVisible();
     }
+  });
+
+  test("seo routes sitemap and robots", async ({ page }) => {
+    const sitemap = await page.goto("/sitemap.xml");
+    expect(sitemap?.status()).toBe(200);
+    await expect(page.locator("body")).toContainText("deskzy.xyz/tools/url-shortener");
+
+    const robots = await page.goto("/robots.txt");
+    expect(robots?.status()).toBe(200);
+    await expect(page.locator("body")).toContainText("Sitemap:");
+  });
+
+  test("tool pages include SEO FAQ section", async ({ page }) => {
+    await page.goto("/tools/url-shortener");
+    await expect(
+      page.getByRole("heading", { name: /Frequently asked questions/i }),
+    ).toBeVisible();
+    await expect(page.getByText(/deskzy\.xyz\/r\//i)).toBeVisible();
   });
 
   test("about / privacy page", async ({ page }) => {
@@ -67,6 +100,9 @@ test.describe("Navigation & shell", () => {
       "markdown-to-html",
       "password-generator",
       "video-to-mp3",
+      "utm-builder",
+      "whatsapp-link",
+      "bio-link",
     ];
     for (const slug of slugs) {
       await page.goto(`/tools/${slug}`);

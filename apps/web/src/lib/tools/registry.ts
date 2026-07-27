@@ -1,6 +1,6 @@
-export type ToolCategory = "pdf" | "media" | "image" | "text";
+export type ToolCategory = "pdf" | "media" | "image" | "text" | "links";
 export type ToolRuntime = "browser" | "edge" | "hybrid";
-export type ToolInput = "file" | "files" | "text";
+export type ToolInput = "file" | "files" | "text" | "form";
 
 export type ToolDefinition = {
   slug: string;
@@ -40,7 +40,12 @@ export const CATEGORIES: {
   {
     id: "text",
     name: "Text & Dev",
-    description: "Formatters, generators, and URL tools.",
+    description: "Formatters, generators, and text utilities.",
+  },
+  {
+    id: "links",
+    name: "Links",
+    description: "Shorten, QR, UTM, WhatsApp, and bio link tools.",
   },
 ];
 
@@ -220,27 +225,95 @@ export const TOOLS: ToolDefinition[] = [
   {
     slug: "qr-code",
     name: "QR Code Generator",
-    category: "text",
+    category: "links",
     description: "Create a QR code from any text or URL.",
     seoTitle: "QR code generator online free",
     seoDescription: "Generate QR codes in your browser. Download as PNG.",
     runtime: "browser",
     input: "text",
     aliases: ["qr generator", "create qr"],
-    related: ["url-shortener", "url-encode", "password-generator"],
+    related: ["url-shortener", "whatsapp-link", "utm-builder"],
     popular: true,
   },
   {
     slug: "url-shortener",
     name: "URL Shortener",
-    category: "text",
-    description: "Shorten long URLs with a fast Go-powered API.",
-    seoTitle: "URL shortener free",
-    seoDescription: "Shorten URLs instantly. Fast edge-ready architecture.",
+    category: "links",
+    description: "Turn long links into short deskzy.xyz URLs in one paste.",
+    seoTitle: "URL shortener free — shorten links online",
+    seoDescription:
+      "Free URL shortener with no signup. Paste a long link, get a short deskzy.xyz URL instantly. Only the URL string is sent to our API.",
     runtime: "hybrid",
     input: "text",
-    aliases: ["short link", "link shortener"],
-    related: ["qr-code", "url-encode", "json-formatter"],
+    aliases: [
+      "short link",
+      "link shortener",
+      "shorten url",
+      "shorten link",
+      "tiny url",
+      "bitly",
+    ],
+    related: ["qr-code", "utm-builder", "bio-link"],
+    popular: true,
+  },
+  {
+    slug: "utm-builder",
+    name: "UTM Builder",
+    category: "links",
+    description:
+      "Add UTM parameters to any URL for campaign tracking — with presets for ads and social.",
+    seoTitle: "UTM builder online free — campaign URL generator",
+    seoDescription:
+      "Free UTM parameter builder. Add source, medium, campaign, term, and content. Presets for Google Ads, Instagram, LinkedIn, and newsletters. Private — runs in your browser.",
+    runtime: "browser",
+    input: "form",
+    aliases: [
+      "utm generator",
+      "utm link builder",
+      "campaign url builder",
+      "utm parameters",
+    ],
+    related: ["url-shortener", "qr-code", "whatsapp-link"],
+    popular: true,
+  },
+  {
+    slug: "whatsapp-link",
+    name: "WhatsApp Link Generator",
+    category: "links",
+    description:
+      "Create a click-to-chat wa.me link with country code and a prefilled message.",
+    seoTitle: "WhatsApp link generator free — wa.me click to chat",
+    seoDescription:
+      "Generate WhatsApp click-to-chat links with country code and message. Free wa.me URL builder — private, no signup.",
+    runtime: "browser",
+    input: "form",
+    aliases: [
+      "wa.me generator",
+      "whatsapp click to chat",
+      "whatsapp url",
+      "whatsapp message link",
+    ],
+    related: ["qr-code", "url-shortener", "bio-link"],
+    popular: true,
+  },
+  {
+    slug: "bio-link",
+    name: "Bio Link Creator",
+    category: "links",
+    description:
+      "Build a simple link-in-bio page in your browser — themes, reorder links, download HTML.",
+    seoTitle: "Bio link creator free — link in bio page builder",
+    seoDescription:
+      "Create a link-in-bio page with themes and up to 8 links. Preview live, copy Markdown, or download standalone HTML. Private — nothing is hosted or stored.",
+    runtime: "browser",
+    input: "form",
+    aliases: [
+      "link in bio",
+      "biolink",
+      "linktree alternative",
+      "bio page builder",
+    ],
+    related: ["url-shortener", "qr-code", "whatsapp-link"],
     popular: true,
   },
   {
@@ -253,7 +326,7 @@ export const TOOLS: ToolDefinition[] = [
     runtime: "browser",
     input: "text",
     aliases: ["percent encoding"],
-    related: ["base64", "url-shortener", "json-formatter"],
+    related: ["base64", "utm-builder", "json-formatter"],
   },
   {
     slug: "word-counter",
@@ -301,7 +374,7 @@ export const TOOLS: ToolDefinition[] = [
     runtime: "browser",
     input: "text",
     aliases: ["random password"],
-    related: ["uuid-generator", "hash-generator", "qr-code"],
+    related: ["uuid-generator", "hash-generator", "json-formatter"],
   },
   {
     slug: "video-to-mp3",
@@ -314,7 +387,7 @@ export const TOOLS: ToolDefinition[] = [
     input: "file",
     accept: "video/*,audio/*",
     aliases: ["mp4 to mp3", "extract audio"],
-    related: ["compress-image", "qr-code", "url-shortener"],
+    related: ["compress-image", "webp-to-png", "url-shortener"],
     popular: true,
   },
 ];
@@ -327,19 +400,133 @@ export function getToolsByCategory(category: ToolCategory): ToolDefinition[] {
   return TOOLS.filter((t) => t.category === category);
 }
 
+/** Intent → tool slug for short paths like /shorten → url-shortener */
+export const ROUTE_SHORTCUTS: Record<string, string> = {
+  shorten: "url-shortener",
+  short: "url-shortener",
+  link: "url-shortener",
+  compress: "compress-pdf",
+  merge: "merge-pdf",
+  split: "split-pdf",
+  qr: "qr-code",
+  utm: "utm-builder",
+  whatsapp: "whatsapp-link",
+  wa: "whatsapp-link",
+  bio: "bio-link",
+  biolink: "bio-link",
+  webp: "webp-to-png",
+  json: "json-formatter",
+  hash: "hash-generator",
+  uuid: "uuid-generator",
+  password: "password-generator",
+  base64: "base64",
+  resize: "resize-image",
+};
+
+export type UseCase = {
+  id: string;
+  label: string;
+  hint: string;
+  href: string;
+};
+
+/** Homepage “I need to…” paths for specific use cases */
+export const USE_CASES: UseCase[] = [
+  {
+    id: "shorten",
+    label: "Shorten a link",
+    hint: "Paste any URL → short deskzy.xyz link",
+    href: "/tools/url-shortener",
+  },
+  {
+    id: "compress-pdf",
+    label: "Compress a PDF",
+    hint: "Shrink file size in the browser",
+    href: "/tools/compress-pdf",
+  },
+  {
+    id: "merge-pdf",
+    label: "Merge PDFs",
+    hint: "Combine multiple PDFs into one",
+    href: "/tools/merge-pdf",
+  },
+  {
+    id: "compress-image",
+    label: "Compress an image",
+    hint: "Smaller JPG/PNG/WebP, private",
+    href: "/tools/compress-image",
+  },
+  {
+    id: "webp",
+    label: "WebP to PNG",
+    hint: "Convert WebP for apps that need PNG",
+    href: "/tools/webp-to-png",
+  },
+  {
+    id: "qr",
+    label: "Make a QR code",
+    hint: "From any text or URL",
+    href: "/tools/qr-code",
+  },
+  {
+    id: "utm",
+    label: "Build a UTM link",
+    hint: "Track campaigns with utm_ params",
+    href: "/tools/utm-builder",
+  },
+  {
+    id: "whatsapp",
+    label: "WhatsApp click-to-chat",
+    hint: "wa.me link with a prefilled message",
+    href: "/tools/whatsapp-link",
+  },
+  {
+    id: "bio",
+    label: "Create a bio link page",
+    hint: "Themes + downloadable HTML",
+    href: "/tools/bio-link",
+  },
+  {
+    id: "json",
+    label: "Format JSON",
+    hint: "Pretty-print or minify",
+    href: "/tools/json-formatter",
+  },
+  {
+    id: "password",
+    label: "Generate a password",
+    hint: "Strong random passwords",
+    href: "/tools/password-generator",
+  },
+];
+
 export function getPopularTools(): ToolDefinition[] {
-  return TOOLS.filter((t) => t.popular);
+  const popular = TOOLS.filter((t) => t.popular);
+  return popular.sort((a, b) => {
+    if (a.slug === "url-shortener") return -1;
+    if (b.slug === "url-shortener") return 1;
+    return 0;
+  });
 }
 
 export function searchTools(query: string): ToolDefinition[] {
   const q = query.trim().toLowerCase();
   if (!q) return getPopularTools();
+  const shortcut = ROUTE_SHORTCUTS[q.replace(/\s+/g, "")];
+  if (shortcut) {
+    const tool = getTool(shortcut);
+    if (tool) return [tool, ...TOOLS.filter((t) => t.slug !== shortcut)];
+  }
   return TOOLS.filter((t) => {
     const hay = [t.name, t.description, t.slug, ...t.aliases]
       .join(" ")
       .toLowerCase();
     return hay.includes(q);
   });
+}
+
+export function resolveShortcut(segment: string): string | undefined {
+  return ROUTE_SHORTCUTS[segment.trim().toLowerCase()];
 }
 
 export function getRelatedTools(slug: string): ToolDefinition[] {

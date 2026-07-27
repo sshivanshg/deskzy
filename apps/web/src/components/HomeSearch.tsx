@@ -5,7 +5,11 @@ import { useMemo, useState } from "react";
 import { ArrowRight, MagnifyingGlass } from "@phosphor-icons/react";
 import { searchTools } from "@/lib/tools/registry";
 
-export function HomeSearch() {
+export function HomeSearch({
+  id = "home-tool-search",
+}: {
+  id?: string;
+} = {}) {
   const [q, setQ] = useState("");
   const results = useMemo(() => searchTools(q), [q]);
 
@@ -13,7 +17,7 @@ export function HomeSearch() {
     <div className="shell !rounded-2xl">
       <div className="shell-core !rounded-[1.15rem] p-3 sm:p-4">
         <label
-          htmlFor="home-tool-search"
+          htmlFor={id}
           className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)] sm:text-xs sm:font-medium"
         >
           Find a tool
@@ -23,7 +27,7 @@ export function HomeSearch() {
             <MagnifyingGlass size={18} weight="bold" />
           </span>
           <input
-            id="home-tool-search"
+            id={id}
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="shorten url, compress pdf, qr…"

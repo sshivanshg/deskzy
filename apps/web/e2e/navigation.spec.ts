@@ -2,14 +2,15 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Navigation & shell", () => {
   test("home shows brand, search, popular, categories", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
     await expect(
       page.getByRole("heading", {
         name: /Free online file tools — private & no signup/i,
       }),
     ).toBeVisible();
-    await expect(page.getByText("Every file tool. One place.")).toBeVisible();
-    await expect(page.getByPlaceholder(/shorten url/i)).toBeVisible();
+    await expect(page.getByText("Every file tool. One place.", { exact: true })).toBeVisible();
+    await expect(page.locator("#home-tool-search-desktop")).toBeVisible();
     await expect(page.getByRole("heading", { name: "URL Shortener" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "What do you need?" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Popular right now" })).toBeVisible();
@@ -24,8 +25,9 @@ test.describe("Navigation & shell", () => {
   });
 
   test("home search finds compress pdf and navigates", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
-    await page.getByPlaceholder(/shorten url/i).fill("compress pdf");
+    await page.locator("#home-tool-search-desktop").fill("compress pdf");
     await expect(page.getByRole("link", { name: /Compress PDF/i }).first()).toBeVisible();
     await page.getByRole("link", { name: /Compress PDF/i }).first().click();
     await expect(page).toHaveURL(/\/tools\/compress-pdf/);
@@ -70,6 +72,7 @@ test.describe("Navigation & shell", () => {
   });
 
   test("header nav links work", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
     await page.locator("nav").getByRole("link", { name: "PDF", exact: true }).click();
     await expect(page).toHaveURL(/\/pdf$/);

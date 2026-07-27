@@ -9,19 +9,37 @@ test.describe("Mobile home launcher", () => {
     await expect(page.getByRole("button", { name: /^Shorten$/i })).toBeVisible();
   });
 
-  // Full mobile launcher layout — enabled in Task 2/3 once chips, Popular strip, and section hiding land.
-  test.skip("shows shorten dock, search, category chips, popular strip", async ({
+  test("shows shorten dock, search, category chips, popular strip", async ({
     page,
   }) => {
     await page.goto("/");
     await expect(page.locator("#home-shorten-url")).toBeVisible();
     await expect(page.getByRole("button", { name: /^Shorten$/i })).toBeVisible();
-    await expect(page.getByPlaceholder(/shorten url|find a tool|search/i)).toBeVisible();
-    await expect(page.getByRole("link", { name: /^PDF$/i })).toBeVisible();
-    await expect(page.getByRole("link", { name: /^Image$/i })).toBeVisible();
-    await expect(page.getByRole("heading", { name: /^Popular/i })).toBeVisible();
+    // Prefer #home-tool-search: placeholder regex also matches header "Search tools"
+    // and a second HomeSearch in the desktop (display:none) branch.
+    await expect(page.locator("#home-tool-search")).toBeVisible();
+    await expect(
+      page.getByRole("navigation", { name: "Categories" }).getByRole("link", {
+        name: /^PDF$/i,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("navigation", { name: "Categories" }).getByRole("link", {
+        name: /^Image$/i,
+      }),
+    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: /^Popular$/i })).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "What do you need?" }),
     ).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", { name: "Browse by category" }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", {
+        level: 1,
+        name: /Free online file tools — private & no signup/i,
+      }),
+    ).toBeAttached();
   });
 });

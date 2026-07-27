@@ -8,6 +8,8 @@ import {
   MusicNotes,
   TextT,
 } from "@phosphor-icons/react/dist/ssr";
+import { HomeCategoryChips } from "@/components/HomeCategoryChips";
+import { HomePopularStrip } from "@/components/HomePopularStrip";
 import { HomeSearch } from "@/components/HomeSearch";
 import { HomeShortenDock } from "@/components/HomeShortenDock";
 import { JsonLd } from "@/components/JsonLd";
@@ -51,10 +53,20 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={buildWebsiteJsonLd()} />
-      <div className="mx-auto max-w-6xl px-4 pb-8 pt-10 md:pt-16">
-        <div className="md:hidden space-y-3">
+
+      <div className="mx-auto max-w-6xl px-4 pb-8 pt-6 md:hidden">
+        <h1 className="sr-only">
+          Free online file tools — private &amp; no signup
+        </h1>
+        <div className="space-y-3">
           <HomeShortenDock />
+          <HomeSearch id="home-tool-search" />
+          <HomeCategoryChips />
         </div>
+        <HomePopularStrip tools={popular} />
+      </div>
+
+      <div className="mx-auto hidden max-w-6xl px-4 pb-8 pt-10 md:block md:pt-16">
         <section className="grid items-end gap-10 md:grid-cols-[1.15fr_0.85fr] md:gap-12">
           <div className="reveal">
             <p className="mb-4 inline-flex items-center rounded-full border border-[var(--stroke)] bg-white/50 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
@@ -73,7 +85,7 @@ export default function HomePage() {
           </div>
 
           <div className="reveal reveal-delay-1">
-            <HomeSearch />
+            <HomeSearch id="home-tool-search-desktop" />
           </div>
         </section>
 

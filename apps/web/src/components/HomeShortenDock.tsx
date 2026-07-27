@@ -23,7 +23,7 @@ export function HomeShortenDock() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
-  const copiedTimeoutRef = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const copiedTimeoutRef = useRef<number | null>(null);
 
   const clearCopiedTimeout = () => {
     if (copiedTimeoutRef.current !== null) {

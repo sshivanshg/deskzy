@@ -9,6 +9,7 @@ import {
   TextT,
 } from "@phosphor-icons/react/dist/ssr";
 import { HomeSearch } from "@/components/HomeSearch";
+import { HomeShortenDock } from "@/components/HomeShortenDock";
 import { JsonLd } from "@/components/JsonLd";
 import { buildWebsiteJsonLd } from "@/lib/seo/json-ld";
 import {
@@ -51,6 +52,9 @@ export default function HomePage() {
     <>
       <JsonLd data={buildWebsiteJsonLd()} />
       <div className="mx-auto max-w-6xl px-4 pb-8 pt-10 md:pt-16">
+        <div className="md:hidden space-y-3">
+          <HomeShortenDock />
+        </div>
         <section className="grid items-end gap-10 md:grid-cols-[1.15fr_0.85fr] md:gap-12">
           <div className="reveal">
             <p className="mb-4 inline-flex items-center rounded-full border border-[var(--stroke)] bg-white/50 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">

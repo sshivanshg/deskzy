@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LinkHop } from "@/components/LinkHop";
-import { hitLink } from "@/lib/links-store";
+import { getLink } from "@/lib/links-store";
 
 type Props = { params: Promise<{ code: string }> };
 
@@ -12,7 +12,8 @@ export const metadata: Metadata = {
 
 export default async function ShortLinkHopPage({ params }: Props) {
   const { code } = await params;
-  const link = await hitLink(code);
+  // Read-only: no hit counter write — saves KV write quota on every open.
+  const link = await getLink(code);
   if (!link) notFound();
 
   return <LinkHop dest={link.dest} code={link.code} />;

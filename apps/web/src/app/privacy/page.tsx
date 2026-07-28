@@ -79,8 +79,8 @@ export default function PrivacyPage() {
           <p className="mt-2 text-[var(--muted)]">
             When you use the URL shortener, only the destination URL string is
             sent to our edge API and stored in Cloudflare KV so redirects can
-            work. We store: short code, destination URL, hit count, and creation
-            time. We do not require an account.
+            work. We store: short code, destination URL, and creation time. We
+            do not require an account.
           </p>
           <p className="mt-2 text-[var(--muted)]">
             Short links may expire after a retention period (typically up to 12

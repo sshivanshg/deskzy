@@ -49,19 +49,11 @@ export async function getLink(code: string): Promise<LinkRecord | undefined> {
   return memory.get(code);
 }
 
-export async function hitLink(code: string): Promise<LinkRecord | undefined> {
-  const link = await getLink(code);
-  if (!link) return undefined;
-  link.hits += 1;
-  await putLinkRecord(link);
-  return link;
-}
-
 export async function putLink(code: string, dest: string): Promise<LinkRecord> {
   const record: LinkRecord = {
     code,
     dest,
-    hits: 0,
+    hits: 0, // reserved; not incremented (avoids a KV write per hop)
     createdAt: new Date().toISOString(),
   };
   await putLinkRecord(record);

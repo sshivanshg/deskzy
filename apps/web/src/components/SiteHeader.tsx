@@ -45,7 +45,6 @@ export function SiteHeader() {
 
   useEffect(() => {
     closeOverlays();
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- close on route change only
   }, [pathname]);
 
   useEffect(() => {
@@ -159,7 +158,7 @@ export function SiteHeader() {
                 </Link>
 
                 <Link
-                  href="/about"
+                  href="/privacy"
                   className="hidden items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-[var(--muted)] transition-colors hover:text-[var(--ink)] lg:inline-flex"
                 >
                   <ShieldCheck size={16} weight="duotone" />
@@ -338,12 +337,21 @@ export function SiteHeader() {
                 </li>
                 <li>
                   <Link
-                    href="/about"
+                    href="/privacy"
                     onClick={closeOverlays}
                     className="flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] text-[var(--ink)] active:bg-[var(--surface)]"
                   >
                     <ShieldCheck size={18} weight="duotone" />
-                    About & privacy
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/terms"
+                    onClick={closeOverlays}
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] text-[var(--ink)] active:bg-[var(--surface)]"
+                  >
+                    Terms of Use
                   </Link>
                 </li>
                 <li>

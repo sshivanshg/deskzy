@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import {
   LockSimple,
   Lightning,
@@ -95,6 +96,20 @@ export default function AboutPage() {
         <span className="font-medium text-[var(--ink)]">
           Drop. Done. Private.
         </span>
+        {" · "}
+        <Link
+          href="/privacy"
+          className="font-medium text-[var(--ink)] underline-offset-4 hover:underline"
+        >
+          Privacy Policy
+        </Link>
+        {" · "}
+        <Link
+          href="/terms"
+          className="font-medium text-[var(--ink)] underline-offset-4 hover:underline"
+        >
+          Terms
+        </Link>
       </p>
     </div>
   );

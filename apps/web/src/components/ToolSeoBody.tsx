@@ -54,10 +54,10 @@ export function ToolSeoBody({ tool }: { tool: ToolDefinition }) {
             {content.privacy}
           </p>
           <Link
-            href="/about"
+            href="/privacy"
             className="mt-3 inline-block text-sm font-medium text-[var(--accent)] hover:underline"
           >
-            Read our full privacy approach
+            Read our Privacy Policy
           </Link>
         </section>
 

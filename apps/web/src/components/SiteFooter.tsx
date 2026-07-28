@@ -24,10 +24,22 @@ export function SiteFooter() {
               </p>
               <div className="mt-4 flex flex-col gap-2.5">
                 <Link
-                  href="/about"
+                  href="/privacy"
                   className="text-sm font-medium text-[var(--ink)] underline-offset-4 hover:underline"
                 >
-                  About & privacy
+                  Privacy Policy
+                </Link>
+                <Link
+                  href="/terms"
+                  className="text-sm font-medium text-[var(--ink)] underline-offset-4 hover:underline"
+                >
+                  Terms of Use
+                </Link>
+                <Link
+                  href="/about"
+                  className="text-sm text-[var(--muted)] underline-offset-4 hover:text-[var(--ink)] hover:underline"
+                >
+                  About
                 </Link>
                 <a
                   href={CONTACT_X_URL}
@@ -98,6 +110,14 @@ export function SiteFooter() {
 
           <p className="mt-8 border-t border-[var(--stroke)] pt-6 text-xs text-[var(--muted)]">
             Free online file tools · PDF · Image · Text · URL shortener ·{" "}
+            <Link href="/privacy" className="hover:text-[var(--ink)]">
+              Privacy
+            </Link>
+            {" · "}
+            <Link href="/terms" className="hover:text-[var(--ink)]">
+              Terms
+            </Link>
+            {" · "}
             <Link href="/sitemap.xml" className="hover:text-[var(--ink)]">
               Sitemap
             </Link>

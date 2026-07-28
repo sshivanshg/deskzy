@@ -76,4 +76,6 @@ Media: Video→MP3 placeholder (ffmpeg.wasm next)
 
 ## Privacy
 
-Browser tools never upload files. The URL shortener only sends the URL string to the API (KV-backed on Cloudflare).
+Browser tools never upload files. The URL shortener only sends the URL string to the API (KV-backed on Cloudflare, ~12 month TTL, rate-limited).
+
+Legal pages on the live site: [/privacy](https://deskzy.xyz/privacy) · [/terms](https://deskzy.xyz/terms)

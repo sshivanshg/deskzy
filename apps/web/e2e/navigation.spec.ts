@@ -65,6 +65,17 @@ test.describe("Navigation & shell", () => {
     await expect(page.getByText(/deskzy\.xyz\/r\//i)).toBeVisible();
   });
 
+  test("privacy and terms pages", async ({ page }) => {
+    await page.goto("/privacy");
+    await expect(
+      page.getByRole("heading", { name: /Privacy Policy/i }),
+    ).toBeVisible();
+    await page.goto("/terms");
+    await expect(
+      page.getByRole("heading", { name: /Terms of Use/i }),
+    ).toBeVisible();
+  });
+
   test("about / privacy page", async ({ page }) => {
     await page.goto("/about");
     await expect(page.getByRole("heading", { name: /About & privacy/i })).toBeVisible();

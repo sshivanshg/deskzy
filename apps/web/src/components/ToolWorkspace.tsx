@@ -25,6 +25,7 @@ import {
   WhatsAppLinkForm,
 } from "./LinkToolForms";
 import { Dropzone } from "./Dropzone";
+import { ToolBusyEffect } from "./ToolBusyEffect";
 import { runTool } from "@/lib/tools/run";
 
 function formatBytes(n: number) {
@@ -231,51 +232,58 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         </p>
 
         <div className="mt-8 space-y-4">
-          {tool.input === "form" ? (
-            <div className="shell">
-              <div className="shell-core p-5 md:p-6">
-                <ToolOptions
-                  slug={tool.slug}
-                  options={options}
-                  setOptions={setOptions}
-                />
-              </div>
-            </div>
-          ) : tool.input === "text" ? (
-            tool.slug === "uuid-generator" ||
-            tool.slug === "password-generator" ? (
-              <div className="shell">
-                <div className="shell-core px-5 py-4 text-sm text-[var(--muted)]">
-                  Set your options below, then generate. Nothing is stored.
+          <ToolBusyEffect active={busy} slug={tool.slug}>
+            <div className={busy ? "min-h-[12rem]" : undefined}>
+              {tool.input === "form" ? (
+                <div className="shell">
+                  <div className="shell-core p-5 md:p-6">
+                    <ToolOptions
+                      slug={tool.slug}
+                      options={options}
+                      setOptions={setOptions}
+                    />
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="shell">
-                <textarea
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  rows={10}
-                  placeholder="Paste input here…"
-                  className="field field-mono !rounded-[calc(var(--radius-core)-2px)] !border-0 bg-transparent shadow-none focus:!shadow-none"
+              ) : tool.input === "text" ? (
+                tool.slug === "uuid-generator" ||
+                tool.slug === "password-generator" ? (
+                  <div className="shell">
+                    <div className="shell-core px-5 py-4 text-sm text-[var(--muted)]">
+                      Set your options below, then generate. Nothing is stored.
+                    </div>
+                  </div>
+                ) : (
+                  <div className="shell">
+                    <textarea
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      rows={10}
+                      placeholder="Paste input here…"
+                      className="field field-mono !rounded-[calc(var(--radius-core)-2px)] !border-0 bg-transparent shadow-none focus:!shadow-none"
+                      disabled={busy}
+                    />
+                  </div>
+                )
+              ) : (
+                <Dropzone
+                  accept={tool.accept}
+                  multiple={tool.input === "files"}
+                  files={files}
+                  onChange={setFiles}
                 />
-              </div>
-            )
-          ) : (
-            <Dropzone
-              accept={tool.accept}
-              multiple={tool.input === "files"}
-              files={files}
-              onChange={setFiles}
-            />
-          )}
+              )}
 
-          {tool.input !== "form" && (
-            <ToolOptions
-              slug={tool.slug}
-              options={options}
-              setOptions={setOptions}
-            />
-          )}
+              {tool.input !== "form" && (
+                <div className="mt-4">
+                  <ToolOptions
+                    slug={tool.slug}
+                    options={options}
+                    setOptions={setOptions}
+                  />
+                </div>
+              )}
+            </div>
+          </ToolBusyEffect>
 
           <div className="flex flex-wrap gap-3 pt-1">
             {tool.slug === "bio-link" ? (

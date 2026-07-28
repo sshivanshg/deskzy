@@ -107,10 +107,37 @@ test.describe("Navigation & shell", () => {
       "whatsapp-link",
       "bio-link",
     ];
+    const remote = /deskzy\.xyz|workers\.dev/.test(
+      process.env.PLAYWRIGHT_BASE_URL || "",
+    );
+    const pause = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
     for (const slug of slugs) {
-      await page.goto(`/tools/${slug}`);
-      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-      await expect(page.getByText(/Stays in browser|API for links only|Processed on server/i)).toBeVisible();
+      let lastError: unknown;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          await page.goto(`/tools/${slug}`, { waitUntil: "domcontentloaded" });
+          // Worker 1102 / resource spikes under rapid sequential SSR
+          if (
+            await page.getByText(/Worker exceeded resource limits|Error 1102/i).count()
+          ) {
+            throw new Error(`Worker resource limit on /tools/${slug}`);
+          }
+          await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+          await expect(
+            page.getByText(
+              /Stays in browser|API for links only|Processed on server/i,
+            ),
+          ).toBeVisible();
+          lastError = undefined;
+          break;
+        } catch (e) {
+          lastError = e;
+          if (attempt < 2) await pause(remote ? 1500 : 400);
+        }
+      }
+      if (lastError) throw lastError;
+      if (remote) await pause(350);
     }
   });
 });

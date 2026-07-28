@@ -18,7 +18,7 @@ test.describe("Media & edge cases", () => {
 
   test("merge-pdf requires two files", async ({ page }) => {
     await gotoTool(page, "merge-pdf");
-    await uploadFiles(page, fixture("sample-a.pdf"));
+    await uploadFiles(page, fixture("doc-invoice.pdf"));
     await clickPrimary(page, /Merge/i);
     await expect(page.getByText(/at least 2/i)).toBeVisible();
   });
@@ -33,7 +33,16 @@ test.describe("Media & edge cases", () => {
   test("primary button disabled until input ready", async ({ page }) => {
     await gotoTool(page, "compress-pdf");
     await expect(page.locator("button.btn-primary").first()).toBeDisabled();
-    await uploadFiles(page, fixture("sample-a.pdf"));
+    await uploadFiles(page, fixture("doc-handbook.pdf"));
     await expect(page.locator("button.btn-primary").first()).toBeEnabled();
+  });
+
+  test("wrong file type on pdf tool surfaces error", async ({ page }) => {
+    await gotoTool(page, "compress-pdf");
+    await uploadFiles(page, fixture("photo.png"));
+    await clickPrimary(page, /Compress/i);
+    await expect(
+      page.getByText(/pdf|invalid|failed|could not|error/i).first(),
+    ).toBeVisible({ timeout: 20_000 });
   });
 });

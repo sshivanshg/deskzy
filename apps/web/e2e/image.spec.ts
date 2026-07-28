@@ -12,7 +12,7 @@ import {
 test.describe("Image tools", () => {
   test("compress-image", async ({ page }) => {
     await gotoTool(page, "compress-image");
-    await uploadFiles(page, fixture("sample.png"));
+    await uploadFiles(page, fixture("photo.png"));
     await page.getByRole("button", { name: "Balanced" }).click();
     await clickPrimary(page, /Compress/i);
     await expectDone(page);
@@ -21,7 +21,7 @@ test.describe("Image tools", () => {
 
   test("resize-image", async ({ page }) => {
     await gotoTool(page, "resize-image");
-    await uploadFiles(page, fixture("sample.png"));
+    await uploadFiles(page, fixture("photo.png"));
     await page.getByLabel(/Keep aspect/i).uncheck();
     await page.locator('input[type="number"]').nth(0).fill("120");
     await page.locator('input[type="number"]').nth(1).fill("80");
@@ -33,7 +33,7 @@ test.describe("Image tools", () => {
 
   test("convert-image to jpeg", async ({ page }) => {
     await gotoTool(page, "convert-image");
-    await uploadFiles(page, fixture("sample.png"));
+    await uploadFiles(page, fixture("photo-b.png"));
     await page.getByRole("button", { name: "JPEG" }).click();
     await clickPrimary(page, /Convert/i);
     await expectDone(page);

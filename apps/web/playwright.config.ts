@@ -1,5 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3000";
+const isRemote =
+  /^https?:\/\//.test(baseURL) && !/127\.0\.0\.1|localhost/.test(baseURL);
+
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: false,
@@ -10,7 +14,7 @@ export default defineConfig({
   expect: { timeout: 15_000 },
   reporter: [["list"], ["html", { open: "never", outputFolder: "playwright-report" }]],
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3000",
+    baseURL,
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
@@ -20,10 +24,14 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
-  webServer: {
-    command: "npm run dev -- --port 3000",
-    url: "http://127.0.0.1:3000",
-    reuseExistingServer: true,
-    timeout: 120_000,
-  },
+  ...(isRemote
+    ? {}
+    : {
+        webServer: {
+          command: "npm run dev -- --port 3000",
+          url: "http://127.0.0.1:3000",
+          reuseExistingServer: true,
+          timeout: 120_000,
+        },
+      }),
 });

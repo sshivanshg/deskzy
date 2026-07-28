@@ -123,9 +123,10 @@ export const TOOLS: ToolDefinition[] = [
     slug: "compress-image",
     name: "Compress Image",
     category: "image",
-    description: "Shrink JPG, PNG, or WebP file size.",
+    description: "Shrink photos with use-case presets or a target file size.",
     seoTitle: "Compress image online free",
-    seoDescription: "Compress images in your browser. Private and fast.",
+    seoDescription:
+      "Compress images in your browser with Email, WhatsApp, Web, and Avatar presets — or set an exact size limit. Private and free.",
     runtime: "browser",
     input: "file",
     accept: "image/jpeg,image/png,image/webp",

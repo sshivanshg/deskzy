@@ -13,7 +13,18 @@ test.describe("Image tools", () => {
   test("compress-image", async ({ page }) => {
     await gotoTool(page, "compress-image");
     await uploadFiles(page, fixture("photo.png"));
+    await page.getByRole("button", { name: "Custom" }).click();
     await page.getByRole("button", { name: "Balanced" }).click();
+    await clickPrimary(page, /Compress/i);
+    await expectDone(page);
+    await expectDownloadReady(page);
+  });
+
+  test("compress-image web preset aims under 400kb", async ({ page }) => {
+    await gotoTool(page, "compress-image");
+    await uploadFiles(page, fixture("photo.png"));
+    await page.getByRole("button", { name: "Web" }).click();
+    await expect(page.getByText(/under 400 KB/i)).toBeVisible();
     await clickPrimary(page, /Compress/i);
     await expectDone(page);
     await expectDownloadReady(page);
@@ -22,6 +33,7 @@ test.describe("Image tools", () => {
   test("resize-image", async ({ page }) => {
     await gotoTool(page, "resize-image");
     await uploadFiles(page, fixture("photo.png"));
+    await page.getByRole("button", { name: "Custom" }).click();
     await page.getByLabel(/Keep aspect/i).uncheck();
     await page.locator('input[type="number"]').nth(0).fill("120");
     await page.locator('input[type="number"]').nth(1).fill("80");
@@ -29,6 +41,16 @@ test.describe("Image tools", () => {
     await expectDone(page);
     await expectDownloadReady(page);
     await expect(page.getByText(/width:\s*120/i)).toBeVisible();
+  });
+
+  test("resize-image avatar preset", async ({ page }) => {
+    await gotoTool(page, "resize-image");
+    await uploadFiles(page, fixture("photo.png"));
+    await page.getByRole("button", { name: "Avatar" }).click();
+    await clickPrimary(page, /Run|Resize/i);
+    await expectDone(page);
+    await expectDownloadReady(page);
+    await expect(page.getByText(/width:\s*\d+/i)).toBeVisible();
   });
 
   test("convert-image to jpeg", async ({ page }) => {

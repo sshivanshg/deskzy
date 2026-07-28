@@ -14,6 +14,12 @@ import {
 import type { ToolDefinition } from "@/lib/tools/registry";
 import { getRelatedTools, getToolsByCategory } from "@/lib/tools/registry";
 import {
+  formatTargetLabel,
+  getImagePreset,
+  IMAGE_PREPARE_PRESETS,
+  parseTargetBytes,
+} from "@/lib/tools/image-presets";
+import {
   BioLinkBuilder,
   UtmBuilderForm,
   WhatsAppLinkForm,
@@ -43,6 +49,24 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
   const [options, setOptions] = useState<Record<string, string>>(() => {
     if (tool.slug === "whatsapp-link") return { country: "IN", dial: "91" };
     if (tool.slug === "bio-link") return { theme: "deskzy", format: "html" };
+    if (tool.slug === "compress-image") {
+      return {
+        preset: "web",
+        quality: "0.8",
+        maxEdge: "1920",
+        targetBytes: "400000",
+        targetValue: "400",
+        targetUnit: "kb",
+      };
+    }
+    if (tool.slug === "resize-image") {
+      return {
+        preset: "web",
+        width: "1920",
+        height: "1920",
+        keepAspect: "1",
+      };
+    }
     return {} as Record<string, string>;
   });
 
@@ -548,52 +572,206 @@ function ToolOptions({
     );
   }
   if (slug === "compress-image") {
+    const presetId = options.preset || "web";
+    const preset = getImagePreset(presetId);
+    const isCustom = presetId === "custom";
     return (
-      <OptionRow label="Quality">
-        {[0.9, 0.7, 0.5].map((q) => (
-          <button
-            key={q}
-            type="button"
-            className="chip"
-            data-active={Number(options.quality || "0.7") === q}
-            onClick={() => set("quality", String(q))}
-          >
-            {q === 0.9 ? "High" : q === 0.7 ? "Balanced" : "Smallest"}
-          </button>
-        ))}
-      </OptionRow>
+      <div className="space-y-3">
+        <OptionRow label="Use case">
+          {IMAGE_PREPARE_PRESETS.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              className="chip"
+              data-active={presetId === p.id}
+              onClick={() => {
+                if (p.id === "custom") {
+                  setOptions({
+                    ...options,
+                    preset: "custom",
+                    quality: options.quality || "0.7",
+                    maxEdge: options.maxEdge || "",
+                    targetBytes: options.targetBytes || "",
+                    targetValue: options.targetValue || "",
+                    targetUnit: options.targetUnit || "kb",
+                  });
+                  return;
+                }
+                setOptions({
+                  ...options,
+                  preset: p.id,
+                  quality: String(p.quality),
+                  maxEdge: String(p.maxEdge),
+                  targetBytes: p.targetBytes ? String(p.targetBytes) : "",
+                  targetValue: p.targetBytes
+                    ? String(Math.round(p.targetBytes / 1024))
+                    : "",
+                  targetUnit: "kb",
+                });
+              }}
+            >
+              {p.label}
+            </button>
+          ))}
+        </OptionRow>
+        {preset && !isCustom ? (
+          <p className="text-xs text-[var(--muted)]">{preset.hint}</p>
+        ) : null}
+        {isCustom ? (
+          <div className="space-y-3">
+            <OptionRow label="Quality">
+              {[0.9, 0.7, 0.5].map((q) => (
+                <button
+                  key={q}
+                  type="button"
+                  className="chip"
+                  data-active={Number(options.quality || "0.7") === q}
+                  onClick={() => set("quality", String(q))}
+                >
+                  {q === 0.9 ? "High" : q === 0.7 ? "Balanced" : "Smallest"}
+                </button>
+              ))}
+            </OptionRow>
+            <div className="flex flex-wrap items-end gap-3 text-sm">
+              <label className="text-[var(--muted)]">
+                Max edge (px)
+                <input
+                  type="number"
+                  min={0}
+                  placeholder="optional"
+                  value={options.maxEdge || ""}
+                  onChange={(e) => set("maxEdge", e.target.value)}
+                  className="field mt-1 !w-28 !rounded-xl !py-2"
+                />
+              </label>
+              <label className="text-[var(--muted)]">
+                Under
+                <span className="mt-1 flex gap-2">
+                  <input
+                    type="number"
+                    min={0}
+                    placeholder="e.g. 400"
+                    value={options.targetValue || ""}
+                    onChange={(e) => {
+                      const targetValue = e.target.value;
+                      const targetBytes = parseTargetBytes(
+                        targetValue,
+                        options.targetUnit || "kb",
+                      );
+                      setOptions({
+                        ...options,
+                        targetValue,
+                        targetBytes: targetBytes ? String(targetBytes) : "",
+                      });
+                    }}
+                    className="field !w-24 !rounded-xl !py-2"
+                  />
+                  <select
+                    value={options.targetUnit || "kb"}
+                    onChange={(e) => {
+                      const targetUnit = e.target.value;
+                      const targetBytes = parseTargetBytes(
+                        options.targetValue,
+                        targetUnit,
+                      );
+                      setOptions({
+                        ...options,
+                        targetUnit,
+                        targetBytes: targetBytes ? String(targetBytes) : "",
+                      });
+                    }}
+                    className="field !w-20 !rounded-xl !py-2"
+                  >
+                    <option value="kb">KB</option>
+                    <option value="mb">MB</option>
+                  </select>
+                </span>
+              </label>
+            </div>
+          </div>
+        ) : null}
+        {options.targetBytes ? (
+          <p className="text-xs text-[var(--muted)]">
+            Will aim for under {formatTargetLabel(Number(options.targetBytes))}
+            {Number(options.maxEdge) > 0
+              ? ` · max ${options.maxEdge}px`
+              : ""}
+            . PNG may convert to JPEG to hit the size.
+          </p>
+        ) : null}
+      </div>
     );
   }
   if (slug === "resize-image") {
+    const presetId = options.preset || "custom";
     return (
-      <div className="flex flex-wrap items-end gap-3 text-sm">
-        <label className="text-[var(--muted)]">
-          Width
-          <input
-            type="number"
-            value={options.width || "800"}
-            onChange={(e) => set("width", e.target.value)}
-            className="field mt-1 !w-28 !rounded-xl !py-2"
-          />
-        </label>
-        <label className="text-[var(--muted)]">
-          Height
-          <input
-            type="number"
-            value={options.height || "600"}
-            onChange={(e) => set("height", e.target.value)}
-            className="field mt-1 !w-28 !rounded-xl !py-2"
-          />
-        </label>
-        <label className="mb-2 flex items-center gap-2 text-[var(--muted)]">
-          <input
-            id="keep-aspect"
-            type="checkbox"
-            checked={options.keepAspect !== "0"}
-            onChange={(e) => set("keepAspect", e.target.checked ? "1" : "0")}
-          />
-          Keep aspect
-        </label>
+      <div className="space-y-3">
+        <OptionRow label="Use case">
+          {IMAGE_PREPARE_PRESETS.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              className="chip"
+              data-active={presetId === p.id}
+              onClick={() => {
+                if (p.id === "custom") {
+                  set("preset", "custom");
+                  return;
+                }
+                setOptions({
+                  ...options,
+                  preset: p.id,
+                  width: String(p.width),
+                  height: String(p.height),
+                  keepAspect: "1",
+                });
+              }}
+            >
+              {p.label}
+            </button>
+          ))}
+        </OptionRow>
+        <div className="flex flex-wrap items-end gap-3 text-sm">
+          <label className="text-[var(--muted)]">
+            Width
+            <input
+              type="number"
+              value={options.width || "800"}
+              onChange={(e) => {
+                setOptions({
+                  ...options,
+                  preset: "custom",
+                  width: e.target.value,
+                });
+              }}
+              className="field mt-1 !w-28 !rounded-xl !py-2"
+            />
+          </label>
+          <label className="text-[var(--muted)]">
+            Height
+            <input
+              type="number"
+              value={options.height || "600"}
+              onChange={(e) => {
+                setOptions({
+                  ...options,
+                  preset: "custom",
+                  height: e.target.value,
+                });
+              }}
+              className="field mt-1 !w-28 !rounded-xl !py-2"
+            />
+          </label>
+          <label className="mb-2 flex items-center gap-2 text-[var(--muted)]">
+            <input
+              id="keep-aspect"
+              type="checkbox"
+              checked={options.keepAspect !== "0"}
+              onChange={(e) => set("keepAspect", e.target.checked ? "1" : "0")}
+            />
+            Keep aspect
+          </label>
+        </div>
       </div>
     );
   }

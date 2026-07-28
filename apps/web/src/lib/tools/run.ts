@@ -73,7 +73,11 @@ export async function runTool(
     case "compress-image":
       return {
         kind: "file",
-        ...(await compressImage(files[0], Number(options.quality || 0.7))),
+        ...(await compressImage(files[0], {
+          quality: Number(options.quality || 0.7),
+          maxEdge: Number(options.maxEdge || 0) || undefined,
+          targetBytes: Number(options.targetBytes || 0) || undefined,
+        })),
       };
     case "resize-image":
       return {

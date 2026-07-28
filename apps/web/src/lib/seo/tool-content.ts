@@ -29,7 +29,7 @@ const OVERRIDES: Partial<Record<string, ToolSeoContent>> = {
       },
       {
         q: "What domain do short links use?",
-        a: "Short links are served on deskzy.xyz (for example deskzy.xyz/r/your-code) and redirect to your original URL.",
+        a: "Short links are served on deskzy.xyz (for example deskzy.xyz/r/your-code). Visitors land on a Deskzy hop page that shows the destination, then open the original URL from there.",
       },
       {
         q: "Can I create a QR code for my short link?",

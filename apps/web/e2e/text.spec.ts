@@ -70,8 +70,14 @@ test.describe("Text tools", () => {
     expect(shortUrl).toMatch(/\/r\/[A-Za-z0-9]+$/);
 
     const res = await request.get(shortUrl, { maxRedirects: 0 });
-    expect(res.status()).toBe(302);
-    expect(res.headers().location).toContain("example.com");
+    expect(res.status()).toBe(200);
+    const hop = await page.goto(shortUrl);
+    expect(hop?.ok()).toBeTruthy();
+    await expect(page.getByRole("link", { name: /Open link/i })).toHaveAttribute(
+      "href",
+      /example\.com/,
+    );
+    await expect(page.getByText("example.com")).toBeVisible();
   });
 
   test("url-encode", async ({ page }) => {

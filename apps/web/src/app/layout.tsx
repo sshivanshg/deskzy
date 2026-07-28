@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@/components/Analytics";
+import { SiteChromeGate } from "@/components/SiteChromeGate";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Outfit, Syne } from "next/font/google";
@@ -74,9 +75,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${body.variable} ${display.variable} antialiased`}>
-        <SiteHeader />
-        <main className="relative z-0 min-h-[70dvh]">{children}</main>
-        <SiteFooter />
+        <SiteChromeGate mode="header">
+          <SiteHeader />
+        </SiteChromeGate>
+        <SiteChromeGate mode="main">{children}</SiteChromeGate>
+        <SiteChromeGate mode="footer">
+          <SiteFooter />
+        </SiteChromeGate>
         <Analytics />
       </body>
     </html>

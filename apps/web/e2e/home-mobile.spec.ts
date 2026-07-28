@@ -58,7 +58,10 @@ test.describe("Mobile home launcher", () => {
     await page.getByRole("button", { name: /^Copy$/i }).click();
     await expect(page.getByRole("button", { name: /^Copied$/i })).toBeVisible();
 
-    const res = await request.get(shortText.trim(), { maxRedirects: 0 });
-    expect(res.status()).toBe(302);
+    const shortUrl = shortText.trim();
+    const res = await request.get(shortUrl, { maxRedirects: 0 });
+    expect(res.status()).toBe(200);
+    await page.goto(shortUrl);
+    await expect(page.getByRole("link", { name: /Open link/i })).toBeVisible();
   });
 });

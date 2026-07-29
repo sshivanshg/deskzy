@@ -1,11 +1,13 @@
 import Link from "next/link";
 import type { ToolDefinition } from "@/lib/tools/registry";
 import { getRelatedTools } from "@/lib/tools/registry";
+import { getGuidesForTool } from "@/lib/seo/guides";
 import { getToolSeoContent } from "@/lib/seo/tool-content";
 
 export function ToolSeoBody({ tool }: { tool: ToolDefinition }) {
   const content = getToolSeoContent(tool);
   const related = getRelatedTools(tool.slug);
+  const guides = getGuidesForTool(tool.slug);
 
   return (
     <article className="mx-auto max-w-6xl px-4 pb-16 lg:pl-[calc(220px+2rem)]">
@@ -79,6 +81,34 @@ export function ToolSeoBody({ tool }: { tool: ToolDefinition }) {
             ))}
           </dl>
         </section>
+
+        {guides.length > 0 && (
+          <section>
+            <h2 className="font-display text-xl font-semibold tracking-tight text-[var(--ink)]">
+              Guides
+            </h2>
+            <ul className="mt-4 space-y-2">
+              {guides.map((g) => (
+                <li key={g.slug}>
+                  <Link
+                    href={`/guides/${g.slug}`}
+                    className="text-sm font-medium text-[var(--accent)] hover:underline"
+                  >
+                    {g.title}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link
+                  href="/guides"
+                  className="text-sm text-[var(--muted)] hover:text-[var(--accent)]"
+                >
+                  All guides →
+                </Link>
+              </li>
+            </ul>
+          </section>
+        )}
 
         {related.length > 0 && (
           <section>

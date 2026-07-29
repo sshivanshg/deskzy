@@ -1,4 +1,5 @@
 import type { ToolDefinition } from "@/lib/tools/registry";
+import type { Guide } from "@/lib/seo/guides";
 import { getToolSeoContent } from "@/lib/seo/tool-content";
 import { absoluteUrl, SITE_NAME, SITE_URL } from "@/lib/seo/site";
 
@@ -91,4 +92,51 @@ export function buildWebsiteJsonLd() {
       "query-input": "required name=search_term_string",
     },
   };
+}
+
+export function buildGuideJsonLd(guide: Guide) {
+  const url = absoluteUrl(`/guides/${guide.slug}`);
+  const toolUrl = absoluteUrl(`/tools/${guide.toolSlug}`);
+
+  const article = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: guide.title,
+    description: guide.description,
+    datePublished: guide.publishedAt,
+    dateModified: guide.updatedAt ?? guide.publishedAt,
+    author: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    mainEntityOfPage: url,
+    url,
+    keywords: guide.keywords.join(", "),
+    about: {
+      "@type": "SoftwareApplication",
+      name: guide.toolSlug,
+      url: toolUrl,
+    },
+  };
+
+  const faq = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: guide.faqs.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
+
+  return [article, faq];
 }

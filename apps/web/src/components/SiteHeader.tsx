@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
+  CurrencyInr,
   LinkSimple,
   List,
   MagnifyingGlass,
@@ -13,6 +14,7 @@ import {
   XLogo,
 } from "@phosphor-icons/react";
 import { BrandLogo } from "@/components/BrandLogo";
+import { AuthNavLinks } from "@/components/AuthNavLinks";
 import { CONTACT_X_HANDLE, CONTACT_X_URL } from "@/lib/seo/site";
 import { searchTools } from "@/lib/tools/registry";
 
@@ -156,6 +158,19 @@ export function SiteHeader() {
                   <LinkSimple size={16} weight="bold" />
                   Shorten
                 </Link>
+
+                <Link
+                  href="/pricing"
+                  className={`hidden items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors sm:inline-flex ${
+                    pathname === "/pricing"
+                      ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
+                      : "text-[var(--muted)] hover:text-[var(--ink)]"
+                  }`}
+                >
+                  Pricing
+                </Link>
+
+                <AuthNavLinks />
 
                 <Link
                   href="/privacy"
@@ -335,6 +350,21 @@ export function SiteHeader() {
                     Shorten URL
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/pricing"
+                    onClick={closeOverlays}
+                    className={`flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] active:bg-[var(--surface)] ${
+                      pathname === "/pricing"
+                        ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
+                        : "text-[var(--ink)]"
+                    }`}
+                  >
+                    <CurrencyInr size={18} weight="duotone" />
+                    Pricing
+                  </Link>
+                </li>
+                <AuthNavLinks mobile />
                 <li>
                   <Link
                     href="/privacy"

@@ -36,6 +36,18 @@ export function SiteFooter() {
                   Terms of Use
                 </Link>
                 <Link
+                  href="/pricing"
+                  className="text-sm font-medium text-[var(--ink)] underline-offset-4 hover:underline"
+                >
+                  Pricing
+                </Link>
+                <Link
+                  href="/guides"
+                  className="text-sm text-[var(--muted)] underline-offset-4 hover:text-[var(--ink)] hover:underline"
+                >
+                  Guides
+                </Link>
+                <Link
                   href="/about"
                   className="text-sm text-[var(--muted)] underline-offset-4 hover:text-[var(--ink)] hover:underline"
                 >
@@ -110,6 +122,14 @@ export function SiteFooter() {
 
           <p className="mt-8 border-t border-[var(--stroke)] pt-6 text-xs text-[var(--muted)]">
             Free online file tools · PDF · Image · Text · URL shortener ·{" "}
+            <Link href="/guides" className="hover:text-[var(--ink)]">
+              Guides
+            </Link>
+            {" · "}
+            <Link href="/pricing" className="hover:text-[var(--ink)]">
+              Pricing
+            </Link>
+            {" · "}
             <Link href="/privacy" className="hover:text-[var(--ink)]">
               Privacy
             </Link>

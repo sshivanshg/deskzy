@@ -7,7 +7,7 @@ export type ToolSeoContent = {
   faqs: { q: string; a: string }[];
 };
 
-const OVERRIDES: Partial<Record<string, ToolSeoContent>> = {
+const OVERRIDES: Record<string, ToolSeoContent> = {
   "url-shortener": {
     intro:
       "Shorten long URLs into clean deskzy.xyz links. Free, instant, no account required. Only the URL string is sent to our API — never your files.",
@@ -64,6 +64,10 @@ const OVERRIDES: Partial<Record<string, ToolSeoContent>> = {
         q: "Can I combine PDF and keep quality?",
         a: "Yes. Merging preserves the original page content; it does not re-compress unless you use Compress PDF afterward.",
       },
+      {
+        q: "Is merge PDF free?",
+        a: "Yes. Free with no account and no watermark.",
+      },
     ],
   },
   "compress-pdf": {
@@ -88,6 +92,213 @@ const OVERRIDES: Partial<Record<string, ToolSeoContent>> = {
       {
         q: "Does compressing reduce text quality?",
         a: "Text stays sharp. Images inside the PDF may be recompressed based on the preset you choose.",
+      },
+      {
+        q: "Is compress PDF free?",
+        a: "Yes. No signup and no paywall for normal use.",
+      },
+    ],
+  },
+  "split-pdf": {
+    intro:
+      "Split a PDF into separate files or extract the pages you need. Everything runs in your browser — free, private, no signup.",
+    steps: [
+      "Upload a PDF from your device.",
+      "Choose how to split or which pages to extract.",
+      "Download the resulting PDF file(s).",
+    ],
+    privacy:
+      "Split PDF processes files locally in your browser. Documents are not uploaded to Deskzy servers.",
+    faqs: [
+      {
+        q: "Can I extract specific pages from a PDF?",
+        a: "Yes. Use Split PDF to pull out the pages you need without uploading to a cloud converter.",
+      },
+      {
+        q: "Is splitting free?",
+        a: "Yes. Free online split PDF with no account required.",
+      },
+      {
+        q: "Will splitting change page quality?",
+        a: "No. Pages are extracted as-is; content is not re-compressed.",
+      },
+      {
+        q: "What if I need to recombine pages later?",
+        a: "Use Merge PDF to join files again, or Reorder PDF to rearrange pages in one file.",
+      },
+    ],
+  },
+  "pdf-to-images": {
+    intro:
+      "Convert PDF pages to PNG images in your browser. Useful for slides, thumbnails, and sharing a single page without the full document.",
+    steps: [
+      "Select a PDF file from your device.",
+      "Run the conversion to render pages as images.",
+      "Download the PNG output for the pages you need.",
+    ],
+    privacy:
+      "PDF to Images runs entirely in your browser. Your PDF is never uploaded.",
+    faqs: [
+      {
+        q: "Can I convert PDF to PNG without uploading?",
+        a: "Yes. Deskzy renders pages locally so the file stays on your device.",
+      },
+      {
+        q: "Does it support PDF to JPG?",
+        a: "Output is PNG today. You can convert PNGs further with Convert Image if you need JPG or WebP.",
+      },
+      {
+        q: "Is PDF to images free?",
+        a: "Yes. Free with no signup.",
+      },
+      {
+        q: "Will image quality be high enough for print?",
+        a: "Quality depends on the source PDF and your device. For email or web previews it is usually excellent.",
+      },
+    ],
+  },
+  "reorder-pdf": {
+    intro:
+      "Rearrange PDF pages online without uploading. Fix scan order, move cover pages, or reorganize a packet privately in your browser.",
+    steps: [
+      "Open a PDF from your device.",
+      "Reorder pages into the sequence you want.",
+      "Download the reorganized PDF.",
+    ],
+    privacy:
+      "Reorder PDF runs in your browser. Page data never leaves your device.",
+    faqs: [
+      {
+        q: "Can I rearrange PDF pages for free?",
+        a: "Yes. Deskzy Reorder PDF is free and needs no account.",
+      },
+      {
+        q: "Is my document uploaded?",
+        a: "No. Reordering is local browser processing.",
+      },
+      {
+        q: "Can I delete pages here?",
+        a: "This tool focuses on order. Use Split PDF to extract only the pages you want to keep.",
+      },
+      {
+        q: "What searches does this cover?",
+        a: "People also look for organize PDF, rearrange PDF pages, and change PDF page order.",
+      },
+    ],
+  },
+  "compress-image": {
+    intro:
+      "Shrink JPG, PNG, and WebP photos with use-case presets or a target file size. Private image compression — nothing is uploaded.",
+    steps: [
+      "Drop an image into the tool.",
+      "Pick a preset (Email, WhatsApp, Web, Avatar) or set a size target.",
+      "Download the smaller image.",
+    ],
+    privacy:
+      "Compress Image runs entirely in your browser. Photos are not sent to Deskzy servers.",
+    faqs: [
+      {
+        q: "How do I compress an image for WhatsApp?",
+        a: "Use the WhatsApp or Email-style preset, download, then send. Most chats prefer files under a couple of megabytes.",
+      },
+      {
+        q: "Will compression ruin photo quality?",
+        a: "You control the tradeoff. Higher quality keeps more detail; smaller targets prioritize file size.",
+      },
+      {
+        q: "Is image compression free?",
+        a: "Yes. Free online compress image with no signup.",
+      },
+      {
+        q: "Which formats are supported?",
+        a: "JPEG, PNG, and WebP.",
+      },
+    ],
+  },
+  "resize-image": {
+    intro:
+      "Resize images to exact pixel dimensions in your browser. Free, private, and fast — ideal for avatars, banners, and thumbnails.",
+    steps: [
+      "Select a JPG, PNG, WebP, or GIF image.",
+      "Enter the width and height you need.",
+      "Download the resized image.",
+    ],
+    privacy:
+      "Resize Image processes files locally. Images are never uploaded.",
+    faqs: [
+      {
+        q: "Can I resize without cropping?",
+        a: "Set the dimensions you need; the tool scales to those sizes. Use Compress Image afterward if the file is still large.",
+      },
+      {
+        q: "Is resize image free?",
+        a: "Yes. No account required.",
+      },
+      {
+        q: "Does GIF resize work?",
+        a: "GIF is accepted for resize. Complex animated GIFs may be limited by browser capabilities.",
+      },
+      {
+        q: "Are my images uploaded?",
+        a: "No. Everything stays on your device.",
+      },
+    ],
+  },
+  "convert-image": {
+    intro:
+      "Convert between PNG, JPG, and WebP online without uploading. Free image format converter that runs in your browser.",
+    steps: [
+      "Choose an image file from your device.",
+      "Pick the output format you need.",
+      "Download the converted file.",
+    ],
+    privacy:
+      "Convert Image runs locally in your browser. Files are not uploaded to Deskzy.",
+    faqs: [
+      {
+        q: "Can I convert PNG to JPG online free?",
+        a: "Yes. Use Convert Image, choose JPG, and download — no signup.",
+      },
+      {
+        q: "What about WebP?",
+        a: "WebP is supported. For a dedicated WebP → PNG flow, use the WebP to PNG tool.",
+      },
+      {
+        q: "Is conversion private?",
+        a: "Yes. Processing stays in your browser.",
+      },
+      {
+        q: "Will colors change between formats?",
+        a: "JPG is lossy and does not support transparency. Prefer PNG or WebP when you need an alpha channel.",
+      },
+    ],
+  },
+  "webp-to-png": {
+    intro:
+      "Convert WebP images to PNG privately in your browser. Free WebP to PNG converter with no signup — useful when apps or editors reject WebP.",
+    steps: [
+      "Select a WebP image from your device.",
+      "Click convert to create a PNG.",
+      "Download the PNG file.",
+    ],
+    privacy:
+      "WebP to PNG runs entirely in your browser. Your image is not uploaded.",
+    faqs: [
+      {
+        q: "Why convert WebP to PNG?",
+        a: "Some design tools, email clients, and older apps still prefer PNG. Conversion unlocks those workflows.",
+      },
+      {
+        q: "Is WebP to PNG free?",
+        a: "Yes. Free online converter with no account.",
+      },
+      {
+        q: "Does it keep transparency?",
+        a: "PNG supports transparency; WebP alpha is preserved when the browser can decode it.",
+      },
+      {
+        q: "Can I convert other formats too?",
+        a: "Yes. Use Convert Image for PNG, JPG, and WebP combinations.",
       },
     ],
   },
@@ -114,6 +325,97 @@ const OVERRIDES: Partial<Record<string, ToolSeoContent>> = {
         q: "Can I minify JSON too?",
         a: "Yes. Format removes whitespace; invalid JSON shows a clear error message.",
       },
+      {
+        q: "Is the JSON formatter free?",
+        a: "Completely free for everyday use.",
+      },
+    ],
+  },
+  "base64": {
+    intro:
+      "Encode or decode Base64 text instantly in your browser. Free Base64 encoder/decoder for tokens, data URLs, and debugging — no signup.",
+    steps: [
+      "Paste the text or Base64 string.",
+      "Choose encode or decode.",
+      "Copy the result.",
+    ],
+    privacy:
+      "Base64 conversion runs locally. Your input is never sent to Deskzy servers.",
+    faqs: [
+      {
+        q: "Is Base64 encoding private?",
+        a: "Yes. Everything stays in your browser.",
+      },
+      {
+        q: "Can I decode a data URL?",
+        a: "Paste the Base64 portion (or full string depending on your needs) and decode. Strip the data: prefix if required.",
+      },
+      {
+        q: "Is this free?",
+        a: "Yes. Free online Base64 encode/decode with no account.",
+      },
+      {
+        q: "Should I paste secrets here?",
+        a: "The tool does not upload input, but follow your org's policy for production secrets on any website.",
+      },
+    ],
+  },
+  "hash-generator": {
+    intro:
+      "Generate SHA-256 or SHA-1 hashes in your browser. Free checksum / hash generator for quick integrity checks — private and instant.",
+    steps: [
+      "Paste the text you want to hash.",
+      "Choose the algorithm if options are available.",
+      "Copy the hash output.",
+    ],
+    privacy:
+      "Hashing runs in your browser. Input text is not uploaded.",
+    faqs: [
+      {
+        q: "Is SHA-256 available?",
+        a: "Yes. Deskzy focuses on modern browser crypto hashes such as SHA-256.",
+      },
+      {
+        q: "Can I hash files?",
+        a: "This tool hashes text input. Paste file contents or use a dedicated file hasher if you need binary hashing.",
+      },
+      {
+        q: "Is the hash generator free?",
+        a: "Yes. Free with no signup.",
+      },
+      {
+        q: "Is my text stored?",
+        a: "No. Nothing is persisted on Deskzy servers.",
+      },
+    ],
+  },
+  "uuid-generator": {
+    intro:
+      "Generate UUID v4 identifiers instantly. Free online GUID/UUID generator for databases, APIs, and testing — runs in your browser.",
+    steps: [
+      "Open the UUID generator.",
+      "Click Generate to create a new UUID v4.",
+      "Copy the value into your project.",
+    ],
+    privacy:
+      "UUIDs are generated locally with browser crypto. Nothing is sent to a server.",
+    faqs: [
+      {
+        q: "Are these UUID v4?",
+        a: "Yes. Deskzy generates random UUID v4 values suitable for most app IDs.",
+      },
+      {
+        q: "Is UUID generation free?",
+        a: "Yes. No signup required.",
+      },
+      {
+        q: "Can I generate multiple UUIDs?",
+        a: "Click Generate again for a new value whenever you need another ID.",
+      },
+      {
+        q: "Is this the same as a GUID?",
+        a: "GUID and UUID are often used interchangeably; UUID v4 covers typical GUID needs.",
+      },
     ],
   },
   "qr-code": {
@@ -138,6 +440,10 @@ const OVERRIDES: Partial<Record<string, ToolSeoContent>> = {
       {
         q: "Is the QR code generator free?",
         a: "Completely free with no watermark or signup.",
+      },
+      {
+        q: "Does generation upload my URL?",
+        a: "No. Everything stays in your browser.",
       },
     ],
   },
@@ -164,6 +470,10 @@ const OVERRIDES: Partial<Record<string, ToolSeoContent>> = {
         q: "Can I shorten a UTM link?",
         a: "Yes. Use Shorten with Deskzy from the builder to create a deskzy.xyz short link that keeps your UTM query string.",
       },
+      {
+        q: "Is the UTM builder free?",
+        a: "Yes. Free online UTM generator with no signup.",
+      },
     ],
   },
   "whatsapp-link": {
@@ -188,6 +498,10 @@ const OVERRIDES: Partial<Record<string, ToolSeoContent>> = {
       {
         q: "Can I put this in a QR code?",
         a: "Yes. Use Make QR after generating the link so phones can open the chat by scanning.",
+      },
+      {
+        q: "Is the WhatsApp link generator free?",
+        a: "Yes. Free wa.me builder with no account.",
       },
     ],
   },
@@ -214,32 +528,194 @@ const OVERRIDES: Partial<Record<string, ToolSeoContent>> = {
         q: "How many links can I add?",
         a: "Up to eight links in this version, with up/down reorder controls.",
       },
+      {
+        q: "Is bio link creator free?",
+        a: "Yes. Free export with no signup.",
+      },
+    ],
+  },
+  "url-encode": {
+    intro:
+      "URL-encode or decode strings in your browser. Free percent-encoding tool for query params, redirects, and debugging — private and instant.",
+    steps: [
+      "Paste the string to encode or decode.",
+      "Run encode or decode.",
+      "Copy the result into your URL or code.",
+    ],
+    privacy:
+      "Encoding runs locally. Text is never sent to Deskzy servers.",
+    faqs: [
+      {
+        q: "What is URL encoding?",
+        a: "Percent-encoding replaces unsafe characters (spaces, symbols) so they can travel safely inside URLs.",
+      },
+      {
+        q: "Is URL encode/decode free?",
+        a: "Yes. Free with no signup.",
+      },
+      {
+        q: "Should I encode a full URL or just a parameter?",
+        a: "Usually encode individual query values, not the entire URL including https://.",
+      },
+      {
+        q: "Is my text stored?",
+        a: "No. Processing stays in your browser.",
+      },
+    ],
+  },
+  "word-counter": {
+    intro:
+      "Count words, characters, and sentences instantly. Free online word counter for essays, captions, and SEO drafts — runs in your browser.",
+    steps: [
+      "Paste or type your text.",
+      "Read the live word and character counts.",
+      "Edit until you hit your limit.",
+    ],
+    privacy:
+      "Word counting is local. Your draft is not uploaded.",
+    faqs: [
+      {
+        q: "Does it count characters with spaces?",
+        a: "Yes — character counts typically include spaces. Use the on-screen breakdown for clarity.",
+      },
+      {
+        q: "Is the word counter free?",
+        a: "Yes. Free online counter with no account.",
+      },
+      {
+        q: "Is my writing stored?",
+        a: "No. Text stays in your browser session.",
+      },
+      {
+        q: "Can I convert case after counting?",
+        a: "Yes. Open Case Converter for upper, lower, and title case.",
+      },
+    ],
+  },
+  "case-converter": {
+    intro:
+      "Convert text between uppercase, lowercase, title case, and more. Free case converter online — private, instant, no signup.",
+    steps: [
+      "Paste your text into the tool.",
+      "Choose the case style you need.",
+      "Copy the converted output.",
+    ],
+    privacy:
+      "Case conversion runs in your browser. Text is never uploaded.",
+    faqs: [
+      {
+        q: "Can I convert to title case online?",
+        a: "Yes. Paste text and switch to title case in one click.",
+      },
+      {
+        q: "Is case converter free?",
+        a: "Yes. Free with no signup.",
+      },
+      {
+        q: "Does it change punctuation?",
+        a: "It focuses on letter case. Punctuation generally stays as typed.",
+      },
+      {
+        q: "Is my text stored?",
+        a: "No. Everything stays local.",
+      },
+    ],
+  },
+  "markdown-to-html": {
+    intro:
+      "Convert Markdown to HTML in your browser. Free MD to HTML converter for docs, READMEs, and CMS drafts — private and fast.",
+    steps: [
+      "Paste Markdown into the editor.",
+      "Convert to HTML.",
+      "Copy the HTML output into your site or CMS.",
+    ],
+    privacy:
+      "Markdown conversion runs locally. Your content is not sent to Deskzy.",
+    faqs: [
+      {
+        q: "Which Markdown features are supported?",
+        a: "Common Markdown via the marked library — headings, lists, links, code, and more.",
+      },
+      {
+        q: "Is Markdown to HTML free?",
+        a: "Yes. Free online converter with no account.",
+      },
+      {
+        q: "Is my draft uploaded?",
+        a: "No. Conversion stays in your browser.",
+      },
+      {
+        q: "Can I count words in the Markdown first?",
+        a: "Yes. Use Word Counter, then convert.",
+      },
+    ],
+  },
+  "password-generator": {
+    intro:
+      "Generate strong random passwords in your browser. Free password generator — private crypto randomness, no signup, nothing stored.",
+    steps: [
+      "Set length and options if available.",
+      "Click Generate to create a password.",
+      "Copy it into your password manager.",
+    ],
+    privacy:
+      "Passwords are generated locally with browser crypto. Deskzy never sees or stores them.",
+    faqs: [
+      {
+        q: "Are passwords truly random?",
+        a: "Generation uses the browser's cryptographic random source when available.",
+      },
+      {
+        q: "Is the password generator free?",
+        a: "Yes. Free online generator with no account.",
+      },
+      {
+        q: "Do you store generated passwords?",
+        a: "No. They never leave your browser.",
+      },
+      {
+        q: "Should I reuse passwords?",
+        a: "No. Generate a unique password per account and store it in a password manager.",
+      },
+    ],
+  },
+  "video-to-mp3": {
+    intro:
+      "Convert video to MP3 / extract audio in your browser. Deskzy's media pipeline is built for privacy — no signup wall. Full ffmpeg.wasm support is rolling out.",
+    steps: [
+      "Select a video or audio file from your device.",
+      "Start conversion when the browser pipeline is available.",
+      "Download the extracted audio when processing completes.",
+    ],
+    privacy:
+      "The target design is browser-side conversion so media stays on your device. Check the tool UI for current availability while ffmpeg.wasm ships.",
+    faqs: [
+      {
+        q: "Does video to MP3 upload my file?",
+        a: "Deskzy aims for in-browser conversion. Your media should stay local during processing when the WASM pipeline is active.",
+      },
+      {
+        q: "What formats work?",
+        a: "Common video/audio types supported by your browser can be used as input once conversion is enabled.",
+      },
+      {
+        q: "Is video to MP3 free?",
+        a: "Yes. Free when available — no account required.",
+      },
+      {
+        q: "Is this ready today?",
+        a: "The tool page is live; full ffmpeg.wasm extraction is the next shipping step. Use the page for status and updates.",
+      },
     ],
   },
 };
 
 function browserFileContent(tool: ToolDefinition): ToolSeoContent {
-  const verb = tool.slug.includes("compress")
-    ? "Compress"
-    : tool.slug.includes("merge")
-      ? "Merge"
-      : tool.slug.includes("split")
-        ? "Split"
-        : tool.slug.includes("convert") || tool.slug.includes("webp")
-          ? "Convert"
-          : tool.slug.includes("resize")
-            ? "Resize"
-            : tool.slug.includes("reorder")
-              ? "Reorder"
-              : tool.slug.includes("pdf-to")
-                ? "Convert"
-                : "Process";
-
   return {
     intro: `${tool.description} Use Deskzy's free ${tool.name.toLowerCase()} tool online — private, no signup, files stay in your browser.`,
     steps: [
       `Select ${tool.input === "files" ? "your files" : "a file"} from your device.`,
-      `Configure options if needed, then click ${verb}.`,
+      "Configure options if needed, then run the tool.",
       "Download the result instantly.",
     ],
     privacy:
@@ -254,8 +730,8 @@ function browserFileContent(tool: ToolDefinition): ToolSeoContent {
         a: "No. Processing happens locally in your browser for maximum privacy.",
       },
       {
-        q: `What is a good alternative search term for this tool?`,
-        a: `People also search for: ${tool.aliases.slice(0, 3).join(", ")}.`,
+        q: "What related searches does this tool cover?",
+        a: `People also search for: ${tool.aliases.slice(0, 3).join(", ") || tool.name}.`,
       },
     ],
   };
@@ -293,7 +769,7 @@ function textToolContent(tool: ToolDefinition): ToolSeoContent {
       },
       {
         q: "What related searches does this tool cover?",
-        a: `Common searches: ${tool.aliases.slice(0, 4).join(", ")}.`,
+        a: `Common searches: ${tool.aliases.slice(0, 4).join(", ") || tool.name}.`,
       },
     ],
   };
@@ -303,9 +779,6 @@ export function getToolSeoContent(tool: ToolDefinition): ToolSeoContent {
   if (OVERRIDES[tool.slug]) return OVERRIDES[tool.slug]!;
   if (tool.input === "file" || tool.input === "files") {
     return browserFileContent(tool);
-  }
-  if (tool.input === "form" || tool.category === "links") {
-    return textToolContent(tool);
   }
   return textToolContent(tool);
 }

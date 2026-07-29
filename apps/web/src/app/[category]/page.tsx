@@ -34,7 +34,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CategoryPage({ params }: Props) {
   const { category } = await params;
   if (
-    ["tools", "about", "deskzy-api", "api", "_next"].includes(category) ||
+    [
+      "tools",
+      "about",
+      "guides",
+      "privacy",
+      "terms",
+      "deskzy-api",
+      "api",
+      "_next",
+    ].includes(category) ||
     category in ROUTE_SHORTCUTS
   ) {
     notFound();

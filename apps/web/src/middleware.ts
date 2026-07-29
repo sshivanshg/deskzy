@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { resolveShortcut } from "@/lib/tools/registry";
+import { updateSession } from "@/lib/supabase/middleware";
 
-/** Canonical host + use-case shortcuts (/shorten → /tools/url-shortener). */
-export function middleware(request: NextRequest) {
+/** Canonical host + shortcuts + Supabase session refresh. */
+export async function middleware(request: NextRequest) {
   const host = request.headers.get("host") || "";
   if (host === "www.deskzy.xyz") {
     const url = request.nextUrl.clone();
@@ -22,7 +23,7 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  return updateSession(request);
 }
 
 export const config = {

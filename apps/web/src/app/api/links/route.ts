@@ -1,6 +1,8 @@
 import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { allowLinkCreate, hasLink, putLink } from "@/lib/links-store";
+import { createClient } from "@/lib/supabase/server";
+import { checkAndIncrementUsage } from "@/lib/usage";
 
 function normalizeUrl(raw: string): string {
   const trimmed = raw.trim();
@@ -17,7 +19,6 @@ function normalizeUrl(raw: string): string {
     throw new Error("only http/https allowed");
   }
   if (!u.host || u.host.includes(" ")) throw new Error("invalid url");
-  // Block credentials-in-URL and obvious local/metadata targets for abuse reduction.
   if (u.username || u.password) throw new Error("credentials in url not allowed");
   const host = u.hostname.toLowerCase();
   if (
@@ -60,6 +61,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: "rate limit exceeded — try again in a minute" },
         { status: 429, headers: { "Retry-After": "60" } },
+      );
+    }
+
+    let userId: string | null = null;
+    try {
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      userId = user?.id ?? null;
+    } catch {
+      userId = null;
+    }
+
+    const usage = await checkAndIncrementUsage({
+      toolSlug: "url-shortener",
+      userId,
+      anonKey: userId ? null : `ip:${ip}`,
+    });
+    if (!usage.ok) {
+      return NextResponse.json(
+        {
+          error: `Daily free limit reached (${usage.used}/${usage.limit}). Upgrade to Pro for unlimited links.`,
+          upgradeUrl: "/pricing",
+        },
+        { status: 402 },
       );
     }
 

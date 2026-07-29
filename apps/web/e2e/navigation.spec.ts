@@ -51,10 +51,29 @@ test.describe("Navigation & shell", () => {
     const sitemap = await page.goto("/sitemap.xml");
     expect(sitemap?.status()).toBe(200);
     await expect(page.locator("body")).toContainText("deskzy.xyz/tools/url-shortener");
+    await expect(page.locator("body")).toContainText("deskzy.xyz/guides/");
+    await expect(page.locator("body")).toContainText("deskzy.xyz/tools/utm-builder");
 
     const robots = await page.goto("/robots.txt");
     expect(robots?.status()).toBe(200);
     await expect(page.locator("body")).toContainText("Sitemap:");
+  });
+
+  test("guides index and article", async ({ page }) => {
+    await page.goto("/guides");
+    await expect(page.getByRole("heading", { level: 1, name: "Guides" })).toBeVisible();
+    await page
+      .getByRole("link", { name: /compress a PDF for email/i })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/\/guides\/compress-pdf-for-email/);
+    await expect(
+      page.getByRole("heading", {
+        level: 1,
+        name: /compress a PDF for email/i,
+      }),
+    ).toBeVisible();
+    await expect(page.getByRole("link", { name: /Open Compress PDF/i }).first()).toBeVisible();
   });
 
   test("tool pages include SEO FAQ section", async ({ page }) => {

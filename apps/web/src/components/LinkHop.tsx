@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowSquareOut,
   Check,
@@ -27,10 +27,30 @@ function splitDest(dest: string): { host: string; rest: string } {
   }
 }
 
+function trackHopClick(code: string) {
+  const url = `/api/links/${encodeURIComponent(code)}/click`;
+  try {
+    if (typeof navigator !== "undefined" && navigator.sendBeacon) {
+      navigator.sendBeacon(url);
+      return;
+    }
+  } catch {
+    /* fall through */
+  }
+  void fetch(url, { method: "POST", keepalive: true }).catch(() => {});
+}
+
 export function LinkHop({ dest, code }: LinkHopProps) {
   const reduceMotion = useReducedMotion();
   const { host, rest } = splitDest(dest);
   const [copied, setCopied] = useState(false);
+  const tracked = useRef(false);
+
+  useEffect(() => {
+    if (tracked.current) return;
+    tracked.current = true;
+    trackHopClick(code);
+  }, [code]);
 
   const copyDest = useCallback(async () => {
     try {

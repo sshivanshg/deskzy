@@ -81,7 +81,8 @@ export async function checkAndIncrementUsage(input: {
         count: 1,
       });
     }
+    return { ok: true, plan: "free", remaining: cap - used - 1 };
   }
 
-  return { ok: true, plan: "free", remaining: cap - used - 1 };
+  return { ok: true, plan: "free", remaining: cap - used };
 }

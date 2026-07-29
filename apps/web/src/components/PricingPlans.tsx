@@ -331,10 +331,13 @@ export function PricingPlans({
               {[
                 ["Best for", "Simple use", "Advanced use", "Growing teams"],
                 ["Tools", "Essential", "All tools", "All tools"],
-                ["Daily processing", "Limited", "Unlimited", "Unlimited"],
+                ["Daily PDF & image", "Limited", "Unlimited", "Unlimited"],
+                ["Short links", "Unlimited", "Unlimited", "Unlimited"],
                 ["Files leave device", "Never*", "Never*", "Never*"],
                 ["Link analytics", "—", "Yes", "Yes"],
                 ["Custom short slugs", "—", "Yes", "Yes"],
+                ["Saved presets", "—", "Yes", "Yes"],
+                ["Team seats", "1", "1–25", "25+"],
                 ["SSO", "—", "—", "Yes"],
                 ["API access", "—", "—", "Yes"],
               ].map(([feature, free, pro, biz]) => (

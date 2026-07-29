@@ -81,7 +81,7 @@ test.describe("Navigation & shell", () => {
     await expect(
       page.getByRole("heading", { name: /Frequently asked questions/i }),
     ).toBeVisible();
-    await expect(page.getByText(/deskzy\.xyz\/r\//i)).toBeVisible();
+    await expect(page.getByText(/Short links are served on deskzy\.xyz/i)).toBeVisible();
   });
 
   test("privacy and terms pages", async ({ page }) => {

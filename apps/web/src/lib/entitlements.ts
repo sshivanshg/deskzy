@@ -37,7 +37,7 @@ export const FREE_DAILY_CAPS: Record<string, number> = {
   "resize-image": 5,
   "convert-image": 5,
   "webp-to-png": 5,
-  "url-shortener": 10,
+  // url-shortener: unlimited on Free (abuse still rate-limited per IP)
 };
 
 export function freeDailyCap(toolSlug: string): number | null {

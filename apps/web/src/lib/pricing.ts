@@ -36,16 +36,17 @@ export function formatInr(amount: number): string {
 
 export const FREE_FEATURES = [
   "Access to essential Deskzy tools",
-  "Limited daily document processing",
+  "Unlimited free short links",
+  "Limited daily PDF & image processing",
   "Browser-first — files stay on your device",
 ] as const;
 
 export const PRO_FEATURES = [
-  "Full access to all Deskzy tools",
-  "Unlimited document processing",
-  "Higher short-link limits + custom slugs",
-  "Link click analytics",
-  "Saved presets across devices",
+  "Unlimited PDF & image processing",
+  "Custom short slugs (deskzy.xyz/you)",
+  "Link click analytics dashboard",
+  "Saved UTM & image presets",
+  "Team seats (invite members)",
   "Priority support",
 ] as const;
 
@@ -60,11 +61,11 @@ export const BUSINESS_FEATURES = [
 export const PRICING_FAQS = [
   {
     q: "What do I get with Free?",
-    a: "Free gives you Deskzy’s core tools for light use — merge, compress, convert, shorten links, and more — with daily processing limits. Files processed in the browser never leave your device.",
+    a: "Free includes all core tools and unlimited short links. PDF and image tools have daily processing limits. Files processed in the browser never leave your device.",
   },
   {
     q: "Why upgrade to Pro?",
-    a: "Pro removes daily limits, adds link analytics and custom slugs, saves presets across devices, and includes priority support. From ₹399 per user per month — less than iLovePDF Premium in India.",
+    a: "Pro removes PDF/image daily limits, adds custom short slugs, click analytics, synced presets, and team seats. From ₹399 per user per month.",
   },
   {
     q: "Can I cancel anytime?",

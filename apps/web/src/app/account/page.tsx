@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AccountProPanel } from "@/components/AccountProPanel";
 import { SignOutButton } from "@/components/SignOutButton";
 import { formatInr, proUnitInr } from "@/lib/pricing";
 import { isPaidActive, type SubscriptionRow } from "@/lib/entitlements";
@@ -16,7 +17,7 @@ export const metadata: Metadata = buildPageMetadata({
 export default async function AccountPage({
   searchParams,
 }: {
-  searchParams: Promise<{ upgraded?: string }>;
+  searchParams: Promise<{ upgraded?: string; joined?: string }>;
 }) {
   const params = await searchParams;
   let user = null as { id: string; email?: string } | null;
@@ -66,6 +67,11 @@ export default async function AccountPage({
       {params.upgraded ? (
         <p className="mt-4 rounded-xl bg-[var(--ok-bg)] px-3 py-2 text-sm text-[var(--ok-ink)]">
           Welcome to Pro — your subscription is active.
+        </p>
+      ) : null}
+      {params.joined ? (
+        <p className="mt-4 rounded-xl bg-[var(--ok-bg)] px-3 py-2 text-sm text-[var(--ok-ink)]">
+          You joined a Pro team seat.
         </p>
       ) : null}
 
@@ -123,6 +129,8 @@ export default async function AccountPage({
           )}
         </div>
       </div>
+
+      <AccountProPanel paid={paid} />
 
       <div className="mt-6 flex flex-wrap gap-3">
         <Link

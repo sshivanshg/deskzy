@@ -117,7 +117,12 @@ export async function runTool(
     case "qr-code":
       return { kind: "text", ...(await generateQr(text)) };
     case "url-shortener":
-      return { kind: "text", ...(await shortenUrl(text, apiBase())) };
+      return {
+        kind: "text",
+        ...(await shortenUrl(text, apiBase(), {
+          slug: options.slug || undefined,
+        })),
+      };
     case "utm-builder":
       return { kind: "text", ...runUtmBuilder(options) };
     case "whatsapp-link":

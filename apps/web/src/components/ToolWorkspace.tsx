@@ -19,6 +19,7 @@ import {
   IMAGE_PREPARE_PRESETS,
   parseTargetBytes,
 } from "@/lib/tools/image-presets";
+import { freeDailyCap } from "@/lib/entitlements";
 import {
   BioLinkBuilder,
   UtmBuilderForm,
@@ -26,6 +27,8 @@ import {
 } from "./LinkToolForms";
 import { Dropzone } from "./Dropzone";
 import { ToolBusyEffect } from "./ToolBusyEffect";
+import { UpgradeModal, gateToolUsage } from "./UpgradeModal";
+import { SavedPresetsBar } from "./SavedPresetsBar";
 import { runTool } from "@/lib/tools/run";
 
 function formatBytes(n: number) {
@@ -50,6 +53,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
   const [options, setOptions] = useState<Record<string, string>>(() => {
     if (tool.slug === "whatsapp-link") return { country: "IN", dial: "91" };
     if (tool.slug === "bio-link") return { theme: "deskzy", format: "html" };
+    if (tool.slug === "url-shortener") return { slug: "" };
     if (tool.slug === "compress-image") {
       return {
         preset: "web",
@@ -70,6 +74,12 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
     }
     return {} as Record<string, string>;
   });
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [upgradeInfo, setUpgradeInfo] = useState<{
+    used?: number;
+    limit?: number;
+    message?: string;
+  }>({});
 
   useEffect(() => {
     if (tool.slug === "qr-code") {
@@ -115,6 +125,20 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
     const merged = { ...options, ...override };
     if (override?.format) setOptions(merged);
     try {
+      if (freeDailyCap(tool.slug) !== null) {
+        const gate = await gateToolUsage(tool.slug);
+        if (!gate.ok) {
+          setUpgradeInfo({
+            used: gate.used,
+            limit: gate.limit,
+            message: gate.message,
+          });
+          setUpgradeOpen(true);
+          setBusy(false);
+          return;
+        }
+      }
+
       const out = await runTool(tool.slug, { files, text, options: merged });
       if (out.kind === "file") {
         const url = URL.createObjectURL(out.blob);
@@ -140,7 +164,13 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         }
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Something went wrong");
+      const err = e as Error & { upgradeUrl?: string; status?: number };
+      if (err.status === 402 || err.upgradeUrl) {
+        setUpgradeInfo({ message: err.message });
+        setUpgradeOpen(true);
+      } else {
+        setError(e instanceof Error ? e.message : "Something went wrong");
+      }
     } finally {
       setBusy(false);
     }
@@ -482,6 +512,14 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
           ))}
         </div>
       </div>
+
+      <UpgradeModal
+        open={upgradeOpen}
+        onClose={() => setUpgradeOpen(false)}
+        used={upgradeInfo.used}
+        limit={upgradeInfo.limit}
+        message={upgradeInfo.message}
+      />
     </div>
   );
 }
@@ -585,6 +623,11 @@ function ToolOptions({
     const isCustom = presetId === "custom";
     return (
       <div className="space-y-3">
+        <SavedPresetsBar
+          kind="image"
+          current={options}
+          onApply={(payload) => setOptions({ ...options, ...payload })}
+        />
         <OptionRow label="Use case">
           {IMAGE_PREPARE_PRESETS.map((p) => (
             <button
@@ -920,6 +963,36 @@ function ToolOptions({
           className="field mt-2"
         />
       </label>
+    );
+  }
+  if (slug === "url-shortener") {
+    return (
+      <div className="mt-3 space-y-2">
+        <label className="block text-sm text-[var(--muted)]">
+          Custom slug{" "}
+          <span className="text-xs text-[var(--accent)]">(Pro)</span>
+          <div className="mt-2 flex items-center gap-2">
+            <span className="shrink-0 font-mono text-sm text-[var(--muted)]">
+              deskzy.xyz/r/
+            </span>
+            <input
+              value={options.slug || ""}
+              onChange={(e) => set("slug", e.target.value.toLowerCase())}
+              placeholder="your-brand"
+              className="field flex-1 font-mono"
+              autoComplete="off"
+              spellCheck={false}
+            />
+          </div>
+        </label>
+        <p className="text-xs text-[var(--muted)]">
+          Leave blank for a random short code. Custom paths require{" "}
+          <Link href="/pricing" className="text-[var(--accent)] underline-offset-2 hover:underline">
+            Pro
+          </Link>
+          . Free short links are unlimited.
+        </p>
+      </div>
     );
   }
   if (slug === "utm-builder") {

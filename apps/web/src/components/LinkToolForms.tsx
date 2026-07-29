@@ -21,6 +21,7 @@ import {
   type BioTheme,
   type UtmPresetId,
 } from "@/lib/tools/links";
+import { SavedPresetsBar } from "./SavedPresetsBar";
 
 type OptionsProps = {
   options: Record<string, string>;
@@ -88,6 +89,12 @@ export function UtmBuilderForm({ options, setOptions }: OptionsProps) {
 
   return (
     <div className="space-y-4">
+      <SavedPresetsBar
+        kind="utm"
+        current={options}
+        onApply={(payload) => setOptions({ ...options, ...payload })}
+      />
+
       <div>
         <p className="mb-2 text-sm text-[var(--muted)]">Presets</p>
         <div className="flex flex-wrap gap-2">

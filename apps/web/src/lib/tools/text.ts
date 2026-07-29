@@ -134,14 +134,26 @@ export function generatePassword(
   return { text: out, meta: { length: len } };
 }
 
-export async function shortenUrl(url: string, apiBase: string): Promise<TextResult> {
+export async function shortenUrl(
+  url: string,
+  apiBase: string,
+  opts?: { slug?: string },
+): Promise<TextResult> {
+  const body: { url: string; slug?: string } = { url };
+  if (opts?.slug?.trim()) body.slug = opts.slug.trim();
+
   const res = await fetch(`${apiBase}/links`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ url }),
+    body: JSON.stringify(body),
   });
-  let data: { error?: string; shortUrl?: string; code?: string; dest?: string } =
-    {};
+  let data: {
+    error?: string;
+    shortUrl?: string;
+    code?: string;
+    dest?: string;
+    upgradeUrl?: string;
+  } = {};
   try {
     data = await res.json();
   } catch {
@@ -151,7 +163,15 @@ export async function shortenUrl(url: string, apiBase: string): Promise<TextResu
         : "Shortener unavailable — try again in a moment",
     );
   }
-  if (!res.ok) throw new Error(data.error || "Failed to shorten URL");
+  if (!res.ok) {
+    const err = new Error(data.error || "Failed to shorten URL") as Error & {
+      upgradeUrl?: string;
+      status?: number;
+    };
+    err.upgradeUrl = data.upgradeUrl;
+    err.status = res.status;
+    throw err;
+  }
   if (!data.shortUrl) throw new Error("Shortener returned no URL");
   return {
     text: data.shortUrl,

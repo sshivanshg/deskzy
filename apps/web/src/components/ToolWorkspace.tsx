@@ -249,7 +249,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
           <h1 className="font-display text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl">
             {tool.name}
             <span className="block text-lg font-normal text-[var(--muted)] md:text-xl">
-              Private &amp; free
+              Private in your browser
             </span>
           </h1>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-xs font-semibold text-[var(--accent)]">

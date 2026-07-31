@@ -36,9 +36,10 @@ test.describe("Auth + Pro account UI", () => {
     await page.waitForURL(/\/(account|pricing|$)/, { timeout: 30_000 });
 
     await page.goto("/account");
-    await expect(page.getByRole("heading", { name: /Account/i })).toBeVisible();
     await expect(page.getByText(EMAIL)).toBeVisible();
     await expect(page.getByText("Free").first()).toBeVisible();
+    await expect(page.getByRole("heading", { name: /What Pro unlocks/i })).toBeVisible();
+    await page.getByRole("button", { name: /Links/i }).click();
     await expect(page.getByRole("heading", { name: /Your short links/i })).toBeVisible();
 
     await admin
@@ -55,8 +56,11 @@ test.describe("Auth + Pro account UI", () => {
 
     await page.reload();
     await expect(page.getByText("Pro").first()).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Included with Pro/i })).toBeVisible();
+    await page.getByRole("button", { name: /Team/i }).click();
     await expect(page.getByRole("heading", { name: /Team seats/i })).toBeVisible();
-    await expect(page.getByRole("heading", { name: /Saved presets/i })).toBeVisible();
+    await page.getByRole("button", { name: /Presets/i }).click();
+    await expect(page.getByRole("heading", { name: /Synced presets/i })).toBeVisible();
 
     // Custom slug on shortener
     await page.goto("/tools/url-shortener");

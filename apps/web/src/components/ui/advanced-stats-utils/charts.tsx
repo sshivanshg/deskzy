@@ -65,7 +65,7 @@ export function ClippedAreaChart({
         margin={
           compact
             ? { top: 4, right: 4, left: 0, bottom: 0 }
-            : { top: 8, right: 8, left: 0, bottom: 0 }
+            : { top: 8, right: 4, left: -8, bottom: 0 }
         }
       >
         <defs>
@@ -91,7 +91,7 @@ export function ClippedAreaChart({
             axisLine={false}
             tickMargin={8}
             interval="preserveStartEnd"
-            minTickGap={28}
+            minTickGap={36}
             tick={{ fill: "var(--muted)", fontSize: 10 }}
           />
         ) : null}
@@ -99,8 +99,8 @@ export function ClippedAreaChart({
           <YAxis
             tickLine={false}
             axisLine={false}
-            width={36}
-            tickMargin={4}
+            width={28}
+            tickMargin={2}
             tick={{ fill: "var(--muted)", fontSize: 10 }}
           />
         ) : null}

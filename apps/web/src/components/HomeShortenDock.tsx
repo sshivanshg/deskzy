@@ -208,7 +208,7 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
 
   const shellClass = isHero
     ? "rounded-[var(--radius-shell)] border border-[var(--accent)]/28 bg-[var(--accent-soft)] p-5 md:p-6"
-    : "rounded-2xl border border-[var(--accent)]/28 bg-[var(--accent-soft)] p-3.5";
+    : "rounded-2xl border border-[var(--accent)]/28 bg-[var(--accent-soft)] p-3";
 
   if (shortUrl) {
     return (
@@ -264,24 +264,27 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
 
   return (
     <div className={shellClass}>
-      <div
-        className={`mb-2 flex items-center gap-2 font-semibold text-[var(--accent-ink)] ${
-          isHero ? "mb-3 text-base" : "text-sm"
-        }`}
-      >
-        <span
-          className={`flex items-center justify-center rounded-lg bg-[var(--accent)] text-white ${
-            isHero ? "h-9 w-9 rounded-xl" : "h-7 w-7"
-          }`}
+      {isHero ? (
+        <div className="mb-3 flex items-center gap-2 text-base font-semibold text-[var(--accent-ink)]">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--accent)] text-white">
+            <LinkSimple size={18} weight="bold" />
+          </span>
+          Shorten a link
+        </div>
+      ) : (
+        <label
+          htmlFor={inputId}
+          className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-[var(--accent-ink)]"
         >
-          <LinkSimple size={isHero ? 18 : 16} weight="bold" />
-        </span>
-        Shorten a link
-      </div>
-      <div className={`flex gap-2 ${isHero ? "flex-col sm:flex-row" : ""}`}>
-        <label className="sr-only" htmlFor={inputId}>
-          URL to shorten
+          Shorten a link
         </label>
+      )}
+      <div className={`flex gap-2 ${isHero ? "flex-col sm:flex-row" : ""}`}>
+        {isHero ? (
+          <label className="sr-only" htmlFor={inputId}>
+            URL to shorten
+          </label>
+        ) : null}
         <input
           id={inputId}
           value={url}
@@ -292,7 +295,7 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
           placeholder="Paste a long URL…"
           disabled={busy}
           className={`field min-w-0 flex-1 !rounded-xl !text-base ${
-            isHero ? "!py-3.5" : "!py-2.5"
+            isHero ? "!py-3.5" : "!py-3"
           }`}
           autoComplete="url"
           inputMode="url"
@@ -302,7 +305,7 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
         <button
           type="button"
           className={`btn-primary shrink-0 ${
-            isHero ? "!px-6 !py-3.5 sm:min-w-[8.5rem]" : "!px-4 !py-2.5"
+            isHero ? "!px-6 !py-3.5 sm:min-w-[8.5rem]" : "!px-4 !py-3"
           }`}
           disabled={busy || !looksLikeUrl(url)}
           onClick={() => void onShorten()}

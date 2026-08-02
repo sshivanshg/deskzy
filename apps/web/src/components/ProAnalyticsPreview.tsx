@@ -95,15 +95,21 @@ function ProBadge() {
 }
 
 function DonutChart() {
-  const size = 148;
-  const stroke = 18;
+  const size = 128;
+  const stroke = 16;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   let offset = 0;
 
   return (
     <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-6">
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90" aria-hidden>
+      <svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        className="mx-auto h-auto w-[7.5rem] shrink-0 -rotate-90 sm:mx-0 sm:w-[9.25rem]"
+        aria-hidden
+      >
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -132,7 +138,7 @@ function DonutChart() {
           return el;
         })}
       </svg>
-      <ul className="w-full space-y-2.5">
+      <ul className="w-full min-w-0 space-y-2.5">
         {DEVICES.map((d) => {
           const Icon =
             d.label === "Mobile"
@@ -142,13 +148,13 @@ function DonutChart() {
                 : DeviceTablet;
           return (
             <li key={d.label} className="flex items-center justify-between gap-3 text-sm">
-              <span className="inline-flex items-center gap-2 text-[var(--ink)]">
+              <span className="inline-flex min-w-0 items-center gap-2 text-[var(--ink)]">
                 <span
-                  className="h-2.5 w-2.5 rounded-full"
+                  className="h-2.5 w-2.5 shrink-0 rounded-full"
                   style={{ background: d.color }}
                   aria-hidden
                 />
-                <Icon size={15} weight="duotone" />
+                <Icon size={15} weight="duotone" className="shrink-0" />
                 {d.label}
               </span>
               <span className="font-semibold tabular-nums text-[var(--ink)]">{d.value}%</span>
@@ -162,20 +168,20 @@ function DonutChart() {
 
 function WorldHeatmap() {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--surface)]/40 p-3 md:p-4">
-      <GlobeAnalytics
-        markers={GEO_MARKERS}
-        className="mx-auto w-full max-w-[260px] sm:max-w-[300px]"
-        speed={0.0025}
-      />
-      <ul className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+    <div className="relative min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--surface)]/40 p-2.5 sm:p-4">
+      <div className="mx-auto w-full max-w-[200px] sm:max-w-[280px]">
+        <GlobeAnalytics markers={GEO_MARKERS} className="w-full" speed={0.0025} />
+      </div>
+      <ul className="mt-3 space-y-1.5 sm:mt-3 sm:grid sm:grid-cols-2 sm:gap-1.5 sm:space-y-0 lg:grid-cols-4">
         {COUNTRIES.slice(0, 4).map((c) => (
           <li
             key={c.code}
-            className="rounded-lg bg-white/80 px-2 py-1.5 text-[11px] text-[var(--muted)]"
+            className="flex items-center justify-between gap-2 rounded-lg bg-white/80 px-2.5 py-2 text-xs text-[var(--muted)] sm:block sm:px-2 sm:py-1.5 sm:text-[11px]"
           >
-            <span className="font-semibold text-[var(--ink)]">{c.name}</span>
-            <span className="ml-1 tabular-nums">{c.share}%</span>
+            <span className="min-w-0 truncate font-semibold text-[var(--ink)]">
+              {c.name}
+            </span>
+            <span className="shrink-0 tabular-nums sm:ml-1">{c.share}%</span>
           </li>
         ))}
       </ul>
@@ -218,7 +224,7 @@ function QrPreview() {
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
           Custom short link
         </p>
-        <p className="mt-1 font-mono text-lg font-semibold tracking-tight text-[var(--accent-ink)]">
+        <p className="mt-1 break-all font-mono text-base font-semibold tracking-tight text-[var(--accent-ink)] sm:text-lg">
           deskzy.xyz/yourbrand
         </p>
         <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
@@ -244,14 +250,14 @@ export function ProAnalyticsPreview({
   const pricingHint = `${formatInr(PRO_MONTHLY_INR)}/mo · or ${formatInr(PRO_YEARLY_INR)}/yr (~${formatInr(proEffectiveMonthlyInr())}/mo)`;
 
   return (
-    <div className="relative overflow-hidden rounded-[var(--radius-shell)] border border-[var(--stroke)] bg-[var(--bg-elevated)] shadow-[var(--shadow)]">
+    <div className="relative min-w-0 overflow-x-clip rounded-[var(--radius-shell)] border border-[var(--stroke)] bg-[var(--bg-elevated)] shadow-[var(--shadow)]">
       {/* Header */}
-      <div className="flex flex-col gap-4 border-b border-[var(--stroke)] px-5 py-5 sm:flex-row sm:items-center sm:justify-between md:px-7">
-        <div>
+      <div className="flex flex-col gap-3 border-b border-[var(--stroke)] px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5 sm:py-5 md:px-7">
+        <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
             Deskzy Links
           </p>
-          <h2 className="mt-1 font-display text-2xl font-semibold tracking-tight text-[var(--ink)] md:text-3xl">
+          <h2 className="mt-1 font-display text-xl font-semibold tracking-tight text-[var(--ink)] sm:text-2xl md:text-3xl">
             {locked ? "Unlock Advanced Link Analytics" : "Link Analytics"}
           </h2>
           <p className="mt-1 max-w-xl text-sm text-[var(--muted)]">
@@ -262,7 +268,7 @@ export function ProAnalyticsPreview({
         {locked ? (
           <Link
             href="/link-analytics#upgrade"
-            className="btn-primary shrink-0 !rounded-full !px-5 shadow-[0_0_0_4px_var(--accent-soft)] transition-transform active:scale-[0.98]"
+            className="btn-primary w-full shrink-0 !rounded-full !px-5 shadow-[0_0_0_4px_var(--accent-soft)] transition-transform active:scale-[0.98] sm:w-auto"
           >
             <Sparkle size={16} weight="fill" />
             Upgrade to Pro
@@ -275,9 +281,9 @@ export function ProAnalyticsPreview({
         )}
       </div>
 
-      <div className="relative px-4 py-5 md:px-7 md:py-6">
+      <div className="relative min-w-0 px-3 py-4 sm:px-4 sm:py-5 md:px-7 md:py-6">
         {/* Stat row — always readable */}
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
           {[
             { label: "Total clicks", value: totalClicks.toLocaleString("en-IN"), hint: "Last 30 days" },
             { label: "Unique visitors", value: uniqueVisitors.toLocaleString("en-IN"), hint: "Estimated" },
@@ -286,24 +292,24 @@ export function ProAnalyticsPreview({
           ].map((s) => (
             <div
               key={s.label}
-              className="rounded-2xl border border-[var(--stroke)] bg-white/70 p-4"
+              className="min-w-0 rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:p-4"
             >
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)] sm:text-[11px]">
                 {s.label}
               </p>
-              <p className="mt-1.5 font-display text-2xl font-semibold tracking-tight tabular-nums text-[var(--ink)] md:text-3xl">
+              <p className="mt-1 font-display text-xl font-semibold tracking-tight tabular-nums text-[var(--ink)] sm:mt-1.5 sm:text-2xl md:text-3xl">
                 {s.value}
               </p>
-              <p className="mt-1 text-[11px] text-[var(--muted)]">{s.hint}</p>
+              <p className="mt-1 text-[10px] text-[var(--muted)] sm:text-[11px]">{s.hint}</p>
             </div>
           ))}
         </div>
 
         {/* Main chart — AdvancedStats clipped area */}
-        <section className="mt-4 rounded-2xl border border-[var(--stroke)] bg-white/70 p-4 md:p-5">
+        <section className="mt-3 min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:mt-4 sm:p-4 md:p-5">
           <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
-            <div>
-              <h3 className="font-display text-lg font-semibold tracking-tight text-[var(--ink)]">
+            <div className="min-w-0">
+              <h3 className="font-display text-base font-semibold tracking-tight text-[var(--ink)] sm:text-lg">
                 Clicks over time
               </h3>
               <p className="text-xs text-[var(--muted)]">Last 30 days · sample campaign</p>
@@ -315,25 +321,25 @@ export function ProAnalyticsPreview({
               +18% vs prior period
             </Badge>
           </div>
-          <ClippedAreaChart />
+          <ClippedAreaChart className="min-h-[140px] sm:min-h-[180px]" />
         </section>
 
         {/* Premium widgets grid — partially locked when free */}
-        <div className="relative mt-4">
+        <div className="relative mt-3 min-w-0 sm:mt-4">
           <div
-            className={`grid gap-4 lg:grid-cols-2 ${
+            className={`grid min-w-0 gap-3 sm:gap-4 lg:grid-cols-2 ${
               locked ? "pointer-events-none select-none" : ""
             }`}
           >
             <section
-              className={`rounded-2xl border border-[var(--stroke)] bg-white/70 p-4 md:p-5 ${
+              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:p-4 md:p-5 ${
                 locked ? "blur-[2.5px]" : ""
               }`}
             >
               <div className="mb-3 flex items-center justify-between gap-2">
-                <h3 className="inline-flex items-center gap-2 font-display text-base font-semibold tracking-tight">
-                  <GlobeHemisphereWest size={18} weight="duotone" />
-                  Click geography
+                <h3 className="inline-flex min-w-0 items-center gap-2 font-display text-base font-semibold tracking-tight">
+                  <GlobeHemisphereWest size={18} weight="duotone" className="shrink-0" />
+                  <span className="truncate">Click geography</span>
                 </h3>
                 {locked ? <ProBadge /> : null}
               </div>
@@ -341,7 +347,7 @@ export function ProAnalyticsPreview({
             </section>
 
             <section
-              className={`rounded-2xl border border-[var(--stroke)] bg-white/70 p-4 md:p-5 ${
+              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:p-4 md:p-5 ${
                 locked ? "blur-[2.5px]" : ""
               }`}
             >
@@ -355,7 +361,7 @@ export function ProAnalyticsPreview({
             </section>
 
             <section
-              className={`rounded-2xl border border-[var(--stroke)] bg-white/70 p-4 md:p-5 lg:col-span-2 ${
+              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:p-4 md:p-5 lg:col-span-2 ${
                 locked ? "blur-[3px]" : ""
               }`}
             >
@@ -365,7 +371,36 @@ export function ProAnalyticsPreview({
                 </h3>
                 {locked ? <ProBadge /> : null}
               </div>
-              <div className="overflow-x-auto">
+              {/* Mobile: stacked rows — Desktop: table */}
+              <ul className="space-y-2 sm:hidden">
+                {REFERRERS.map((r) => (
+                  <li
+                    key={r.source}
+                    className="rounded-xl border border-[var(--stroke)]/80 bg-[var(--surface)]/40 px-3 py-2.5"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-medium text-[var(--ink)]">
+                        {r.source}
+                      </span>
+                      <span className="text-xs tabular-nums text-[var(--muted)]">
+                        {r.clicks.toLocaleString("en-IN")}
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-[var(--surface)]">
+                        <span
+                          className="block h-full rounded-full bg-[var(--accent)]"
+                          style={{ width: `${Math.min(100, r.share * 3)}%` }}
+                        />
+                      </span>
+                      <span className="w-8 shrink-0 text-right text-xs tabular-nums text-[var(--muted)]">
+                        {r.share}%
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <div className="hidden overflow-x-auto sm:block">
                 <table className="w-full min-w-[28rem] text-left text-sm">
                   <thead>
                     <tr className="border-b border-[var(--stroke)] text-[11px] uppercase tracking-[0.12em] text-[var(--muted)]">
@@ -402,7 +437,7 @@ export function ProAnalyticsPreview({
             </section>
 
             <section
-              className={`rounded-2xl border border-[var(--stroke)] bg-white/70 p-4 md:p-5 ${
+              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:p-4 md:p-5 ${
                 locked ? "blur-[2px]" : ""
               }`}
             >
@@ -418,7 +453,7 @@ export function ProAnalyticsPreview({
                     key={`${ev.city}-${ev.ago}`}
                     className="flex items-start gap-2.5 rounded-xl border border-[var(--stroke)]/80 bg-[var(--surface)]/40 px-3 py-2.5"
                   >
-                    <span className="mt-0.5 text-[var(--accent)]">
+                    <span className="mt-0.5 shrink-0 text-[var(--accent)]">
                       <MapPin size={16} weight="fill" />
                     </span>
                     <span className="min-w-0 flex-1">
@@ -438,7 +473,7 @@ export function ProAnalyticsPreview({
             </section>
 
             <section
-              className={`rounded-2xl border border-[var(--stroke)] bg-white/70 p-4 md:p-5 ${
+              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:p-4 md:p-5 ${
                 locked ? "blur-[2px]" : ""
               }`}
             >
@@ -470,9 +505,9 @@ export function ProAnalyticsPreview({
                 }}
                 aria-hidden
               />
-              <div className="absolute inset-x-4 top-1/3 z-10 mx-auto max-w-md -translate-y-4 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 md:top-[38%]">
+              <div className="absolute inset-x-3 top-1/3 z-10 mx-auto max-w-md -translate-y-4 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 md:top-[38%]">
                 <div
-                  className="rounded-[1.35rem] border border-white/70 p-5 shadow-[var(--shadow)] backdrop-blur-xl sm:p-6"
+                  className="rounded-[1.35rem] border border-white/70 p-4 shadow-[var(--shadow)] backdrop-blur-xl sm:p-6"
                   style={{
                     background:
                       "color-mix(in srgb, var(--bg-elevated) 90%, white)",
@@ -481,7 +516,7 @@ export function ProAnalyticsPreview({
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--accent)] text-white">
                     <LockSimple size={18} weight="bold" />
                   </div>
-                  <h3 className="mt-3 font-display text-xl font-semibold tracking-tight text-[var(--ink)]">
+                  <h3 className="mt-3 font-display text-lg font-semibold tracking-tight text-[var(--ink)] sm:text-xl">
                     See exactly who&apos;s clicking your links
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
@@ -491,13 +526,13 @@ export function ProAnalyticsPreview({
                   <p className="mt-3 text-xs font-medium text-[var(--accent-ink)]">
                     Starting at {pricingHint}
                   </p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <Link href="/link-analytics#upgrade" className="btn-primary flex-1 !rounded-full sm:flex-none">
+                  <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                    <Link href="/link-analytics#upgrade" className="btn-primary w-full !rounded-full sm:w-auto sm:flex-none">
                       Upgrade to Pro
                     </Link>
                     <Link
                       href="/link-analytics"
-                      className="btn-secondary flex-1 !rounded-full sm:flex-none"
+                      className="btn-secondary w-full !rounded-full sm:w-auto sm:flex-none"
                     >
                       See analytics page
                     </Link>

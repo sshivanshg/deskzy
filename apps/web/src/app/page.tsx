@@ -12,6 +12,7 @@ import {
   TextT,
 } from "@phosphor-icons/react/dist/ssr";
 import { HomeCategoryChips } from "@/components/HomeCategoryChips";
+import { HomeGlobeTease } from "@/components/HomeGlobeTease";
 import { HomePopularStrip } from "@/components/HomePopularStrip";
 import { HomeSearch } from "@/components/HomeSearch";
 import { HomeShortenDock } from "@/components/HomeShortenDock";
@@ -123,129 +124,143 @@ export default function HomePage() {
     <>
       <JsonLd data={buildWebsiteJsonLd()} />
 
-      {/* Mobile hero */}
-      <div className="mx-auto max-w-6xl px-4 pb-8 pt-6 md:hidden">
-        <div className="reveal space-y-4">
-          <p className="font-display text-3xl font-semibold tracking-tight text-[var(--ink)] leading-[1.05]">
-            Deskzy
-          </p>
-          <h1 className="font-display text-2xl font-semibold tracking-tight text-[var(--ink)] leading-snug">
-            Short links on deskzy.xyz — free &amp; private
-          </h1>
-          <p className="max-w-[40ch] text-sm leading-relaxed text-[var(--muted)]">
-            Paste a URL. Get a clean short link. PDF and image tools stay in
-            your browser.
-          </p>
+      {/* Mobile hero — brand + shorten CTA; globe tease sits just under */}
+      <div className="mx-auto max-w-6xl px-4 pb-8 pt-5 md:hidden">
+        <div className="reveal space-y-5">
+          <div className="space-y-2">
+            <h1 className="font-display text-[2rem] font-semibold tracking-tight text-[var(--ink)] leading-[1.05]">
+              Deskzy
+            </h1>
+            <p className="max-w-[28ch] text-[15px] leading-snug text-[var(--muted)]">
+              Short links on deskzy.xyz — free &amp; private
+            </p>
+          </div>
           <HomeShortenDock size="compact" />
-          <ul className="flex flex-wrap gap-x-4 gap-y-2 pt-1">
-            {TRUST.map((t) => {
-              const Icon = t.icon;
-              return (
-                <li
-                  key={t.label}
-                  className="inline-flex items-center gap-1.5 text-xs text-[var(--muted)]"
-                >
-                  <span className="text-[var(--accent)]">
-                    <Icon size={14} weight="duotone" />
-                  </span>
-                  {t.label}
-                </li>
-              );
-            })}
-          </ul>
+          <p className="text-xs leading-relaxed text-[var(--muted)]">
+            No signup · Files stay local · deskzy.xyz links
+          </p>
+          <HomeGlobeTease size="compact" />
         </div>
 
-        <section className="mt-10">
-          <h2 className="font-display text-lg font-semibold tracking-tight">
-            Share stack
-          </h2>
-          <p className="mt-1 text-sm text-[var(--muted)]">
-            QR, UTM, WhatsApp, and bio — alongside your short link
-          </p>
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            {shareUseCases.map((uc) => (
-              <Link
-                key={uc.id}
-                href={uc.href}
-                className="rounded-[var(--radius-core)] border border-[var(--stroke)] bg-white/50 px-3.5 py-3"
-              >
-                <p className="text-sm font-medium text-[var(--ink)]">{uc.label}</p>
-                <p className="mt-0.5 text-xs text-[var(--muted)]">{uc.hint}</p>
-              </Link>
-            ))}
+        <section className="mt-14">
+          <div className="flex items-baseline justify-between gap-3">
+            <h2 className="font-display text-lg font-semibold tracking-tight">
+              Share stack
+            </h2>
+            <Link
+              href="/links"
+              className="text-xs font-medium text-[var(--accent)]"
+            >
+              All links
+            </Link>
           </div>
+          <ul className="mt-3 divide-y divide-[var(--stroke)] border-y border-[var(--stroke)]">
+            {shareUseCases.map((uc) => (
+              <li key={uc.id}>
+                <Link
+                  href={uc.href}
+                  className="flex items-center justify-between gap-3 py-3.5"
+                >
+                  <span className="min-w-0">
+                    <span className="block text-sm font-medium text-[var(--ink)]">
+                      {uc.label}
+                    </span>
+                    <span className="mt-0.5 block text-xs text-[var(--muted)]">
+                      {uc.hint}
+                    </span>
+                  </span>
+                  <ArrowRight
+                    size={14}
+                    className="shrink-0 text-[var(--muted)]"
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
         </section>
 
-        <section className="mt-10">
+        <section className="mt-12">
           <h2 className="font-display text-lg font-semibold tracking-tight">
             Also free file tools
           </h2>
           <p className="mt-1 text-sm text-[var(--muted)]">
-            Private in your browser — complementary to Links
+            Private in your browser
           </p>
-          <div className="mt-3 space-y-2">
+          <ul className="mt-3 divide-y divide-[var(--stroke)] border-y border-[var(--stroke)]">
             {fileUseCases.map((uc) => (
-              <Link
-                key={uc.id}
-                href={uc.href}
-                className="flex items-center justify-between gap-3 rounded-[var(--radius-core)] border border-[var(--stroke)] bg-white/50 px-3.5 py-3"
-              >
-                <span>
-                  <span className="block text-sm font-medium text-[var(--ink)]">
-                    {uc.label}
+              <li key={uc.id}>
+                <Link
+                  href={uc.href}
+                  className="flex items-center justify-between gap-3 py-3.5"
+                >
+                  <span className="min-w-0">
+                    <span className="block text-sm font-medium text-[var(--ink)]">
+                      {uc.label}
+                    </span>
+                    <span className="mt-0.5 block text-xs text-[var(--muted)]">
+                      {uc.hint}
+                    </span>
                   </span>
-                  <span className="mt-0.5 block text-xs text-[var(--muted)]">
-                    {uc.hint}
-                  </span>
-                </span>
-                <ArrowRight size={14} color="var(--muted)" />
-              </Link>
+                  <ArrowRight
+                    size={14}
+                    className="shrink-0 text-[var(--muted)]"
+                  />
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
 
-        <div className="mt-10 space-y-3">
+        <div className="mt-12 space-y-3">
           <HomeSearch id="home-tool-search" />
           <HomeCategoryChips />
         </div>
         <HomePopularStrip tools={popular} />
       </div>
 
-      {/* Desktop */}
+      {/* Desktop — split hero: shorten left, globe attractor right */}
       <div className="mx-auto hidden max-w-6xl px-4 pb-8 pt-10 md:block md:pt-14">
-        <section className="reveal mx-auto max-w-3xl text-center">
-          <p className="font-display text-5xl font-semibold tracking-tight text-[var(--ink)] md:text-6xl md:leading-[0.95]">
-            Deskzy
-          </p>
-          <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl md:leading-[1.1]">
-            Short links on deskzy.xyz — free, private tools
-          </h1>
-          <p className="mx-auto mt-4 max-w-[42ch] text-lg leading-relaxed text-[var(--muted)]">
-            Paste a URL. Get a clean short link. PDF and image tools stay in
-            your browser.
-          </p>
-        </section>
+        <section className="reveal grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+          <div>
+            <p className="font-display text-5xl font-semibold tracking-tight text-[var(--ink)] md:text-6xl md:leading-[0.95]">
+              Deskzy
+            </p>
+            <h1 className="mt-4 max-w-[18ch] font-display text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl md:leading-[1.1]">
+              Short links on deskzy.xyz — free, private tools
+            </h1>
+            <p className="mt-4 max-w-[40ch] text-lg leading-relaxed text-[var(--muted)]">
+              Paste a URL. Get a clean short link. PDF and image tools stay in
+              your browser.
+            </p>
 
-        <section className="reveal reveal-delay-1 mx-auto mt-8 max-w-2xl">
-          <HomeShortenDock size="hero" />
-        </section>
+            <div className="reveal reveal-delay-1 mt-8 max-w-xl">
+              <HomeShortenDock size="hero" />
+            </div>
 
-        <ul className="reveal reveal-delay-1 mx-auto mt-6 flex max-w-2xl flex-wrap items-center justify-center gap-x-8 gap-y-3">
-          {TRUST.map((t) => {
-            const Icon = t.icon;
-            return (
-              <li key={t.label} className="flex items-center gap-2 text-sm">
-                <span className="shrink-0 text-[var(--accent)]">
-                  <Icon size={18} weight="duotone" />
-                </span>
-                <span>
-                  <span className="font-medium text-[var(--ink)]">{t.label}</span>
-                  <span className="text-[var(--muted)]"> · {t.detail}</span>
-                </span>
-              </li>
-            );
-          })}
-        </ul>
+            <ul className="reveal reveal-delay-1 mt-6 flex flex-wrap gap-x-8 gap-y-3">
+              {TRUST.map((t) => {
+                const Icon = t.icon;
+                return (
+                  <li key={t.label} className="flex items-center gap-2 text-sm">
+                    <span className="shrink-0 text-[var(--accent)]">
+                      <Icon size={18} weight="duotone" />
+                    </span>
+                    <span>
+                      <span className="font-medium text-[var(--ink)]">
+                        {t.label}
+                      </span>
+                      <span className="text-[var(--muted)]"> · {t.detail}</span>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          <div className="reveal reveal-delay-2 flex justify-center lg:justify-end">
+            <HomeGlobeTease size="hero" />
+          </div>
+        </section>
 
         <section className="mt-20 reveal reveal-delay-2 md:mt-24">
           <div className="mb-5 flex items-end justify-between gap-4">

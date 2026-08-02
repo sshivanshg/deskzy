@@ -21,6 +21,8 @@ interface GlobeAnalyticsProps {
   markers?: AnalyticsMarker[];
   className?: string;
   speed?: number;
+  /** Floating visitor chips — hide on tight layouts to avoid overflow */
+  showLabels?: boolean;
 }
 
 const defaultMarkers: AnalyticsMarker[] = [
@@ -40,6 +42,7 @@ export function GlobeAnalytics({
   markers: initialMarkers = defaultMarkers,
   className = "",
   speed = 0.003,
+  showLabels = true,
 }: GlobeAnalyticsProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointerInteracting = useRef<{ x: number; y: number } | null>(null);
@@ -187,69 +190,75 @@ export function GlobeAnalytics({
   }, [initialMarkers, speed]);
 
   return (
-    <div className={`relative aspect-square select-none ${className}`}>
+    <div
+      className={`relative aspect-square max-w-full select-none overflow-hidden ${className}`}
+    >
       <canvas
         ref={canvasRef}
         onPointerDown={handlePointerDown}
         style={{
           width: "100%",
           height: "100%",
+          maxWidth: "100%",
           cursor: "grab",
           opacity: 0,
           transition: "opacity 1.2s ease",
           borderRadius: "50%",
           touchAction: "none",
+          display: "block",
         }}
       />
-      {data.map((m) => (
-        <div
-          key={m.id}
-          style={
-            {
-              position: "absolute",
-              positionAnchor: `--cobe-${m.id}`,
-              bottom: "anchor(top)",
-              left: "anchor(center)",
-              translate: "-50% 0",
-              marginBottom: 6,
-              display: "flex",
-              alignItems: "baseline",
-              gap: "0.35rem",
-              padding: "0.3rem 0.5rem",
-              background: "rgba(26, 28, 25, 0.88)",
-              borderRadius: 6,
-              pointerEvents: "none",
-              whiteSpace: "nowrap",
-              opacity: `var(--cobe-visible-${m.id}, 0)`,
-              filter: `blur(calc((1 - var(--cobe-visible-${m.id}, 0)) * 8px))`,
-              transition: "opacity 0.3s, filter 0.3s",
-            } as CSSProperties
-          }
-        >
-          <span
-            style={{
-              fontFamily: "ui-monospace, monospace",
-              fontSize: "0.85rem",
-              fontWeight: 600,
-              color: "#fff",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            {m.visitors.toLocaleString("en-IN")}
-          </span>
-          <span
-            style={{
-              fontFamily: "ui-monospace, monospace",
-              fontSize: "0.55rem",
-              fontWeight: 500,
-              letterSpacing: "0.02em",
-              color: m.trend >= 0 ? "#6ee7b7" : "#fca5a5",
-            }}
-          >
-            {m.trend >= 0 ? "↑" : "↓"} {Math.abs(m.trend)}%
-          </span>
-        </div>
-      ))}
+      {showLabels
+        ? data.map((m) => (
+            <div
+              key={m.id}
+              className="hidden sm:flex"
+              style={
+                {
+                  position: "absolute",
+                  positionAnchor: `--cobe-${m.id}`,
+                  bottom: "anchor(top)",
+                  left: "anchor(center)",
+                  translate: "-50% 0",
+                  marginBottom: 6,
+                  alignItems: "baseline",
+                  gap: "0.35rem",
+                  padding: "0.3rem 0.5rem",
+                  background: "rgba(26, 28, 25, 0.88)",
+                  borderRadius: 6,
+                  pointerEvents: "none",
+                  whiteSpace: "nowrap",
+                  opacity: `var(--cobe-visible-${m.id}, 0)`,
+                  filter: `blur(calc((1 - var(--cobe-visible-${m.id}, 0)) * 8px))`,
+                  transition: "opacity 0.3s, filter 0.3s",
+                } as CSSProperties
+              }
+            >
+              <span
+                style={{
+                  fontFamily: "ui-monospace, monospace",
+                  fontSize: "0.85rem",
+                  fontWeight: 600,
+                  color: "#fff",
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                {m.visitors.toLocaleString("en-IN")}
+              </span>
+              <span
+                style={{
+                  fontFamily: "ui-monospace, monospace",
+                  fontSize: "0.55rem",
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  color: m.trend >= 0 ? "#6ee7b7" : "#fca5a5",
+                }}
+              >
+                {m.trend >= 0 ? "↑" : "↓"} {Math.abs(m.trend)}%
+              </span>
+            </div>
+          ))
+        : null}
     </div>
   );
 }

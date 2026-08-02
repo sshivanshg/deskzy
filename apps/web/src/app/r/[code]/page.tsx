@@ -41,9 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const title = destOg.title || host;
     const description =
       destOg.description || `Shared via ${SITE_NAME} · ${host}`;
-    const images = destOg.image
-      ? [{ url: destOg.image, alt: title }]
-      : undefined;
+    const imageUrl = destOg.image;
 
     return {
       title,
@@ -56,14 +54,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         url,
         siteName: destOg.siteName || SITE_NAME,
         type: "website",
-        ...(images ? { images } : { images: [] }),
+        images: imageUrl ? [{ url: imageUrl, alt: title }] : [],
       },
-      twitter: {
-        card: destOg.image ? "summary_large_image" : "summary",
-        title,
-        description,
-        ...(images ? { images: [destOg.image] } : { images: [] }),
-      },
+      twitter: imageUrl
+        ? {
+            card: "summary_large_image",
+            title,
+            description,
+            images: [imageUrl],
+          }
+        : {
+            card: "summary",
+            title,
+            description,
+            images: [],
+          },
     };
   }
 

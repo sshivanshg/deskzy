@@ -59,11 +59,12 @@ test.describe("Link tools", () => {
   test("bio-link exports html download", async ({ page }) => {
     await gotoTool(page, "bio-link");
     await page.getByPlaceholder("Alex Chen").fill("Deskzy");
-    const linkCards = page.locator(".rounded-2xl.border").filter({
-      has: page.getByPlaceholder("Label"),
-    });
+    const linkCards = page.locator("[data-bio-block='link']");
     await linkCards.nth(0).getByPlaceholder("Label").fill("Site");
-    await linkCards.nth(0).getByPlaceholder("https://").fill("https://deskzy.xyz");
+    await linkCards
+      .nth(0)
+      .getByPlaceholder("https://")
+      .fill("https://deskzy.xyz");
     await page.getByRole("button", { name: /Download HTML/i }).click();
     await expectDone(page);
     await expect(page.getByRole("link", { name: /Download/i })).toBeVisible();

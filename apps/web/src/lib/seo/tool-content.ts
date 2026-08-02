@@ -507,18 +507,18 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
   },
   "bio-link": {
     intro:
-      "Build a simple link-in-bio page in your browser. Add a title, up to eight links, pick a theme, preview on a phone frame, then download standalone HTML or copy Markdown — Deskzy does not host the page.",
+      "Build a link-in-bio page in your browser. Add a profile, unlimited rich blocks, customize the theme, preview live, then download standalone HTML, Markdown, or JSON — Deskzy does not host the page.",
     steps: [
-      "Enter your title and add labeled links (reorder as needed).",
-      "Choose a theme and preview the phone layout.",
-      "Download HTML to host anywhere, or copy Markdown for docs.",
+      "Add your profile (photo, name, bio) and unlimited link, social, embed, section, or image blocks.",
+      "Customize colors, background, button style, and fonts — preview updates as you type.",
+      "Download self-contained HTML to host anywhere, or copy Markdown / JSON. Drafts save in your browser only.",
     ],
     privacy:
-      "Everything stays in your browser. Downloaded HTML is yours to host; Deskzy does not create public bio URLs in this tool.",
+      "Everything stays in your browser. Avatars and images are embedded as base64 in your export; Deskzy does not create public bio URLs or upload your content.",
     faqs: [
       {
         q: "Is this a Linktree alternative?",
-        a: "It is a private builder that exports HTML — a lightweight Linktree-style page without an account or Deskzy hosting.",
+        a: "It is a private builder that exports HTML — a Linktree-style page without an account or Deskzy hosting.",
       },
       {
         q: "Where do I publish the page?",
@@ -526,11 +526,11 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
       },
       {
         q: "How many links can I add?",
-        a: "Up to eight links in this version, with up/down reorder controls.",
+        a: "Unlimited. Add link buttons, social icon rows, embeds, section headers, and images — drag to reorder.",
       },
       {
         q: "Is bio link creator free?",
-        a: "Yes. Free export with no signup.",
+        a: "Yes. Free export with no signup. Nothing is uploaded to Deskzy.",
       },
     ],
   },

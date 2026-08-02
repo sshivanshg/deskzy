@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { AccountDashboard } from "@/components/AccountDashboard";
 import { isPaidActive, type SubscriptionRow } from "@/lib/entitlements";
@@ -24,19 +25,24 @@ function statusLabel(paid: boolean, status: string | undefined): string {
 export default async function AccountPage({
   searchParams,
 }: {
-  searchParams: Promise<{ upgraded?: string; joined?: string }>;
+  searchParams: Promise<{ upgraded?: string; joined?: string; tab?: string }>;
 }) {
   const params = await searchParams;
   let user = null as { id: string; email?: string } | null;
   let sub: SubscriptionRow | null = null;
   let configured = true;
 
+  const nextPath =
+    params.tab && params.tab.length > 0
+      ? `/account?tab=${encodeURIComponent(params.tab)}`
+      : "/account";
+
   try {
     const supabase = await createClient();
     const {
       data: { user: u },
     } = await supabase.auth.getUser();
-    if (!u) redirect("/login?next=/account");
+    if (!u) redirect(`/login?next=${encodeURIComponent(nextPath)}`);
     user = { id: u.id, email: u.email ?? undefined };
 
     const { data } = await supabase
@@ -73,15 +79,23 @@ export default async function AccountPage({
         : "Free";
 
   return (
-    <AccountDashboard
-      email={user.email || "member"}
-      paid={paid}
-      planLabel={planLabel}
-      statusLabel={statusLabel(paid, sub?.status)}
-      seats={sub?.seats ?? 1}
-      billingCycle={(sub?.billing_cycle as BillingCycle | null) ?? null}
-      periodEnd={sub?.current_period_end ?? null}
-      flash={params.upgraded ? "upgraded" : params.joined ? "joined" : null}
-    />
+    <Suspense
+      fallback={
+        <div className="mx-auto max-w-6xl px-4 py-12 text-sm text-[var(--muted)]">
+          Loading account…
+        </div>
+      }
+    >
+      <AccountDashboard
+        email={user.email || "member"}
+        paid={paid}
+        planLabel={planLabel}
+        statusLabel={statusLabel(paid, sub?.status)}
+        seats={sub?.seats ?? 1}
+        billingCycle={(sub?.billing_cycle as BillingCycle | null) ?? null}
+        periodEnd={sub?.current_period_end ?? null}
+        flash={params.upgraded ? "upgraded" : params.joined ? "joined" : null}
+      />
+    </Suspense>
   );
 }

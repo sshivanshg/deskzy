@@ -992,26 +992,73 @@ export function BioLinkBuilder({ options, setOptions }: OptionsProps) {
                   </div>
                 </Field>
               ) : (
-                <Field label="Text color">
+                <Field label="Muted / tagline">
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
-                      value={config.theme.textColor}
+                      value={config.theme.mutedColor}
                       onChange={(e) =>
-                        updateTheme({ textColor: e.target.value })
+                        updateTheme({ mutedColor: e.target.value })
                       }
                       className="h-10 w-12 cursor-pointer rounded-lg border border-[var(--stroke)] bg-transparent p-1"
-                      aria-label="Text color"
+                      aria-label="Muted color"
                     />
                     <input
-                      value={config.theme.textColor}
+                      value={config.theme.mutedColor}
                       onChange={(e) =>
-                        updateTheme({ textColor: e.target.value })
+                        updateTheme({ mutedColor: e.target.value })
                       }
                       className="field !rounded-xl !py-2 font-mono text-xs"
                     />
                   </div>
                 </Field>
+              )}
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Text color">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={config.theme.textColor}
+                    onChange={(e) =>
+                      updateTheme({ textColor: e.target.value })
+                    }
+                    className="h-10 w-12 cursor-pointer rounded-lg border border-[var(--stroke)] bg-transparent p-1"
+                    aria-label="Text color"
+                  />
+                  <input
+                    value={config.theme.textColor}
+                    onChange={(e) =>
+                      updateTheme({ textColor: e.target.value })
+                    }
+                    className="field !rounded-xl !py-2 font-mono text-xs"
+                  />
+                </div>
+              </Field>
+              {config.theme.bgMode === "gradient" ? (
+                <Field label="Muted / tagline">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={config.theme.mutedColor}
+                      onChange={(e) =>
+                        updateTheme({ mutedColor: e.target.value })
+                      }
+                      className="h-10 w-12 cursor-pointer rounded-lg border border-[var(--stroke)] bg-transparent p-1"
+                      aria-label="Muted color"
+                    />
+                    <input
+                      value={config.theme.mutedColor}
+                      onChange={(e) =>
+                        updateTheme({ mutedColor: e.target.value })
+                      }
+                      className="field !rounded-xl !py-2 font-mono text-xs"
+                    />
+                  </div>
+                </Field>
+              ) : (
+                <span />
               )}
             </div>
 

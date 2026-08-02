@@ -88,7 +88,7 @@ function AnalyticsTease({ hero }: { hero: boolean }) {
           {hero ? (
             <div className="mt-3 flex flex-wrap gap-2">
               <Link
-                href="/login?next=/account%3Ftab%3Danalytics"
+                href="/account?tab=analytics"
                 className="btn-primary !rounded-full !px-4 !py-2 text-xs"
               >
                 <ChartLineUp size={14} weight="bold" />
@@ -104,7 +104,7 @@ function AnalyticsTease({ hero }: { hero: boolean }) {
             </div>
           ) : (
             <Link
-              href="/login?next=/account%3Ftab%3Danalytics"
+              href="/account?tab=analytics"
               className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent)] underline-offset-2 hover:underline"
             >
               <ChartLineUp size={13} weight="bold" />

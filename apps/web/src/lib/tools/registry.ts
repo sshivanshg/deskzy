@@ -329,10 +329,10 @@ export const TOOLS: ToolDefinition[] = [
     name: "Bio Link Creator",
     category: "links",
     description:
-      "Build a simple link-in-bio page in your browser — themes, reorder links, download HTML.",
+      "Build a private link-in-bio page — profile, rich blocks, live preview, download HTML.",
     seoTitle: "Bio link creator free — link in bio page builder",
     seoDescription:
-      "Create a link-in-bio page with themes and up to 8 links. Preview live, copy Markdown, or download standalone HTML. Private — nothing is hosted or stored.",
+      "Create a link-in-bio page with profile photo, unlimited blocks, themes, and live preview. Copy Markdown or JSON, or download standalone HTML. Private — nothing is hosted or uploaded.",
     runtime: "browser",
     input: "form",
     aliases: [

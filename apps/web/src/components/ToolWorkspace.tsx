@@ -59,7 +59,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
   );
   const [options, setOptions] = useState<Record<string, string>>(() => {
     if (tool.slug === "whatsapp-link") return { country: "IN", dial: "91" };
-    if (tool.slug === "bio-link") return { theme: "deskzy", format: "html" };
+    if (tool.slug === "bio-link") return { theme: "custom", format: "html" };
     if (tool.slug === "url-shortener") return { slug: "" };
     if (tool.slug === "compress-image") {
       return {
@@ -164,7 +164,10 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
           setResultUrl(url);
           setResultName(out.download.filename);
         }
-        if (tool.slug === "bio-link" && override?.format === "markdown") {
+        if (
+          tool.slug === "bio-link" &&
+          (override?.format === "markdown" || override?.format === "json")
+        ) {
           try {
             await navigator.clipboard.writeText(out.text);
             setCopied(true);
@@ -206,7 +209,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         : tool.slug === "whatsapp-link"
           ? Boolean(options.phone?.trim())
           : tool.slug === "bio-link"
-            ? Boolean(options.linksJson)
+            ? options.canExport === "1"
             : true
       : tool.input === "text"
         ? tool.slug === "uuid-generator" ||
@@ -356,7 +359,19 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                   className="btn-secondary"
                   onClick={() => onRun({ format: "markdown" })}
                 >
-                  {copied ? "Copied Markdown" : "Copy Markdown"}
+                  {copied && options.format === "markdown"
+                    ? "Copied Markdown"
+                    : "Copy Markdown"}
+                </button>
+                <button
+                  type="button"
+                  disabled={!canRun || busy}
+                  className="btn-secondary"
+                  onClick={() => onRun({ format: "json" })}
+                >
+                  {copied && options.format === "json"
+                    ? "Copied JSON"
+                    : "Copy as JSON"}
                 </button>
               </>
             ) : (

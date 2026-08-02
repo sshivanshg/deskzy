@@ -335,21 +335,21 @@ function sanitizeBlock(raw: unknown): BioBlock | null {
 /** Migrate legacy {id,label,url}[] into blocks */
 function migrateLegacyLinks(raw: unknown): BioBlock[] {
   if (!Array.isArray(raw)) return [];
-  return raw
-    .map((item) => {
-      if (!isPlainObject(item)) return null;
-      return {
-        id: asString(item.id) || createBlockId(),
-        type: "link" as const,
-        label: asString(item.label),
-        url: asString(item.url),
-        urls: [],
-        text: "",
-        imageData: "",
-        imageAlt: "",
-      };
-    })
-    .filter((b): b is BioBlock => Boolean(b));
+  const blocks: BioBlock[] = [];
+  for (const item of raw) {
+    if (!isPlainObject(item)) continue;
+    blocks.push({
+      id: asString(item.id) || createBlockId(),
+      type: "link",
+      label: asString(item.label),
+      url: asString(item.url),
+      urls: [],
+      text: "",
+      imageData: "",
+      imageAlt: "",
+    });
+  }
+  return blocks;
 }
 
 export function parseBioConfig(raw: string | unknown): BioPageConfig | null {
@@ -458,6 +458,7 @@ export function configToToolOptions(config: BioPageConfig): Record<string, strin
     ),
     theme: "custom",
     format: "html",
+    canExport: canExportBio(config) ? "1" : "0",
   };
 }
 
@@ -592,7 +593,7 @@ function verifiedBadgeSvg(color: string): string {
   return `<svg class="bio-verified" viewBox="0 0 24 24" width="18" height="18" fill="${color}" aria-label="Verified"><path d="M12 2l2.1 1.2 2.4-.3.9 2.2 2.2.9-.3 2.4L21 12l-1.2 2.1.3 2.4-2.2.9-.9 2.2-2.4-.3L12 22l-2.1-1.2-2.4.3-.9-2.2-2.2-.9.3-2.4L2 12l1.2-2.1-.3-2.4 2.2-.9.9-2.2 2.4.3L12 2zm-1.2 12.1 5-5 1.4 1.4-6.4 6.4-3.5-3.5 1.4-1.4 2.1 2.1z"/></svg>`;
 }
 
-function renderBlockHtml(block: BioBlock, theme: BioThemeConfig): string {
+function renderBlockHtml(block: BioBlock): string {
   switch (block.type) {
     case "link": {
       const href = escapeHtml(normalizeBioUrl(block.url));
@@ -662,7 +663,7 @@ export function renderBioHtml(config: BioPageConfig): string {
     ? verifiedBadgeSvg(theme.buttonBg)
     : "";
   const blocks = exportableBlocks(config)
-    .map((b) => renderBlockHtml(b, theme))
+    .map((b) => renderBlockHtml(b))
     .filter(Boolean)
     .join("\n");
   const font = BIO_FONT_PAIRINGS[theme.fontPairing]?.family || BIO_FONT_PAIRINGS.clean.family;

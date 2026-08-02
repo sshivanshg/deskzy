@@ -8,6 +8,7 @@ import {
   LockSimple,
   Sparkle,
 } from "@phosphor-icons/react";
+import { ClippedAreaChart } from "@/components/ui/advanced-stats-utils/charts";
 import { formatInr, PRO_MONTHLY_INR } from "@/lib/pricing";
 import { shortenUrl } from "@/lib/tools/text";
 
@@ -23,46 +24,17 @@ function looksLikeUrl(value: string): boolean {
   }
 }
 
-const SPARK = [4, 7, 6, 10, 9, 14, 12, 18, 16, 22, 20, 26];
-
-function MiniSparkline({ className }: { className?: string }) {
-  const w = 160;
-  const h = 48;
-  const max = Math.max(...SPARK);
-  const points = SPARK.map((v, i) => {
-    const x = (i / (SPARK.length - 1)) * w;
-    const y = h - 4 - (v / max) * (h - 8);
-    return `${x},${y}`;
-  }).join(" ");
-  const area = `0,${h} ${points} ${w},${h}`;
-
-  return (
-    <svg
-      viewBox={`0 0 ${w} ${h}`}
-      className={className}
-      aria-hidden
-      preserveAspectRatio="none"
-    >
-      <polygon points={area} fill="var(--accent)" opacity="0.18" />
-      <polyline
-        points={points}
-        fill="none"
-        stroke="var(--accent)"
-        strokeWidth="2.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 /** Compact mobile tease — light, one CTA, no dark slab */
 function AnalyticsTeaseMobile() {
   return (
     <div className="mt-3 rounded-2xl border border-[var(--stroke)] bg-white p-3.5">
       <div className="flex items-start gap-3">
         <div className="relative h-12 w-[4.5rem] shrink-0 overflow-hidden rounded-xl border border-[var(--stroke)] bg-[var(--accent-soft)]/60">
-          <MiniSparkline className="h-full w-full" />
+          <ClippedAreaChart
+            compact
+            showAxes={false}
+            className="!aspect-auto h-full min-h-0 w-full [&_.recharts-wrapper]:!h-full"
+          />
           <span className="absolute inset-x-0 bottom-1 flex justify-center">
             <span className="rounded-full bg-[var(--accent)] px-1.5 py-px text-[8px] font-semibold uppercase tracking-wide text-white">
               Pro
@@ -142,13 +114,17 @@ function AnalyticsTeaseDesktop() {
           className="relative overflow-hidden rounded-xl border border-[var(--stroke)] bg-[var(--accent-soft)]/50 p-3"
           aria-hidden
         >
-          <div className="mb-1.5 flex items-center justify-between text-[10px] text-[var(--muted)]">
+          <div className="mb-1.5 flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
             <span>Clicks · 30d</span>
-            <span className="rounded-full bg-[var(--accent)] px-1.5 py-0.5 font-semibold text-white">
+            <span className="rounded-full bg-[var(--accent)] px-1.5 py-0.5 font-semibold normal-case tracking-normal text-white">
               +18%
             </span>
           </div>
-          <MiniSparkline className="h-14 w-full" />
+          <ClippedAreaChart
+            compact
+            showAxes={false}
+            className="min-h-[56px] !aspect-[2.6/1]"
+          />
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white/35 backdrop-blur-[1.5px]">
             <span className="inline-flex items-center gap-1 rounded-full border border-[var(--stroke)] bg-white px-2.5 py-1 text-[10px] font-semibold text-[var(--ink)] shadow-sm">
               <LockSimple size={10} weight="bold" />

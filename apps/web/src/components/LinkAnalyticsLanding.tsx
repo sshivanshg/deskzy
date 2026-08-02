@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   ChartLineUp,
@@ -13,6 +13,8 @@ import {
   Devices,
   ShareNetwork,
 } from "@phosphor-icons/react";
+import { ClippedAreaChart } from "@/components/ui/advanced-stats-utils/charts";
+import { GlobeAnalytics } from "@/components/ui/cobe-globe-analytics";
 import { ProCheckoutButton } from "@/components/ProCheckoutButton";
 import {
   formatInr,
@@ -21,9 +23,13 @@ import {
   proEffectiveMonthlyInr,
 } from "@/lib/pricing";
 
-const DEMO_VALUES = [
-  42, 55, 48, 71, 63, 88, 92, 76, 105, 98, 112, 124, 118, 140, 132, 155, 148,
-  162, 171, 158, 180, 175, 192, 188, 205, 198, 220, 214, 238, 246,
+const LANDING_GEO_MARKERS = [
+  { id: "in", location: [19.08, 72.88] as [number, number], visitors: 1596, trend: 12 },
+  { id: "us", location: [40.71, -74.01] as [number, number], visitors: 924, trend: 8 },
+  { id: "gb", location: [51.51, -0.13] as [number, number], visitors: 378, trend: -2 },
+  { id: "de", location: [52.52, 13.41] as [number, number], visitors: 294, trend: 5 },
+  { id: "sg", location: [1.35, 103.82] as [number, number], visitors: 252, trend: 15 },
+  { id: "ae", location: [25.2, 55.27] as [number, number], visitors: 210, trend: 4 },
 ];
 
 const FEATURES = [
@@ -39,8 +45,8 @@ const FEATURES = [
   },
   {
     icon: GlobeHemisphereWest,
-    title: "Live click feed",
-    body: "Watch opens as they happen so you can react while the moment is still hot.",
+    title: "Click geography",
+    body: "Watch opens land on a live globe — cities, countries, and trends as campaigns heat up.",
   },
   {
     icon: Devices,
@@ -48,63 +54,6 @@ const FEATURES = [
     body: "deskzy.xyz/your-brand instead of random codes — trust that converts.",
   },
 ];
-
-function DemoChart() {
-  const gradId = useId();
-  const w = 640;
-  const h = 200;
-  const padX = 8;
-  const padY = 14;
-  const max = Math.max(...DEMO_VALUES);
-  const min = Math.min(...DEMO_VALUES);
-  const range = Math.max(1, max - min);
-
-  const points = DEMO_VALUES.map((v, i) => {
-    const x = padX + (i / (DEMO_VALUES.length - 1)) * (w - padX * 2);
-    const y = h - padY - ((v - min) / range) * (h - padY * 2);
-    return [x, y] as const;
-  });
-
-  const line = points.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`).join(" ");
-  const area = `${line} L${points[points.length - 1][0]},${h - padY} L${points[0][0]},${h - padY} Z`;
-
-  return (
-    <svg
-      viewBox={`0 0 ${w} ${h}`}
-      className="h-auto w-full"
-      role="img"
-      aria-label="Sample 30-day click chart"
-    >
-      <defs>
-        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.32" />
-          <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.02" />
-        </linearGradient>
-      </defs>
-      {[0.25, 0.5, 0.75].map((t) => (
-        <line
-          key={t}
-          x1={padX}
-          x2={w - padX}
-          y1={padY + t * (h - padY * 2)}
-          y2={padY + t * (h - padY * 2)}
-          stroke="var(--stroke)"
-          strokeDasharray="4 6"
-          strokeWidth="1"
-        />
-      ))}
-      <path d={area} fill={`url(#${gradId})`} />
-      <path
-        d={line}
-        fill="none"
-        stroke="var(--accent)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 
 export function LinkAnalyticsLanding({ loggedIn = false }: { loggedIn?: boolean }) {
   const [visible, setVisible] = useState(false);
@@ -187,7 +136,22 @@ export function LinkAnalyticsLanding({ loggedIn = false }: { loggedIn?: boolean 
                 </span>
               </div>
               <div className="mt-4">
-                <DemoChart />
+                <ClippedAreaChart compact showAxes={false} className="min-h-[120px]" />
+              </div>
+              <div className="mt-3 flex items-center gap-3 rounded-xl border border-[var(--stroke)]/80 bg-[var(--surface)]/40 px-2 py-2">
+                <GlobeAnalytics
+                  markers={LANDING_GEO_MARKERS}
+                  className="w-[72px] shrink-0"
+                  speed={0.004}
+                />
+                <div className="min-w-0">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+                    Click geography
+                  </p>
+                  <p className="mt-0.5 text-sm font-semibold tracking-tight text-[var(--ink)]">
+                    Live from 6 countries
+                  </p>
+                </div>
               </div>
               <ul className="mt-4 grid grid-cols-3 gap-2 border-t border-[var(--stroke)] pt-4 text-center">
                 {[
@@ -196,10 +160,10 @@ export function LinkAnalyticsLanding({ loggedIn = false }: { loggedIn?: boolean 
                   { label: "Direct", value: "18%" },
                 ].map((r) => (
                   <li key={r.label}>
-                    <p className="font-display text-lg font-semibold tabular-nums">
+                    <p className="font-display text-lg font-semibold tabular-nums tracking-tight text-[var(--ink)]">
                       {r.value}
                     </p>
-                    <p className="text-[10px] uppercase tracking-wide text-[var(--muted)]">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
                       {r.label}
                     </p>
                   </li>
@@ -250,6 +214,51 @@ export function LinkAnalyticsLanding({ loggedIn = false }: { loggedIn?: boolean 
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* Region showoff */}
+      <section className="mt-20 md:mt-28">
+        <div className="grid items-center gap-10 md:grid-cols-2 md:gap-14">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+              Click geography
+            </p>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+              See where your audience actually is
+            </h2>
+            <p className="mt-3 max-w-md text-base leading-relaxed text-[var(--muted)]">
+              Pro maps every redirect to cities and countries so you know which
+              markets are warming up — drag the globe, watch live visitor chips.
+            </p>
+            <ul className="mt-6 grid grid-cols-2 gap-2 text-sm sm:max-w-sm">
+              {[
+                { name: "India", share: "38%" },
+                { name: "United States", share: "22%" },
+                { name: "United Kingdom", share: "9%" },
+                { name: "Germany", share: "7%" },
+              ].map((c) => (
+                <li
+                  key={c.name}
+                  className="rounded-xl border border-[var(--stroke)] bg-white/70 px-3 py-2.5"
+                >
+                  <span className="font-semibold text-[var(--ink)]">{c.name}</span>
+                  <span className="ml-1.5 tabular-nums text-[var(--muted)]">
+                    {c.share}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="shell">
+            <div className="shell-core flex justify-center p-4 md:p-6">
+              <GlobeAnalytics
+                markers={LANDING_GEO_MARKERS}
+                className="w-full max-w-[320px] md:max-w-[380px]"
+                speed={0.0025}
+              />
+            </div>
+          </div>
         </div>
       </section>
 

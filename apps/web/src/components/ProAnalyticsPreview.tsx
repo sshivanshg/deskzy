@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useMemo } from "react";
+import { useMemo } from "react";
 import {
   ChartLineUp,
   Desktop,
@@ -13,6 +13,12 @@ import {
   QrCode,
   Sparkle,
 } from "@phosphor-icons/react";
+import { ClippedAreaChart } from "@/components/ui/advanced-stats-utils/charts";
+import { Badge } from "@/components/ui/badge";
+import {
+  GlobeAnalytics,
+  type AnalyticsMarker,
+} from "@/components/ui/cobe-globe-analytics";
 import {
   formatInr,
   PRO_MONTHLY_INR,
@@ -28,21 +34,29 @@ type ProAnalyticsPreviewProps = {
   liveLinks?: number;
 };
 
-const CLICKS_30D = [
-  42, 55, 48, 71, 63, 88, 92, 76, 105, 98, 112, 124, 118, 140, 132, 155, 148,
-  162, 171, 158, 180, 175, 192, 188, 205, 198, 220, 214, 238, 246,
+const COUNTRIES: {
+  code: string;
+  name: string;
+  share: number;
+  location: [number, number];
+  trend: number;
+}[] = [
+  { code: "IN", name: "India", share: 38, location: [19.08, 72.88], trend: 12 },
+  { code: "US", name: "United States", share: 22, location: [40.71, -74.01], trend: 8 },
+  { code: "GB", name: "United Kingdom", share: 9, location: [51.51, -0.13], trend: -2 },
+  { code: "DE", name: "Germany", share: 7, location: [52.52, 13.41], trend: 5 },
+  { code: "SG", name: "Singapore", share: 6, location: [1.35, 103.82], trend: 15 },
+  { code: "AE", name: "UAE", share: 5, location: [25.2, 55.27], trend: 4 },
+  { code: "BR", name: "Brazil", share: 4, location: [-23.55, -46.63], trend: -1 },
+  { code: "CA", name: "Canada", share: 3, location: [43.65, -79.38], trend: 3 },
 ];
 
-const COUNTRIES: { code: string; name: string; share: number; x: number; y: number }[] = [
-  { code: "IN", name: "India", share: 38, x: 68, y: 48 },
-  { code: "US", name: "United States", share: 22, x: 22, y: 38 },
-  { code: "GB", name: "United Kingdom", share: 9, x: 48, y: 32 },
-  { code: "DE", name: "Germany", share: 7, x: 51, y: 34 },
-  { code: "SG", name: "Singapore", share: 6, x: 74, y: 58 },
-  { code: "AE", name: "UAE", share: 5, x: 60, y: 46 },
-  { code: "BR", name: "Brazil", share: 4, x: 32, y: 62 },
-  { code: "CA", name: "Canada", share: 3, x: 20, y: 28 },
-];
+const GEO_MARKERS: AnalyticsMarker[] = COUNTRIES.map((c) => ({
+  id: c.code.toLowerCase(),
+  location: c.location,
+  visitors: Math.round(c.share * 42),
+  trend: c.trend,
+}));
 
 const DEVICES = [
   { label: "Mobile", value: 58, color: "var(--accent)" },
@@ -77,66 +91,6 @@ function ProBadge() {
       <LockSimple size={10} weight="bold" />
       Pro
     </span>
-  );
-}
-
-function AreaChart({ values }: { values: number[] }) {
-  const gradId = useId();
-  const w = 640;
-  const h = 220;
-  const padX = 8;
-  const padY = 16;
-  const max = Math.max(...values);
-  const min = Math.min(...values);
-  const range = Math.max(1, max - min);
-
-  const points = values.map((v, i) => {
-    const x = padX + (i / (values.length - 1)) * (w - padX * 2);
-    const y = h - padY - ((v - min) / range) * (h - padY * 2);
-    return [x, y] as const;
-  });
-
-  const line = points.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`).join(" ");
-  const area = `${line} L${points[points.length - 1][0]},${h - padY} L${points[0][0]},${h - padY} Z`;
-
-  return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="h-auto w-full" role="img" aria-label="Clicks over the last 30 days">
-      <defs>
-        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.02" />
-        </linearGradient>
-      </defs>
-      {[0.25, 0.5, 0.75].map((t) => (
-        <line
-          key={t}
-          x1={padX}
-          x2={w - padX}
-          y1={padY + t * (h - padY * 2)}
-          y2={padY + t * (h - padY * 2)}
-          stroke="var(--stroke)"
-          strokeDasharray="4 6"
-          strokeWidth="1"
-        />
-      ))}
-      <path d={area} fill={`url(#${gradId})`} />
-      <path
-        d={line}
-        fill="none"
-        stroke="var(--accent)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle
-        cx={points[points.length - 1][0]}
-        cy={points[points.length - 1][1]}
-        r="5"
-        fill="var(--accent)"
-        stroke="white"
-        strokeWidth="2"
-      />
-    </svg>
   );
 }
 
@@ -208,36 +162,17 @@ function DonutChart() {
 
 function WorldHeatmap() {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--surface)]/50 p-3">
-      <svg viewBox="0 0 100 70" className="h-auto w-full opacity-90" aria-hidden>
-        <rect width="100" height="70" fill="transparent" />
-        {/* Simplified land silhouettes */}
-        <ellipse cx="22" cy="36" rx="14" ry="12" fill="color-mix(in srgb, var(--ink) 8%, transparent)" />
-        <ellipse cx="32" cy="58" rx="8" ry="10" fill="color-mix(in srgb, var(--ink) 7%, transparent)" />
-        <ellipse cx="52" cy="34" rx="10" ry="9" fill="color-mix(in srgb, var(--ink) 8%, transparent)" />
-        <ellipse cx="68" cy="42" rx="16" ry="14" fill="color-mix(in srgb, var(--ink) 9%, transparent)" />
-        <ellipse cx="78" cy="58" rx="7" ry="6" fill="color-mix(in srgb, var(--ink) 6%, transparent)" />
-        {COUNTRIES.map((c) => {
-          const r = 2.2 + (c.share / 38) * 4.5;
-          return (
-            <g key={c.code}>
-              <circle
-                cx={c.x}
-                cy={c.y}
-                r={r * 1.8}
-                fill="var(--accent)"
-                opacity={0.12 + c.share / 120}
-              />
-              <circle cx={c.x} cy={c.y} r={r * 0.55} fill="var(--accent)" />
-            </g>
-          );
-        })}
-      </svg>
-      <ul className="mt-2 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+    <div className="relative overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--surface)]/40 p-3 md:p-4">
+      <GlobeAnalytics
+        markers={GEO_MARKERS}
+        className="mx-auto w-full max-w-[260px] sm:max-w-[300px]"
+        speed={0.0025}
+      />
+      <ul className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
         {COUNTRIES.slice(0, 4).map((c) => (
           <li
             key={c.code}
-            className="rounded-lg bg-white/70 px-2 py-1.5 text-[11px] text-[var(--muted)]"
+            className="rounded-lg bg-white/80 px-2 py-1.5 text-[11px] text-[var(--muted)]"
           >
             <span className="font-semibold text-[var(--ink)]">{c.name}</span>
             <span className="ml-1 tabular-nums">{c.share}%</span>
@@ -364,20 +299,23 @@ export function ProAnalyticsPreview({
           ))}
         </div>
 
-        {/* Main chart — visible */}
+        {/* Main chart — AdvancedStats clipped area */}
         <section className="mt-4 rounded-2xl border border-[var(--stroke)] bg-white/70 p-4 md:p-5">
           <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
             <div>
-              <h3 className="font-display text-lg font-semibold tracking-tight">
+              <h3 className="font-display text-lg font-semibold tracking-tight text-[var(--ink)]">
                 Clicks over time
               </h3>
               <p className="text-xs text-[var(--muted)]">Last 30 days · sample campaign</p>
             </div>
-            <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--accent)]">
+            <Badge
+              variant="secondary"
+              className="rounded-full border-0 bg-[var(--accent-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--accent)]"
+            >
               +18% vs prior period
-            </span>
+            </Badge>
           </div>
-          <AreaChart values={CLICKS_30D} />
+          <ClippedAreaChart />
         </section>
 
         {/* Premium widgets grid — partially locked when free */}

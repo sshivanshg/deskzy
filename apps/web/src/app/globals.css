@@ -20,11 +20,33 @@
   --ease: cubic-bezier(0.32, 0.72, 0, 1);
   --radius-shell: 1.75rem;
   --radius-core: 1.35rem;
+
+  /* Minimal shadcn/chart token bridges → Deskzy */
+  --background: var(--bg-elevated);
+  --foreground: var(--ink);
+  --muted-foreground: var(--muted);
+  --border: var(--stroke);
+  --primary: var(--accent);
+  --primary-foreground: #f7faf8;
+  --secondary: var(--accent-soft);
+  --secondary-foreground: var(--accent-ink);
+  --card: var(--bg-elevated);
+  --card-foreground: var(--ink);
+  --ring: var(--accent);
 }
 
 @theme inline {
   --color-background: var(--bg);
   --color-foreground: var(--ink);
+  --color-muted-foreground: var(--muted);
+  --color-border: var(--stroke);
+  --color-primary: var(--accent);
+  --color-primary-foreground: #f7faf8;
+  --color-secondary: var(--accent-soft);
+  --color-secondary-foreground: var(--accent-ink);
+  --color-card: var(--bg-elevated);
+  --color-card-foreground: var(--ink);
+  --color-ring: var(--accent);
   --font-sans: var(--font-body);
   --font-display: var(--font-display);
 }

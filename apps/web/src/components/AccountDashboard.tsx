@@ -20,6 +20,7 @@ import {
 } from "@phosphor-icons/react";
 import { formatInr, PRO_FEATURES, proUnitInr, type BillingCycle } from "@/lib/pricing";
 import { CONTACT_X_URL } from "@/lib/seo/site";
+import { ProAnalyticsPreview } from "@/components/ProAnalyticsPreview";
 import { SignOutButton } from "@/components/SignOutButton";
 
 type LinkRow = {
@@ -57,7 +58,7 @@ export type AccountDashboardProps = {
   flash?: "upgraded" | "joined" | null;
 };
 
-type Tab = "overview" | "links" | "team" | "presets";
+type Tab = "overview" | "links" | "analytics" | "team" | "presets";
 
 function initials(email: string) {
   const local = email.split("@")[0] || "D";
@@ -222,6 +223,11 @@ export function AccountDashboard(props: AccountDashboardProps) {
       label: "Links",
       hint: links.length ? String(links.length) : undefined,
     },
+    {
+      id: "analytics",
+      label: "Analytics",
+      hint: paid ? undefined : "Pro",
+    },
     ...(paid
       ? [
           {
@@ -239,7 +245,7 @@ export function AccountDashboard(props: AccountDashboardProps) {
   ];
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 md:py-14">
+    <div className="mx-auto max-w-6xl px-4 py-10 md:py-14">
       {flash === "upgraded" ? (
         <div className="mb-6 flex items-start gap-3 rounded-2xl border border-[var(--accent)]/20 bg-[var(--ok-bg)] px-4 py-3 text-sm text-[var(--ok-ink)]">
           <CheckCircle size={20} weight="fill" />
@@ -423,6 +429,7 @@ export function AccountDashboard(props: AccountDashboardProps) {
             seatCap={seatCap}
             onOpenLinks={() => setTab("links")}
             onOpenTeam={() => setTab("team")}
+            onOpenAnalytics={() => setTab("analytics")}
           />
         ) : null}
 
@@ -439,6 +446,15 @@ export function AccountDashboard(props: AccountDashboardProps) {
               markCopied(key);
             }}
             onStats={(code) => void loadStats(code)}
+            onOpenAnalytics={() => setTab("analytics")}
+          />
+        ) : null}
+
+        {tab === "analytics" ? (
+          <ProAnalyticsPreview
+            locked={!paid}
+            liveClicks={totalClicks}
+            liveLinks={links.length}
           />
         ) : null}
 
@@ -498,6 +514,7 @@ function OverviewTab({
   seatCap,
   onOpenLinks,
   onOpenTeam,
+  onOpenAnalytics,
 }: {
   paid: boolean;
   loading: boolean;
@@ -508,6 +525,7 @@ function OverviewTab({
   seatCap: number;
   onOpenLinks: () => void;
   onOpenTeam: () => void;
+  onOpenAnalytics: () => void;
 }) {
   return (
     <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
@@ -560,6 +578,28 @@ function OverviewTab({
       </section>
 
       <div className="space-y-4">
+        {!paid ? (
+          <button
+            type="button"
+            onClick={onOpenAnalytics}
+            className="shell w-full text-left transition hover:opacity-95"
+          >
+            <div className="shell-core flex items-start gap-4 p-5">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[var(--accent)] text-white">
+                <ChartLine size={20} weight="bold" />
+              </span>
+              <span className="min-w-0">
+                <span className="font-display text-base font-semibold tracking-tight text-[var(--ink)]">
+                  Preview Pro Analytics
+                </span>
+                <span className="mt-1 block text-sm text-[var(--muted)]">
+                  Geography, referrers, devices, and live clicks — from{" "}
+                  {formatInr(proUnitInr("monthly"))}/mo
+                </span>
+              </span>
+            </div>
+          </button>
+        ) : null}
         <div className="grid grid-cols-2 gap-3">
           <StatCard
             label="Owned links"
@@ -682,6 +722,7 @@ function LinksTab({
   copied,
   onCopy,
   onStats,
+  onOpenAnalytics,
 }: {
   paid: boolean;
   loading: boolean;
@@ -691,6 +732,7 @@ function LinksTab({
   copied: string | null;
   onCopy: (code: string, key: string) => Promise<void>;
   onStats: (code: string) => void;
+  onOpenAnalytics: () => void;
 }) {
   if (loading) {
     return (
@@ -792,12 +834,21 @@ function LinksTab({
           )}
 
           {!paid ? (
-            <p className="mt-5 rounded-xl bg-[var(--accent-soft)]/60 px-3 py-2 text-sm text-[var(--accent-ink)]">
-              <Link href="/pricing" className="font-semibold underline-offset-2 hover:underline">
+            <div className="mt-5 flex flex-col gap-2 rounded-xl bg-[var(--accent-soft)]/60 px-3 py-3 text-sm text-[var(--accent-ink)] sm:flex-row sm:items-center sm:justify-between">
+              <p>
+                Want geography, referrers, and live click feeds?{" "}
+                <button
+                  type="button"
+                  onClick={onOpenAnalytics}
+                  className="font-semibold underline-offset-2 hover:underline"
+                >
+                  Preview Pro Analytics
+                </button>
+              </p>
+              <Link href="/pricing" className="btn-primary !rounded-full !px-4 !py-2 text-xs">
                 Upgrade to Pro
-              </Link>{" "}
-              for custom slugs and 7-day click charts.
-            </p>
+              </Link>
+            </div>
           ) : null}
         </div>
       </section>

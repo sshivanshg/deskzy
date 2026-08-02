@@ -48,10 +48,9 @@ export function HomeGlobeTease({ size = "compact" }: HomeGlobeTeaseProps) {
             Live geography · from {formatInr(PRO_MONTHLY_INR)}/mo
           </p>
         </div>
-        <ArrowRight
-          size={16}
-          className="shrink-0 text-[var(--muted)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-[var(--accent)]"
-        />
+        <span className="shrink-0 text-[var(--muted)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-[var(--accent)]">
+          <ArrowRight size={16} />
+        </span>
       </Link>
     );
   }

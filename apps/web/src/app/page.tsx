@@ -169,10 +169,9 @@ export default function HomePage() {
                       {uc.hint}
                     </span>
                   </span>
-                  <ArrowRight
-                    size={14}
-                    className="shrink-0 text-[var(--muted)]"
-                  />
+                  <span className="shrink-0 text-[var(--muted)]">
+                    <ArrowRight size={14} />
+                  </span>
                 </Link>
               </li>
             ))}
@@ -201,10 +200,9 @@ export default function HomePage() {
                       {uc.hint}
                     </span>
                   </span>
-                  <ArrowRight
-                    size={14}
-                    className="shrink-0 text-[var(--muted)]"
-                  />
+                  <span className="shrink-0 text-[var(--muted)]">
+                    <ArrowRight size={14} />
+                  </span>
                 </Link>
               </li>
             ))}

@@ -154,7 +154,9 @@ function DonutChart() {
                   style={{ background: d.color }}
                   aria-hidden
                 />
-                <Icon size={15} weight="duotone" className="shrink-0" />
+                <span className="shrink-0">
+                  <Icon size={15} weight="duotone" />
+                </span>
                 {d.label}
               </span>
               <span className="font-semibold tabular-nums text-[var(--ink)]">{d.value}%</span>
@@ -338,7 +340,9 @@ export function ProAnalyticsPreview({
             >
               <div className="mb-3 flex items-center justify-between gap-2">
                 <h3 className="inline-flex min-w-0 items-center gap-2 font-display text-base font-semibold tracking-tight">
-                  <GlobeHemisphereWest size={18} weight="duotone" className="shrink-0" />
+                  <span className="shrink-0">
+                    <GlobeHemisphereWest size={18} weight="duotone" />
+                  </span>
                   <span className="truncate">Click geography</span>
                 </h3>
                 {locked ? <ProBadge /> : null}

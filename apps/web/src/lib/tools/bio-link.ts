@@ -431,13 +431,13 @@ export function configFromToolOptions(
   // Legacy seed from title/subtitle/linksJson/theme
   const base = defaultBioConfig();
   if (options.linksJson) {
-    const links = migrateLegacyLinks(() => {
-      try {
-        return JSON.parse(options.linksJson);
-      } catch {
-        return [];
-      }
-    }());
+    let parsed: unknown = [];
+    try {
+      parsed = JSON.parse(options.linksJson);
+    } catch {
+      parsed = [];
+    }
+    const links = migrateLegacyLinks(parsed);
     if (links.length) base.blocks = links;
   }
   if (options.title) base.profile.displayName = options.title;

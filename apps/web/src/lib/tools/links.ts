@@ -128,6 +128,50 @@ export function runWhatsAppLink(options: Record<string, string>): TextResult {
   };
 }
 
+// Bio link — re-export from dedicated module (keeps existing import paths working)
+export {
+  BIO_FONT_PAIRINGS,
+  BIO_STORAGE_KEY,
+  BIO_THEME_PRESETS,
+  canExportBio,
+  clearBioDraft,
+  configFromToolOptions,
+  configToToolOptions,
+  createBlock,
+  createBlockId,
+  defaultBioConfig,
+  detectSocialPlatform,
+  escapeHtml,
+  exportableBlocks,
+  fileToDataUrl,
+  isDefaultLookingConfig,
+  isExportableBlock,
+  isSpotifyUrl,
+  isValidBioUrl,
+  loadBioDraft,
+  normalizeBioUrl,
+  parseBioConfig,
+  parseYoutubeId,
+  renderBioHtml,
+  renderBioJson,
+  renderBioMarkdown,
+  runBioLink,
+  saveBioDraft,
+  spotifyEmbedUrl,
+  validateBlock,
+  blockHasErrors,
+  type BioBgMode,
+  type BioBlock,
+  type BioBlockType,
+  type BioButtonStyle,
+  type BioFontPairing,
+  type BioPageConfig,
+  type BioSocialPlatform,
+  type BioThemeConfig,
+  type BlockValidation,
+} from "./bio-link";
+
+/** @deprecated Use BioBlock / BioPageConfig — kept for any leftover callers */
 export type BioLinkItem = { id: string; label: string; url: string };
 export type BioTheme = "deskzy" | "light" | "dark";
 
@@ -161,15 +205,6 @@ export const BIO_THEMES: Record<
   },
 };
 
-export function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
 export function parseBioLinks(raw: string): BioLinkItem[] {
   if (!raw.trim()) return [];
   try {
@@ -192,84 +227,4 @@ export function validBioLinks(links: BioLinkItem[]): BioLinkItem[] {
       return false;
     }
   });
-}
-
-export function renderBioMarkdown(opts: {
-  title: string;
-  subtitle?: string;
-  links: BioLinkItem[];
-}): string {
-  const links = validBioLinks(opts.links);
-  const lines = [`# ${opts.title.trim() || "Links"}`];
-  if (opts.subtitle?.trim()) lines.push("", opts.subtitle.trim());
-  lines.push("");
-  for (const l of links) {
-    lines.push(`- [${l.label.trim()}](${normalizeBaseUrl(l.url)})`);
-  }
-  return lines.join("\n");
-}
-
-export function renderBioHtml(opts: {
-  title: string;
-  subtitle?: string;
-  links: BioLinkItem[];
-  theme: BioTheme;
-}): string {
-  const theme = BIO_THEMES[opts.theme] || BIO_THEMES.deskzy;
-  const title = escapeHtml(opts.title.trim() || "Links");
-  const subtitle = opts.subtitle?.trim()
-    ? `<p style="margin:8px 0 28px;color:${theme.muted};font-size:15px;line-height:1.5">${escapeHtml(opts.subtitle.trim())}</p>`
-    : `<div style="height:20px"></div>`;
-  const links = validBioLinks(opts.links)
-    .map((l) => {
-      const href = escapeHtml(normalizeBaseUrl(l.url));
-      const label = escapeHtml(l.label.trim());
-      return `<a href="${href}" style="display:block;margin:0 0 12px;padding:14px 18px;border-radius:999px;background:${theme.btn};color:${theme.btnInk};text-decoration:none;font-weight:600;font-size:15px">${label}</a>`;
-    })
-    .join("\n");
-
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>${title}</title>
-</head>
-<body style="margin:0;min-height:100vh;background:${theme.bg};color:${theme.ink};font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
-<main style="max-width:420px;margin:0 auto;padding:48px 20px 64px;text-align:center">
-<h1 style="margin:0;font-size:28px;letter-spacing:-0.03em">${title}</h1>
-${subtitle}
-${links || `<p style="color:${theme.muted}">Add at least one link</p>`}
-</main>
-</body>
-</html>`;
-}
-
-export function runBioLink(
-  options: Record<string, string>,
-  format: "html" | "markdown" = "html",
-): TextResult {
-  const links = parseBioLinks(options.linksJson || "[]");
-  const title = options.title || "";
-  const subtitle = options.subtitle || "";
-  const theme = (options.theme as BioTheme) || "deskzy";
-  const valid = validBioLinks(links);
-  if (valid.length === 0) {
-    throw new Error("Add at least one link with a label and valid URL");
-  }
-
-  if (format === "markdown") {
-    return {
-      text: renderBioMarkdown({ title, subtitle, links }),
-      meta: { links: valid.length, format: "markdown" },
-    };
-  }
-
-  const html = renderBioHtml({ title, subtitle, links, theme });
-  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-  return {
-    text: html,
-    download: { blob, filename: "bio-link.html" },
-    meta: { links: valid.length, theme, format: "html" },
-  };
 }

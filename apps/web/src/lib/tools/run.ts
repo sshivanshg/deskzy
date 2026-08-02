@@ -133,7 +133,7 @@ export async function runTool(
         kind: "text",
         ...runBioLink(
           options,
-          (options.format as "html" | "markdown") || "html",
+          (options.format as "html" | "markdown" | "json") || "html",
         ),
       };
     case "url-encode":

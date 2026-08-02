@@ -42,6 +42,12 @@ export function SiteFooter() {
                   Pricing
                 </Link>
                 <Link
+                  href="/link-analytics"
+                  className="text-sm font-medium text-[var(--ink)] underline-offset-4 hover:underline"
+                >
+                  Link analytics
+                </Link>
+                <Link
                   href="/guides"
                   className="text-sm text-[var(--muted)] underline-offset-4 hover:text-[var(--ink)] hover:underline"
                 >

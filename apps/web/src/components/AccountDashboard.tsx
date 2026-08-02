@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowSquareOut,
   ChartLine,
@@ -60,6 +61,13 @@ export type AccountDashboardProps = {
 
 type Tab = "overview" | "links" | "analytics" | "team" | "presets";
 
+const TAB_IDS: Tab[] = ["overview", "links", "analytics", "team", "presets"];
+
+function parseTab(raw: string | null): Tab | null {
+  if (!raw) return null;
+  return TAB_IDS.includes(raw as Tab) ? (raw as Tab) : null;
+}
+
 function initials(email: string) {
   const local = email.split("@")[0] || "D";
   const parts = local.split(/[._-]+/).filter(Boolean);
@@ -102,7 +110,26 @@ export function AccountDashboard(props: AccountDashboardProps) {
     flash,
   } = props;
 
-  const [tab, setTab] = useState<Tab>("overview");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialTab = parseTab(searchParams.get("tab"));
+  const [tab, setTabState] = useState<Tab>(
+    initialTab && (initialTab === "team" || initialTab === "presets") && !paid
+      ? "analytics"
+      : initialTab ?? "overview",
+  );
+
+  const setTab = useCallback(
+    (next: Tab) => {
+      setTabState(next);
+      const params = new URLSearchParams(searchParams.toString());
+      if (next === "overview") params.delete("tab");
+      else params.set("tab", next);
+      const qs = params.toString();
+      router.replace(qs ? `/account?${qs}` : "/account", { scroll: false });
+    },
+    [router, searchParams],
+  );
   const [links, setLinks] = useState<LinkRow[]>([]);
   const [invites, setInvites] = useState<InviteRow[]>([]);
   const [presets, setPresets] = useState<PresetRow[]>([]);
@@ -113,11 +140,6 @@ export function AccountDashboard(props: AccountDashboardProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
-  const [selectedCode, setSelectedCode] = useState<string | null>(null);
-  const [stats, setStats] = useState<{
-    last7: { day: string; clicks: number }[];
-    clicks30: number;
-  } | null>(null);
 
   const name = useMemo(() => displayName(email), [email]);
   const avatar = useMemo(() => initials(email), [email]);
@@ -165,19 +187,6 @@ export function AccountDashboard(props: AccountDashboardProps) {
   const markCopied = (key: string) => {
     setCopied(key);
     window.setTimeout(() => setCopied(null), 1400);
-  };
-
-  const loadStats = async (code: string) => {
-    setSelectedCode(code);
-    setStats(null);
-    setTab("links");
-    const res = await fetch(`/api/links/${encodeURIComponent(code)}/stats`);
-    if (!res.ok) return;
-    const data = (await res.json()) as {
-      last7: { day: string; clicks: number }[];
-      clicks30: number;
-    };
-    setStats({ last7: data.last7, clicks30: data.clicks30 });
   };
 
   const sendInvite = async () => {
@@ -438,15 +447,11 @@ export function AccountDashboard(props: AccountDashboardProps) {
             paid={paid}
             loading={loading}
             links={links}
-            selectedCode={selectedCode}
-            stats={stats}
             copied={copied}
             onCopy={async (code, key) => {
               await copyText(`${window.location.origin}/r/${code}`);
               markCopied(key);
             }}
-            onStats={(code) => void loadStats(code)}
-            onOpenAnalytics={() => setTab("analytics")}
           />
         ) : null}
 
@@ -717,22 +722,14 @@ function LinksTab({
   paid,
   loading,
   links,
-  selectedCode,
-  stats,
   copied,
   onCopy,
-  onStats,
-  onOpenAnalytics,
 }: {
   paid: boolean;
   loading: boolean;
   links: LinkRow[];
-  selectedCode: string | null;
-  stats: { last7: { day: string; clicks: number }[]; clicks30: number } | null;
   copied: string | null;
   onCopy: (code: string, key: string) => Promise<void>;
-  onStats: (code: string) => void;
-  onOpenAnalytics: () => void;
 }) {
   if (loading) {
     return (
@@ -811,22 +808,19 @@ function LinksTab({
                     </span>
                     <button
                       type="button"
-                      className="inline-flex items-center gap-1 rounded-full border border-[var(--stroke)] px-2.5 py-1 text-xs font-medium hover:border-[var(--stroke-strong)]"
+                      className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-[var(--stroke)] px-3.5 py-2 text-xs font-medium hover:border-[var(--stroke-strong)] active:scale-[0.98]"
                       onClick={() => void onCopy(l.code, l.code)}
                     >
-                      <CopySimple size={12} weight="bold" />
+                      <CopySimple size={14} weight="bold" />
                       {copied === l.code ? "Copied" : "Copy"}
                     </button>
-                    {paid ? (
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-1 rounded-full border border-[var(--stroke)] px-2.5 py-1 text-xs font-medium text-[var(--accent)] hover:border-[var(--accent)]/40"
-                        onClick={() => onStats(l.code)}
-                      >
-                        <ChartLine size={12} weight="bold" />
-                        Stats
-                      </button>
-                    ) : null}
+                    <Link
+                      href={`/account/links/${encodeURIComponent(l.code)}`}
+                      className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-[var(--accent)]/35 bg-[var(--accent-soft)]/50 px-3.5 py-2 text-xs font-semibold text-[var(--accent)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--accent-soft)] active:scale-[0.98]"
+                    >
+                      <ChartLine size={14} weight="bold" />
+                      Stats
+                    </Link>
                   </div>
                 </li>
               ))}
@@ -837,56 +831,23 @@ function LinksTab({
             <div className="mt-5 flex flex-col gap-2 rounded-xl bg-[var(--accent-soft)]/60 px-3 py-3 text-sm text-[var(--accent-ink)] sm:flex-row sm:items-center sm:justify-between">
               <p>
                 Want geography, referrers, and live click feeds?{" "}
-                <button
-                  type="button"
-                  onClick={onOpenAnalytics}
+                <Link
+                  href="/link-analytics"
                   className="font-semibold underline-offset-2 hover:underline"
                 >
-                  Preview Pro Analytics
-                </button>
+                  See Pro Analytics
+                </Link>
               </p>
-              <Link href="/pricing" className="btn-primary !rounded-full !px-4 !py-2 text-xs">
+              <Link
+                href="/link-analytics#upgrade"
+                className="btn-primary !rounded-full !px-4 !py-2 text-xs"
+              >
                 Upgrade to Pro
               </Link>
             </div>
           ) : null}
         </div>
       </section>
-
-      {paid && selectedCode && stats ? (
-        <section className="shell">
-          <div className="shell-core p-5 md:p-6">
-            <div className="flex flex-wrap items-end justify-between gap-2">
-              <div>
-                <h3 className="font-display text-lg font-semibold">
-                  /r/{selectedCode}
-                </h3>
-                <p className="mt-1 text-sm text-[var(--muted)]">
-                  {stats.clicks30} clicks in the last 30 days
-                </p>
-              </div>
-            </div>
-            <div className="mt-5 flex h-28 items-end gap-2">
-              {stats.last7.map((d) => {
-                const max = Math.max(1, ...stats.last7.map((x) => x.clicks));
-                const h = Math.round((d.clicks / max) * 96) + 8;
-                return (
-                  <div key={d.day} className="flex h-full flex-1 flex-col justify-end gap-1.5">
-                    <div
-                      className="w-full rounded-t-md bg-[var(--accent)]/85 transition-[height]"
-                      style={{ height: h }}
-                      title={`${d.day}: ${d.clicks}`}
-                    />
-                    <span className="text-center text-[10px] tabular-nums text-[var(--muted)]">
-                      {d.day.slice(8)}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      ) : null}
     </div>
   );
 }

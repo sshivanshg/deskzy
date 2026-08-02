@@ -326,7 +326,7 @@ export function ProAnalyticsPreview({
         </div>
         {locked ? (
           <Link
-            href="/pricing"
+            href="/link-analytics#upgrade"
             className="btn-primary shrink-0 !rounded-full !px-5 shadow-[0_0_0_4px_var(--accent-soft)] transition-transform active:scale-[0.98]"
           >
             <Sparkle size={16} weight="fill" />
@@ -554,14 +554,14 @@ export function ProAnalyticsPreview({
                     Starting at {pricingHint}
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Link href="/pricing" className="btn-primary flex-1 !rounded-full sm:flex-none">
+                    <Link href="/link-analytics#upgrade" className="btn-primary flex-1 !rounded-full sm:flex-none">
                       Upgrade to Pro
                     </Link>
                     <Link
-                      href="/pricing"
+                      href="/link-analytics"
                       className="btn-secondary flex-1 !rounded-full sm:flex-none"
                     >
-                      Compare plans
+                      See analytics page
                     </Link>
                   </div>
                 </div>

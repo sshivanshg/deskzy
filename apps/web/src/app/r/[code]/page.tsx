@@ -1,14 +1,94 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LinkHop } from "@/components/LinkHop";
+import { fetchDestOpenGraph } from "@/lib/dest-og";
 import { getLink } from "@/lib/links-store";
+import { absoluteUrl, SITE_NAME } from "@/lib/seo/site";
 
 type Props = { params: Promise<{ code: string }> };
 
-export const metadata: Metadata = {
-  title: "Open link",
-  robots: { index: false, follow: false },
-};
+function splitDest(dest: string): { host: string; rest: string } {
+  try {
+    const u = new URL(dest);
+    const rest = `${u.pathname === "/" ? "" : u.pathname}${u.search}${u.hash}`;
+    return { host: u.host, rest: rest || "/" };
+  } catch {
+    return { host: dest, rest: "" };
+  }
+}
+
+/**
+ * Social unfurl strategy for plain short links:
+ * 1. Prefer the *destination* Open Graph card (what sharers expect).
+ * 2. If dest has no usable preview, emit minimal meta (host only) and no image —
+ *    never fall back to the Deskzy homepage OG card.
+ */
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { code } = await params;
+  const link = await getLink(code);
+  if (!link) {
+    return {
+      title: "Link not found",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const { host } = splitDest(link.dest);
+  const url = absoluteUrl(`/r/${link.code}`);
+  const destOg = await fetchDestOpenGraph(link.dest);
+
+  if (destOg && (destOg.title || destOg.description || destOg.image)) {
+    const title = destOg.title || host;
+    const description =
+      destOg.description || `Shared via ${SITE_NAME} · ${host}`;
+    const images = destOg.image
+      ? [{ url: destOg.image, alt: title }]
+      : undefined;
+
+    return {
+      title,
+      description,
+      robots: { index: false, follow: false },
+      alternates: { canonical: url },
+      openGraph: {
+        title,
+        description,
+        url,
+        siteName: destOg.siteName || SITE_NAME,
+        type: "website",
+        ...(images ? { images } : { images: [] }),
+      },
+      twitter: {
+        card: destOg.image ? "summary_large_image" : "summary",
+        title,
+        description,
+        ...(images ? { images: [destOg.image] } : { images: [] }),
+      },
+    };
+  }
+
+  // No destination preview — keep unfurl minimal (no Deskzy marketing image).
+  return {
+    title: host,
+    description: host,
+    robots: { index: false, follow: false },
+    alternates: { canonical: url },
+    openGraph: {
+      title: host,
+      description: host,
+      url,
+      siteName: SITE_NAME,
+      type: "website",
+      images: [],
+    },
+    twitter: {
+      card: "summary",
+      title: host,
+      description: host,
+      images: [],
+    },
+  };
+}
 
 export default async function ShortLinkHopPage({ params }: Props) {
   const { code } = await params;

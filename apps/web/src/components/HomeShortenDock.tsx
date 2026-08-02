@@ -25,9 +25,15 @@ function looksLikeUrl(value: string): boolean {
 
 const SPARK = [4, 7, 6, 10, 9, 14, 12, 18, 16, 22, 20, 26];
 
+const TEASE_STATS = [
+  { label: "Clicks", value: "1.2k" },
+  { label: "Countries", value: "18" },
+  { label: "Top src", value: "IG" },
+] as const;
+
 function MiniSparkline({ className }: { className?: string }) {
-  const w = 120;
-  const h = 36;
+  const w = 160;
+  const h = 48;
   const max = Math.max(...SPARK);
   const points = SPARK.map((v, i) => {
     const x = (i / (SPARK.length - 1)) * w;
@@ -43,12 +49,12 @@ function MiniSparkline({ className }: { className?: string }) {
       aria-hidden
       preserveAspectRatio="none"
     >
-      <polygon points={area} fill="var(--accent)" opacity="0.18" />
+      <polygon points={area} fill="var(--accent)" opacity="0.2" />
       <polyline
         points={points}
         fill="none"
         stroke="var(--accent)"
-        strokeWidth="2"
+        strokeWidth="2.25"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -59,73 +65,86 @@ function MiniSparkline({ className }: { className?: string }) {
 function AnalyticsTease({ hero }: { hero: boolean }) {
   return (
     <div
-      className={`mt-3 overflow-hidden rounded-xl border border-[var(--accent)]/20 bg-white/80 ${
-        hero ? "p-4" : "p-3"
+      className={`mt-3 overflow-hidden rounded-2xl border border-[var(--ink)]/10 bg-[var(--ink)] text-white ${
+        hero ? "p-4 sm:p-5" : "p-3.5"
       }`}
     >
-      <div className={`flex gap-3 ${hero ? "items-center" : "items-start"}`}>
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
-              <LockSimple size={11} weight="bold" />
-              Pro analytics
-            </span>
-            <span className="text-[10px] text-[var(--muted)]">
-              From {formatInr(PRO_MONTHLY_INR)}/mo
-            </span>
-          </div>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/90">
+          <LockSimple size={11} weight="bold" />
+          Pro analytics
+        </span>
+        <span className="text-[11px] font-medium text-white/65">
+          From {formatInr(PRO_MONTHLY_INR)}/mo
+        </span>
+      </div>
+
+      <div className={`mt-3 grid gap-3 ${hero ? "sm:grid-cols-[1.15fr_0.85fr] sm:items-end" : ""}`}>
+        <div className="min-w-0">
           <p
-            className={`mt-1 font-semibold tracking-tight text-[var(--ink)] ${
-              hero ? "font-display text-base" : "text-sm"
+            className={`font-display font-semibold tracking-tight text-white ${
+              hero ? "text-xl leading-snug" : "text-base"
             }`}
           >
             See who clicks this link
           </p>
-          <p className="mt-0.5 text-xs leading-relaxed text-[var(--muted)]">
-            Countries, devices, Instagram vs WhatsApp — unlock the full
-            dashboard.
+          <p className="mt-1 text-xs leading-relaxed text-white/70 sm:text-sm">
+            Cities, devices, Instagram vs WhatsApp — know what converts.
           </p>
-          {hero ? (
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Link
-                href="/account?tab=analytics"
-                className="btn-primary !rounded-full !px-4 !py-2 text-xs"
+
+          <div className={`mt-3 grid grid-cols-3 gap-2 ${hero ? "max-w-sm" : ""}`}>
+            {TEASE_STATS.map((s) => (
+              <div
+                key={s.label}
+                className="rounded-xl border border-white/10 bg-white/5 px-2.5 py-2"
               >
-                <ChartLineUp size={14} weight="bold" />
-                Preview dashboard
-              </Link>
-              <Link
-                href="/pricing"
-                className="btn-secondary !rounded-full !px-4 !py-2 text-xs"
-              >
-                <Sparkle size={14} weight="fill" />
-                Upgrade to Pro
-              </Link>
-            </div>
-          ) : (
+                <p className="text-[10px] uppercase tracking-[0.12em] text-white/55">
+                  {s.label}
+                </p>
+                <p className="mt-0.5 font-display text-lg font-semibold tabular-nums tracking-tight">
+                  {s.value}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className={`mt-3.5 flex flex-wrap gap-2 ${hero ? "" : ""}`}>
             <Link
-              href="/account?tab=analytics"
-              className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent)] underline-offset-2 hover:underline"
+              href="/link-analytics"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-semibold text-[var(--ink)] transition hover:bg-white/90 active:scale-[0.98]"
             >
-              <ChartLineUp size={13} weight="bold" />
-              Preview analytics
+              <ChartLineUp size={14} weight="bold" />
+              Preview dashboard
             </Link>
-          )}
+            <Link
+              href="/pricing"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-white/25 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10 active:scale-[0.98]"
+            >
+              <Sparkle size={14} weight="fill" />
+              Upgrade
+            </Link>
+          </div>
         </div>
-        <div
-          className={`relative shrink-0 overflow-hidden rounded-lg border border-[var(--stroke)] bg-[var(--accent-soft)]/50 ${
-            hero ? "h-16 w-28" : "h-12 w-20"
-          }`}
-          aria-hidden
-        >
-          <MiniSparkline className="h-full w-full opacity-90" />
-          <span className="pointer-events-none absolute inset-0 backdrop-blur-[1.5px]" />
-          <span className="absolute inset-0 flex items-center justify-center">
-            <span className="rounded-full bg-[var(--ink)]/85 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-white">
-              Pro
-            </span>
-          </span>
-        </div>
+
+        {hero ? (
+          <div
+            className="relative hidden overflow-hidden rounded-xl border border-white/10 bg-white/5 p-3 sm:block"
+            aria-hidden
+          >
+            <div className="mb-2 flex items-center justify-between text-[10px] text-white/55">
+              <span>Clicks · 30d</span>
+              <span className="rounded-full bg-[var(--accent)]/90 px-1.5 py-0.5 font-semibold text-white">
+                +18%
+              </span>
+            </div>
+            <MiniSparkline className="h-12 w-full opacity-95" />
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[var(--ink)]/25 backdrop-blur-[1px]">
+              <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--ink)]">
+                Locked preview
+              </span>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

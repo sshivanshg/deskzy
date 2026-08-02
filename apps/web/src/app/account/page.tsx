@@ -22,6 +22,16 @@ function statusLabel(paid: boolean, status: string | undefined): string {
   return status.charAt(0).toUpperCase() + status.slice(1);
 }
 
+function isNextRedirect(err: unknown): boolean {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "digest" in err &&
+    typeof (err as { digest: unknown }).digest === "string" &&
+    (err as { digest: string }).digest.startsWith("NEXT_REDIRECT")
+  );
+}
+
 export default async function AccountPage({
   searchParams,
 }: {
@@ -55,7 +65,9 @@ export default async function AccountPage({
       .limit(1)
       .maybeSingle();
     sub = (data as SubscriptionRow | null) ?? null;
-  } catch {
+  } catch (err) {
+    // redirect() throws — must rethrow or logged-out users see a false "not configured" page
+    if (isNextRedirect(err)) throw err;
     configured = false;
   }
 

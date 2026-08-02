@@ -19,6 +19,7 @@ import {
   wordCount,
 } from "./text";
 import { runBioLink, runUtmBuilder, runWhatsAppLink } from "./links";
+import { convertMedia } from "./media";
 import type { ProcessResult, TextResult } from "./types";
 
 export type RunInput = {
@@ -160,10 +161,14 @@ export async function runTool(
           symbols: options.symbols !== "0",
         }),
       };
+    case "media-converter":
     case "video-to-mp3":
-      throw new Error(
-        "Video to MP3 ships next with ffmpeg.wasm. Architecture is ready — binary wiring is the remaining step.",
-      );
+    case "video-to-wav":
+    case "audio-converter":
+      return {
+        kind: "file",
+        ...(await convertMedia(files[0], slug, options)),
+      };
     default:
       throw new Error("Unknown tool");
   }

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/JsonLd";
 import { PricingPlans } from "@/components/PricingPlans";
 import type { BillingCycle } from "@/lib/pricing";
 import { clampSeats } from "@/lib/pricing";
+import { buildPricingJsonLd } from "@/lib/seo/json-ld";
 import { buildPageMetadata } from "@/lib/seo/site";
 import { createClient } from "@/lib/supabase/server";
 
@@ -40,10 +42,13 @@ export default async function PricingPage({
   }
 
   return (
-    <PricingPlans
-      loggedIn={loggedIn}
-      initialCycle={initialCycle}
-      initialSeats={initialSeats}
-    />
+    <>
+      <JsonLd data={buildPricingJsonLd()} />
+      <PricingPlans
+        loggedIn={loggedIn}
+        initialCycle={initialCycle}
+        initialSeats={initialSeats}
+      />
+    </>
   );
 }

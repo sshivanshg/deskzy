@@ -19,6 +19,13 @@ import {
   IMAGE_PREPARE_PRESETS,
   parseTargetBytes,
 } from "@/lib/tools/image-presets";
+import {
+  defaultOptionsForSlug,
+  formatsForMode,
+  isMediaToolSlug,
+  type MediaFormat,
+  type MediaMode,
+} from "@/lib/tools/media";
 import { freeDailyCap } from "@/lib/entitlements";
 import {
   BioLinkBuilder,
@@ -71,6 +78,10 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         height: "1920",
         keepAspect: "1",
       };
+    }
+    if (isMediaToolSlug(tool.slug)) {
+      const preset = defaultOptionsForSlug(tool.slug);
+      return { mode: preset.mode, format: preset.format };
     }
     return {} as Record<string, string>;
   });
@@ -246,12 +257,13 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="font-display text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl">
+          {/* Visual title only — real H1 is server-rendered outside Suspense for crawlers */}
+          <p className="font-display text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl">
             {tool.name}
             <span className="block text-lg font-normal text-[var(--muted)] md:text-xl">
               Private in your browser
             </span>
-          </h1>
+          </p>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-xs font-semibold text-[var(--accent)]">
             <LockSimple size={12} weight="bold" />
             {privacy}
@@ -531,7 +543,8 @@ function actionLabel(slug: string) {
   if (
     slug.includes("convert") ||
     slug.includes("webp") ||
-    slug.includes("markdown")
+    slug.includes("markdown") ||
+    isMediaToolSlug(slug)
   )
     return "Convert";
   if (slug === "url-shortener") return "Shorten";
@@ -841,6 +854,60 @@ function ToolOptions({
           </button>
         ))}
       </OptionRow>
+    );
+  }
+  if (isMediaToolSlug(slug)) {
+    const defaults = defaultOptionsForSlug(slug);
+    const mode = (options.mode as MediaMode) || defaults.mode;
+    const formats = formatsForMode(mode);
+    const format =
+      (options.format as MediaFormat) && formats.includes(options.format as MediaFormat)
+        ? (options.format as MediaFormat)
+        : formats[0];
+    const modes: { id: MediaMode; label: string }[] = [
+      { id: "video-to-audio", label: "Video → Audio" },
+      { id: "video-to-video", label: "Video → Video" },
+      { id: "audio-to-audio", label: "Audio → Audio" },
+    ];
+    return (
+      <div className="space-y-3">
+        <OptionRow label="Convert">
+          {modes.map((m) => (
+            <button
+              key={m.id}
+              type="button"
+              className="chip"
+              data-active={mode === m.id}
+              onClick={() => {
+                const nextFormats = formatsForMode(m.id);
+                const nextFormat = nextFormats.includes(format)
+                  ? format
+                  : nextFormats[0];
+                setOptions({
+                  ...options,
+                  mode: m.id,
+                  format: nextFormat,
+                });
+              }}
+            >
+              {m.label}
+            </button>
+          ))}
+        </OptionRow>
+        <OptionRow label="Format">
+          {formats.map((f) => (
+            <button
+              key={f}
+              type="button"
+              className="chip"
+              data-active={format === f}
+              onClick={() => set("format", f)}
+            >
+              {f.toUpperCase()}
+            </button>
+          ))}
+        </OptionRow>
+      </div>
     );
   }
   if (slug === "base64" || slug === "url-encode") {

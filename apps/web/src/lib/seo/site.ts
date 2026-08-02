@@ -5,7 +5,7 @@ export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://deskzy.xyz";
 
 export const DEFAULT_DESCRIPTION =
-  "Fast, private file tools in your browser. PDF, image, and text utilities with no signup wall.";
+  "Free URL shortener on deskzy.xyz — plus private PDF and image tools in your browser. No signup. Most files never leave your device. Try Deskzy.";
 
 /** Founder / support contact (X). Prefer a product email later if you add one. */
 export const CONTACT_X_HANDLE = "sshivanshg";

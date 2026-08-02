@@ -681,30 +681,109 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
   },
   "video-to-mp3": {
     intro:
-      "Convert video to MP3 / extract audio in your browser. Deskzy's media pipeline is built for privacy — no signup wall. Full ffmpeg.wasm support is rolling out.",
+      "Convert video to MP3 / extract audio in your browser. Deskzy runs conversion with ffmpeg.wasm on your device — private, free, no signup wall.",
     steps: [
       "Select a video or audio file from your device.",
-      "Start conversion when the browser pipeline is available.",
-      "Download the extracted audio when processing completes.",
+      "Confirm Video → Audio and MP3 (or switch format if you prefer WAV, M4A, or OGG).",
+      "Convert, then download the extracted audio when processing completes.",
     ],
     privacy:
-      "The target design is browser-side conversion so media stays on your device. Check the tool UI for current availability while ffmpeg.wasm ships.",
+      "Conversion runs in your browser with ffmpeg.wasm. Your media stays on your device — nothing is uploaded to a remote converter farm.",
     faqs: [
       {
         q: "Does video to MP3 upload my file?",
-        a: "Deskzy aims for in-browser conversion. Your media should stay local during processing when the WASM pipeline is active.",
+        a: "No. Deskzy converts in-browser. Your media stays local during processing.",
       },
       {
         q: "What formats work?",
-        a: "Common video/audio types supported by your browser can be used as input once conversion is enabled.",
+        a: "Common video containers (MP4, WebM, MOV, and more) work as input. Output audio can be MP3, WAV, M4A, or OGG. Need video-to-video or audio-to-audio? Use Media Converter.",
       },
       {
         q: "Is video to MP3 free?",
-        a: "Yes. Free when available — no account required.",
+        a: "Yes. Free to use — no account required.",
       },
       {
-        q: "Is this ready today?",
-        a: "The tool page is live; full ffmpeg.wasm extraction is the next shipping step. Use the page for status and updates.",
+        q: "Why is the first run slow?",
+        a: "The browser loads the ffmpeg engine (~30 MB) once, then conversions are faster. Keep the tab open for repeat jobs.",
+      },
+    ],
+  },
+  "video-to-wav": {
+    intro:
+      "Extract lossless WAV audio from video in your browser. Private ffmpeg.wasm conversion — free, no signup, files stay on your device.",
+    steps: [
+      "Select a video file from your device.",
+      "Keep Video → Audio and WAV selected (or switch to another audio format).",
+      "Convert and download the WAV when processing finishes.",
+    ],
+    privacy:
+      "Audio extraction runs locally with ffmpeg.wasm. Deskzy does not upload your clips to a remote farm.",
+    faqs: [
+      {
+        q: "Is WAV better than MP3?",
+        a: "WAV is uncompressed — larger files, no lossy compression. Use MP3 when you want a smaller shareable file.",
+      },
+      {
+        q: "Can I convert to other audio formats?",
+        a: "Yes. Switch the format chips to MP3, M4A, or OGG, or open Media Converter for video-to-video as well.",
+      },
+      {
+        q: "Does this upload my video?",
+        a: "No. Processing stays in your browser.",
+      },
+    ],
+  },
+  "audio-converter": {
+    intro:
+      "Convert audio between MP3, WAV, M4A, and OGG in your browser. Private, free, no signup — powered by ffmpeg.wasm on your device.",
+    steps: [
+      "Select an audio file (or a video if you need to extract audio).",
+      "Choose Audio → Audio and your target format.",
+      "Convert and download the result.",
+    ],
+    privacy:
+      "Format conversion runs in-browser. Your audio never leaves your device during processing.",
+    faqs: [
+      {
+        q: "Which formats can I convert between?",
+        a: "MP3, WAV, M4A, and OGG. You can also switch to Video → Audio or Video → Video from the same workspace.",
+      },
+      {
+        q: "Is there a file size limit?",
+        a: "Yes — about 200 MB per file so the browser stays responsive. Shorter clips convert faster.",
+      },
+      {
+        q: "Do I need an account?",
+        a: "No. Audio Converter works without signup.",
+      },
+    ],
+  },
+  "media-converter": {
+    intro:
+      "One flexible media workspace: convert video to audio, video to video, or audio to audio — MP3, WAV, M4A, OGG, MP4, and WebM — privately in your browser.",
+    steps: [
+      "Drop a video or audio file.",
+      "Pick Convert type (Video → Audio, Video → Video, or Audio → Audio) and the output format.",
+      "Convert and download when ffmpeg finishes.",
+    ],
+    privacy:
+      "All conversion runs locally with ffmpeg.wasm. Deskzy does not upload your media to a remote server for this tool.",
+    faqs: [
+      {
+        q: "How is this different from Video to MP3?",
+        a: "Video to MP3 is a focused SEO page that defaults to MP3 extraction. Media Converter exposes every convert type and format in one place.",
+      },
+      {
+        q: "What can I convert?",
+        a: "Video → Audio (MP3, WAV, M4A, OGG), Video → Video (MP4, WebM), and Audio → Audio across the same audio formats.",
+      },
+      {
+        q: "Why does loading take a moment?",
+        a: "The first conversion downloads the ffmpeg engine once (~30 MB). After that, jobs reuse the loaded engine in the same tab.",
+      },
+      {
+        q: "Is Media Converter free?",
+        a: "Yes. Free to use with no account required.",
       },
     ],
   },

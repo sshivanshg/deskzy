@@ -37,9 +37,16 @@ export default async function ToolPage({ params }: Props) {
   const tool = getTool(slug);
   if (!tool) notFound();
 
+  const h1 =
+    tool.slug === "url-shortener"
+      ? "URL shortener free — shorten links online"
+      : tool.seoTitle;
+
   return (
     <>
       <JsonLd data={buildToolJsonLd(tool)} />
+      {/* Server-rendered H1 outside Suspense so crawlers see it without waiting on client JS */}
+      <h1 className="sr-only">{h1}</h1>
       <Suspense
         fallback={
           <div className="mx-auto max-w-6xl px-4 py-12 text-sm text-[var(--muted)]">

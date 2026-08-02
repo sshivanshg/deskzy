@@ -1,7 +1,12 @@
-# Deskzy robots
+# Deskzy robots — allow search indexing of public pages.
+# Cloudflare may append managed rules for specific AI crawlers below this file;
+# those do not block Googlebot or general User-agent *.
+
 User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /r/
+Disallow: /account
+Disallow: /invite/
 
 Sitemap: https://deskzy.xyz/sitemap.xml

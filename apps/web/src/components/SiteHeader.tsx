@@ -19,10 +19,10 @@ import { CONTACT_X_HANDLE, CONTACT_X_URL } from "@/lib/seo/site";
 import { searchTools } from "@/lib/tools/registry";
 
 const NAV = [
-  { href: "/pdf", label: "PDF" },
-  { href: "/media", label: "Media" },
-  { href: "/image", label: "Image" },
   { href: "/links", label: "Links" },
+  { href: "/pdf", label: "PDF" },
+  { href: "/image", label: "Image" },
+  { href: "/media", label: "Media" },
   { href: "/text", label: "Text" },
 ];
 

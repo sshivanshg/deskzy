@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/JsonLd";
+import {
+  buildOrganizationJsonLd,
+  buildWebPageJsonLd,
+} from "@/lib/seo/json-ld";
 import {
   buildPageMetadata,
   CONTACT_X_HANDLE,
@@ -8,10 +13,12 @@ import {
   SITE_URL,
 } from "@/lib/seo/site";
 
+const PRIVACY_DESCRIPTION =
+  "Deskzy privacy policy: browser-first PDF and image tools that do not upload your files, what we store for short links, analytics, cookies, and how to contact us.";
+
 export const metadata: Metadata = buildPageMetadata({
   title: "Privacy Policy — Deskzy",
-  description:
-    "How Deskzy handles data: browser-first file tools, short-link storage, and analytics.",
+  description: PRIVACY_DESCRIPTION,
   path: "/privacy",
 });
 
@@ -20,6 +27,16 @@ const updated = "28 July 2026";
 export default function PrivacyPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 md:py-16">
+      <JsonLd
+        data={[
+          buildOrganizationJsonLd(),
+          buildWebPageJsonLd({
+            name: "Privacy Policy",
+            description: PRIVACY_DESCRIPTION,
+            path: "/privacy",
+          }),
+        ]}
+      />
       <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
         Legal
       </p>

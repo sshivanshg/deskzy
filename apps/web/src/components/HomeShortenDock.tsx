@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { LinkSimple } from "@phosphor-icons/react";
 import { shortenUrl } from "@/lib/tools/text";
 
@@ -17,7 +17,15 @@ function looksLikeUrl(value: string): boolean {
   }
 }
 
-export function HomeShortenDock() {
+type HomeShortenDockProps = {
+  /** compact = mobile dock; hero = larger desktop primary CTA */
+  size?: "compact" | "hero";
+};
+
+export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
+  const inputId = useId();
+  const errorId = useId();
+  const isHero = size === "hero";
   const [url, setUrl] = useState("");
   const [shortUrl, setShortUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -74,26 +82,46 @@ export function HomeShortenDock() {
     }
   };
 
+  const shellClass = isHero
+    ? "rounded-[var(--radius-shell)] border border-[var(--accent)]/28 bg-[var(--accent-soft)] p-5 md:p-6"
+    : "rounded-2xl border border-[var(--accent)]/28 bg-[var(--accent-soft)] p-3.5";
+
   if (shortUrl) {
     return (
-      <div className="rounded-2xl border border-[var(--accent)]/28 bg-[var(--accent-soft)] p-3.5">
-        <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-[var(--accent-ink)]">
-          <LinkSimple size={18} weight="bold" />
+      <div className={shellClass}>
+        <div
+          className={`mb-2 flex items-center gap-2 font-semibold text-[var(--accent-ink)] ${
+            isHero ? "text-base" : "text-sm"
+          }`}
+        >
+          <LinkSimple size={isHero ? 20 : 18} weight="bold" />
           Short link ready
         </div>
-        <p className="mb-3 break-all rounded-xl border border-[var(--stroke)] bg-white px-3 py-2.5 font-mono text-sm text-[var(--ink)]">
+        <p
+          className={`mb-3 break-all rounded-xl border border-[var(--stroke)] bg-white font-mono text-[var(--ink)] ${
+            isHero ? "px-4 py-3 text-base" : "px-3 py-2.5 text-sm"
+          }`}
+        >
           {shortUrl}
         </p>
-        <div className="flex gap-2">
-          <button type="button" className="btn-primary flex-1 !py-2.5" onClick={onCopy}>
+        <div className={`flex gap-2 ${isHero ? "sm:max-w-md" : ""}`}>
+          <button
+            type="button"
+            className={`btn-primary flex-1 ${isHero ? "!py-3" : "!py-2.5"}`}
+            onClick={onCopy}
+          >
             {copied ? "Copied" : "Copy"}
           </button>
-          <button type="button" className="btn-secondary flex-1 !py-2.5" onClick={reset}>
+          <button
+            type="button"
+            className={`btn-secondary flex-1 ${isHero ? "!py-3" : "!py-2.5"}`}
+            onClick={reset}
+          >
             Shorten another
           </button>
         </div>
         {error ? (
-          <p id="home-shorten-copy-error" className="mt-2 text-sm text-[var(--warn-ink)]" role="alert">
+          <p id={errorId} className="mt-2 text-sm text-[var(--warn-ink)]" role="alert">
             {error}
           </p>
         ) : null}
@@ -108,35 +136,47 @@ export function HomeShortenDock() {
   }
 
   return (
-    <div className="rounded-2xl border border-[var(--accent)]/28 bg-[var(--accent-soft)] p-3.5">
-      <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-[var(--accent-ink)]">
-        <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--accent)] text-white">
-          <LinkSimple size={16} weight="bold" />
+    <div className={shellClass}>
+      <div
+        className={`mb-2 flex items-center gap-2 font-semibold text-[var(--accent-ink)] ${
+          isHero ? "mb-3 text-base" : "text-sm"
+        }`}
+      >
+        <span
+          className={`flex items-center justify-center rounded-lg bg-[var(--accent)] text-white ${
+            isHero ? "h-9 w-9 rounded-xl" : "h-7 w-7"
+          }`}
+        >
+          <LinkSimple size={isHero ? 18 : 16} weight="bold" />
         </span>
         Shorten a link
       </div>
-      <div className="flex gap-2">
-        <label className="sr-only" htmlFor="home-shorten-url">
+      <div className={`flex gap-2 ${isHero ? "flex-col sm:flex-row" : ""}`}>
+        <label className="sr-only" htmlFor={inputId}>
           URL to shorten
         </label>
         <input
-          id="home-shorten-url"
+          id={inputId}
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") void onShorten();
           }}
-          placeholder="https://…"
+          placeholder="Paste a long URL…"
           disabled={busy}
-          className="field min-w-0 flex-1 !rounded-xl !py-2.5 !text-base"
+          className={`field min-w-0 flex-1 !rounded-xl !text-base ${
+            isHero ? "!py-3.5" : "!py-2.5"
+          }`}
           autoComplete="url"
           inputMode="url"
           aria-invalid={Boolean(error)}
-          aria-describedby={error ? "home-shorten-error" : undefined}
+          aria-describedby={error ? errorId : undefined}
         />
         <button
           type="button"
-          className="btn-primary shrink-0 !px-4 !py-2.5"
+          className={`btn-primary shrink-0 ${
+            isHero ? "!px-6 !py-3.5 sm:min-w-[8.5rem]" : "!px-4 !py-2.5"
+          }`}
           disabled={busy || !looksLikeUrl(url)}
           onClick={() => void onShorten()}
         >
@@ -144,8 +184,14 @@ export function HomeShortenDock() {
         </button>
       </div>
       {error ? (
-        <p id="home-shorten-error" className="mt-2 text-sm text-[var(--warn-ink)]" role="alert">
+        <p id={errorId} className="mt-2 text-sm text-[var(--warn-ink)]" role="alert">
           {error}
+        </p>
+      ) : null}
+      {isHero ? (
+        <p className="mt-3 text-xs leading-relaxed text-[var(--accent-ink)]/75">
+          Free deskzy.xyz short links. No signup. Only the URL string is sent —
+          never your files.
         </p>
       ) : null}
     </div>

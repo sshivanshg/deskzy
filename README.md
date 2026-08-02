@@ -61,7 +61,7 @@ PDF: merge, split, compress, reorder, PDF→images
 Image: compress, resize, convert, WebP→PNG  
 Text: JSON, Base64, hash, UUID, encode, word count, case, markdown, password  
 Links: URL shortener, QR, UTM builder, WhatsApp link, bio link creator  
-Media: Video→MP3 placeholder (ffmpeg.wasm next)
+Media: Media Converter, Video→MP3/WAV, Audio Converter (ffmpeg.wasm in-browser)
 
 ## Scripts
 

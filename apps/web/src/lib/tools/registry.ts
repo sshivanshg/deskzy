@@ -45,7 +45,8 @@ export const CATEGORIES: {
   {
     id: "links",
     name: "Links",
-    description: "Shorten, QR, UTM, WhatsApp, and bio link tools.",
+    description:
+      "Shorten on deskzy.xyz, then QR, UTM, WhatsApp, and bio — the share stack.",
   },
 ];
 
@@ -57,7 +58,7 @@ export const TOOLS: ToolDefinition[] = [
     description: "Combine multiple PDFs into one file.",
     seoTitle: "Merge PDF online free",
     seoDescription:
-      "Merge PDF files in your browser. Private, fast, no signup.",
+      "Merge PDF files free in your browser — combine multiple documents into one. Private, fast, no signup, and your files never leave your device. Try Deskzy now.",
     runtime: "browser",
     input: "files",
     accept: "application/pdf",
@@ -76,7 +77,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "pdf",
     description: "Extract pages or split a PDF into separate files.",
     seoTitle: "Split PDF online free",
-    seoDescription: "Split PDF pages in your browser. Files never leave your device.",
+    seoDescription:
+      "Split PDF pages free in your browser. Extract ranges or save each page separately — files never leave your device. No signup required. Open Deskzy Split PDF.",
     runtime: "browser",
     input: "file",
     accept: "application/pdf",
@@ -90,7 +92,7 @@ export const TOOLS: ToolDefinition[] = [
     description: "Reduce PDF file size without uploading to a server.",
     seoTitle: "Compress PDF online free",
     seoDescription:
-      "Compress PDF files privately in your browser. No signup required.",
+      "Compress PDF files privately in your browser to shrink size for email or upload. Free, no signup, and your document never leaves your device. Try Deskzy.",
     runtime: "browser",
     input: "file",
     accept: "application/pdf",
@@ -109,7 +111,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "pdf",
     description: "Render PDF pages as PNG images.",
     seoTitle: "PDF to PNG online free",
-    seoDescription: "Convert PDF pages to PNG images in your browser.",
+    seoDescription:
+      "Convert PDF pages to PNG images free in your browser. Private rendering with no upload and no signup — export pages for slides, web, or print with Deskzy.",
     runtime: "browser",
     input: "file",
     accept: "application/pdf",
@@ -122,7 +125,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "pdf",
     description: "Change the page order of a PDF.",
     seoTitle: "Reorder PDF pages online",
-    seoDescription: "Reorder PDF pages privately in your browser.",
+    seoDescription:
+      "Reorder PDF pages privately in your browser. Drag to rearrange, then download the updated file — free, no signup, and nothing is uploaded to a server.",
     runtime: "browser",
     input: "file",
     accept: "application/pdf",
@@ -136,7 +140,7 @@ export const TOOLS: ToolDefinition[] = [
     description: "Shrink photos with use-case presets or a target file size.",
     seoTitle: "Compress image online free",
     seoDescription:
-      "Compress images in your browser with Email, WhatsApp, Web, and Avatar presets — or set an exact size limit. Private and free.",
+      "Compress images free in your browser with Email, WhatsApp, Web, and Avatar presets — or set an exact size. Private, no signup. Optimize photos on Deskzy.",
     runtime: "browser",
     input: "file",
     accept: "image/jpeg,image/png,image/webp",
@@ -155,7 +159,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "image",
     description: "Resize an image to exact dimensions.",
     seoTitle: "Resize image online free",
-    seoDescription: "Resize images in your browser without uploading.",
+    seoDescription:
+      "Resize images free in your browser to exact dimensions. Scale photos for web, social, or print without uploading. Private, no signup — try Deskzy Resize.",
     runtime: "browser",
     input: "file",
     accept: "image/jpeg,image/png,image/webp,image/gif",
@@ -168,7 +173,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "image",
     description: "Convert between PNG, JPG, and WebP.",
     seoTitle: "Image format converter online",
-    seoDescription: "Convert image formats in your browser.",
+    seoDescription:
+      "Convert image formats free in your browser — PNG, JPG, and WebP. Private conversion with no upload and no signup. Switch formats instantly on Deskzy.",
     runtime: "browser",
     input: "file",
     accept: "image/jpeg,image/png,image/webp",
@@ -181,7 +187,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "image",
     description: "Convert WebP images to PNG.",
     seoTitle: "WebP to PNG converter online",
-    seoDescription: "Convert WebP to PNG privately in your browser.",
+    seoDescription:
+      "Convert WebP to PNG free and privately in your browser. No upload, no signup — get a compatible PNG for apps that need it. Open Deskzy WebP to PNG.",
     runtime: "browser",
     input: "file",
     accept: "image/webp",
@@ -195,7 +202,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "text",
     description: "Format and validate JSON instantly.",
     seoTitle: "JSON formatter and validator online",
-    seoDescription: "Pretty-print and validate JSON in your browser.",
+    seoDescription:
+      "Pretty-print and validate JSON free in your browser. Fix syntax errors instantly with a private formatter — no signup, nothing uploaded. Try Deskzy JSON.",
     runtime: "browser",
     input: "text",
     aliases: ["json pretty", "json validate", "jsonlint"],
@@ -208,7 +216,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "text",
     description: "Encode or decode Base64 text.",
     seoTitle: "Base64 encode decode online",
-    seoDescription: "Base64 encode and decode instantly in your browser.",
+    seoDescription:
+      "Base64 encode and decode free in your browser. Instant, private conversion for text and data strings — no signup required. Open Deskzy Base64 tools.",
     runtime: "browser",
     input: "text",
     aliases: ["base64 encoder", "base64 decoder"],
@@ -220,7 +229,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "text",
     description: "Generate SHA-256 or SHA-1 hashes.",
     seoTitle: "SHA-256 hash generator online",
-    seoDescription: "Generate cryptographic hashes in your browser.",
+    seoDescription:
+      "Generate SHA-256 or SHA-1 hashes free in your browser. Private checksums with no upload and no signup — verify integrity instantly on Deskzy.",
     runtime: "browser",
     input: "text",
     aliases: ["sha256", "checksum", "md5 online"],
@@ -232,7 +242,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "text",
     description: "Generate UUID v4 identifiers.",
     seoTitle: "UUID generator online",
-    seoDescription: "Generate UUID v4 values instantly.",
+    seoDescription:
+      "Generate UUID v4 identifiers free in your browser. Instant, private GUIDs for apps and databases — no signup required. Create UUIDs on Deskzy now.",
     runtime: "browser",
     input: "text",
     aliases: ["guid generator"],
@@ -244,7 +255,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "links",
     description: "Create a QR code from any text or URL.",
     seoTitle: "QR code generator online free",
-    seoDescription: "Generate QR codes in your browser. Download as PNG.",
+    seoDescription:
+      "Generate QR codes free in your browser from any text or URL. Download as PNG — private, no signup, nothing uploaded. Create a QR on Deskzy in seconds.",
     runtime: "browser",
     input: "text",
     aliases: ["qr generator", "create qr"],
@@ -258,7 +270,7 @@ export const TOOLS: ToolDefinition[] = [
     description: "Turn long links into short deskzy.xyz URLs in one paste.",
     seoTitle: "URL shortener free — shorten links online",
     seoDescription:
-      "Free URL shortener with no signup. Paste a long link, get a short deskzy.xyz URL instantly. Only the URL string is sent to our API.",
+      "Free URL shortener with no signup. Paste a long link and get a short deskzy.xyz URL instantly. Only the URL string is sent — shorten links online now.",
     runtime: "hybrid",
     input: "text",
     aliases: [
@@ -338,7 +350,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "text",
     description: "Encode or decode URL components.",
     seoTitle: "URL encode decode online",
-    seoDescription: "URL-encode and decode strings in your browser.",
+    seoDescription:
+      "URL-encode and decode strings free in your browser. Percent-encode query values privately with no signup. Open Deskzy URL Encode / Decode to start.",
     runtime: "browser",
     input: "text",
     aliases: ["percent encoding"],
@@ -350,7 +363,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "text",
     description: "Count words, characters, and sentences.",
     seoTitle: "Word counter online",
-    seoDescription: "Count words and characters instantly.",
+    seoDescription:
+      "Count words, characters, and sentences free in your browser. Instant private word counter — no signup, nothing uploaded. Paste text into Deskzy now.",
     runtime: "browser",
     input: "text",
     aliases: ["character counter"],
@@ -362,7 +376,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "text",
     description: "Switch between upper, lower, title, and more.",
     seoTitle: "Case converter online",
-    seoDescription: "Convert text case instantly in your browser.",
+    seoDescription:
+      "Convert text case free in your browser — upper, lower, title, and more. Instant, private, no signup. Switch casing with Deskzy Case Converter today.",
     runtime: "browser",
     input: "text",
     aliases: ["uppercase", "lowercase", "title case"],
@@ -374,7 +389,8 @@ export const TOOLS: ToolDefinition[] = [
     category: "text",
     description: "Convert Markdown to HTML.",
     seoTitle: "Markdown to HTML converter",
-    seoDescription: "Convert Markdown to HTML in your browser.",
+    seoDescription:
+      "Convert Markdown to HTML free in your browser. Private preview and export with no upload and no signup. Paste Markdown into Deskzy and get clean HTML.",
     runtime: "browser",
     input: "text",
     aliases: ["md to html"],
@@ -386,25 +402,101 @@ export const TOOLS: ToolDefinition[] = [
     category: "text",
     description: "Generate strong random passwords.",
     seoTitle: "Password generator online",
-    seoDescription: "Generate secure passwords in your browser.",
+    seoDescription:
+      "Generate strong random passwords free in your browser. Private, no signup — create secure passwords offline-style on your device with Deskzy.",
     runtime: "browser",
     input: "text",
     aliases: ["random password"],
     related: ["uuid-generator", "hash-generator", "json-formatter"],
   },
   {
-    slug: "video-to-mp3",
-    name: "Video to MP3",
+    slug: "media-converter",
+    name: "Media Converter",
     category: "media",
-    description: "Extract audio from video files in your browser (coming soon: ffmpeg.wasm).",
-    seoTitle: "Video to MP3 converter online",
-    seoDescription: "Convert video to MP3 privately. Browser-based pipeline.",
+    description:
+      "Convert video and audio in your browser — video to audio, video to video, or audio to audio.",
+    seoTitle: "Media converter online — video & audio",
+    seoDescription:
+      "Convert video and audio privately in your browser. Video to MP3, WAV, MP4, WebM, and more — free, no upload, no signup. Open Deskzy Media Converter.",
     runtime: "browser",
     input: "file",
     accept: "video/*,audio/*",
-    aliases: ["mp4 to mp3", "extract audio"],
-    related: ["compress-image", "webp-to-png", "url-shortener"],
+    aliases: [
+      "convert video",
+      "convert audio",
+      "video converter",
+      "audio converter online",
+    ],
+    related: [
+      "video-to-mp3",
+      "video-to-wav",
+      "audio-converter",
+      "compress-image",
+    ],
     popular: true,
+  },
+  {
+    slug: "video-to-mp3",
+    name: "Video to MP3",
+    category: "media",
+    description: "Extract audio from video files as MP3 in your browser.",
+    seoTitle: "Video to MP3 converter online",
+    seoDescription:
+      "Convert video to MP3 privately in your browser. Extract audio without uploading to a remote farm — free media tools on Deskzy. No signup required.",
+    runtime: "browser",
+    input: "file",
+    accept: "video/*,audio/*",
+    aliases: ["mp4 to mp3", "extract audio", "video to audio"],
+    related: [
+      "media-converter",
+      "video-to-wav",
+      "audio-converter",
+      "compress-image",
+    ],
+    popular: true,
+  },
+  {
+    slug: "video-to-wav",
+    name: "Video to WAV",
+    category: "media",
+    description: "Extract lossless WAV audio from video in your browser.",
+    seoTitle: "Video to WAV converter online",
+    seoDescription:
+      "Convert video to WAV privately in your browser. Extract uncompressed audio without uploading — free on Deskzy. No signup required.",
+    runtime: "browser",
+    input: "file",
+    accept: "video/*,audio/*",
+    aliases: ["mp4 to wav", "extract wav", "video to wav"],
+    related: [
+      "video-to-mp3",
+      "media-converter",
+      "audio-converter",
+      "compress-image",
+    ],
+  },
+  {
+    slug: "audio-converter",
+    name: "Audio Converter",
+    category: "media",
+    description: "Convert audio between MP3, WAV, M4A, and OGG in your browser.",
+    seoTitle: "Audio converter online — MP3, WAV, M4A, OGG",
+    seoDescription:
+      "Convert audio formats privately in your browser — MP3, WAV, M4A, OGG. Free, no upload, no signup. Open Deskzy Audio Converter.",
+    runtime: "browser",
+    input: "file",
+    accept: "audio/*,video/*",
+    aliases: [
+      "mp3 converter",
+      "wav to mp3",
+      "m4a to mp3",
+      "convert audio format",
+    ],
+    related: [
+      "media-converter",
+      "video-to-mp3",
+      "video-to-wav",
+      "compress-image",
+    ],
   },
 ];
 
@@ -437,6 +529,9 @@ export const ROUTE_SHORTCUTS: Record<string, string> = {
   password: "password-generator",
   base64: "base64",
   resize: "resize-image",
+  mp3: "video-to-mp3",
+  "convert-media": "media-converter",
+  "media-convert": "media-converter",
 };
 
 export type UseCase = {
@@ -453,30 +548,6 @@ export const USE_CASES: UseCase[] = [
     label: "Shorten a link",
     hint: "Paste any URL → short deskzy.xyz link",
     href: "/tools/url-shortener",
-  },
-  {
-    id: "compress-pdf",
-    label: "Compress a PDF",
-    hint: "Shrink file size in the browser",
-    href: "/tools/compress-pdf",
-  },
-  {
-    id: "merge-pdf",
-    label: "Merge PDFs",
-    hint: "Combine multiple PDFs into one",
-    href: "/tools/merge-pdf",
-  },
-  {
-    id: "compress-image",
-    label: "Compress an image",
-    hint: "Smaller JPG/PNG/WebP, private",
-    href: "/tools/compress-image",
-  },
-  {
-    id: "webp",
-    label: "WebP to PNG",
-    hint: "Convert WebP for apps that need PNG",
-    href: "/tools/webp-to-png",
   },
   {
     id: "qr",
@@ -503,10 +574,34 @@ export const USE_CASES: UseCase[] = [
     href: "/tools/bio-link",
   },
   {
+    id: "compress-pdf",
+    label: "Compress a PDF",
+    hint: "Shrink file size in the browser",
+    href: "/tools/compress-pdf",
+  },
+  {
+    id: "merge-pdf",
+    label: "Merge PDFs",
+    hint: "Combine multiple PDFs into one",
+    href: "/tools/merge-pdf",
+  },
+  {
+    id: "compress-image",
+    label: "Compress an image",
+    hint: "Smaller JPG/PNG/WebP, private",
+    href: "/tools/compress-image",
+  },
+  {
     id: "json",
     label: "Format JSON",
     hint: "Pretty-print or minify",
     href: "/tools/json-formatter",
+  },
+  {
+    id: "webp",
+    label: "WebP to PNG",
+    hint: "Convert WebP for apps that need PNG",
+    href: "/tools/webp-to-png",
   },
   {
     id: "password",

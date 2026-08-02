@@ -65,17 +65,29 @@ export default async function CategoryPage({ params }: Props) {
       />
       <div className="mx-auto max-w-6xl px-4 py-10 md:py-14">
         <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
-          Category
+          {cat.id === "links" ? "Deskzy Links" : "Category"}
         </p>
         <h1 className="font-display text-4xl font-semibold tracking-tight md:text-5xl">
-          {cat.name} tools — free &amp; private
+          {cat.id === "links"
+            ? "Short links & share tools — free"
+            : `${cat.name} tools — free & private`}
         </h1>
         <p className="mt-3 max-w-2xl text-[var(--muted)] leading-relaxed">
-          {cat.description}
+          {cat.id === "links"
+            ? "URL shortener on deskzy.xyz, plus QR, UTM, WhatsApp, and bio — no signup."
+            : cat.description}
         </p>
         <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[var(--muted)]">
           {seo.intro}
         </p>
+        {seo.body?.map((paragraph) => (
+          <p
+            key={paragraph.slice(0, 48)}
+            className="mt-4 max-w-3xl text-sm leading-relaxed text-[var(--muted)]"
+          >
+            {paragraph}
+          </p>
+        ))}
 
         <div className="mt-10 grid gap-3 sm:grid-cols-2">
           {tools.map((t, i) => (

@@ -7,13 +7,23 @@ import {
 } from "./helpers";
 
 test.describe("Media & edge cases", () => {
-  test("video-to-mp3 shows honest not-ready error", async ({ page }) => {
+  test("video-to-mp3 shows convert type and format options", async ({
+    page,
+  }) => {
     await gotoTool(page, "video-to-mp3");
-    await uploadFiles(page, fixture("sample.png"));
-    await clickPrimary(page, /Run|Convert/i);
-    await expect(
-      page.locator("div").filter({ hasText: /ffmpeg\.wasm/i }).first(),
-    ).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole("button", { name: "Video → Audio" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "MP3" })).toBeVisible();
+    await expect(page.getByRole("button", { name: /Convert/i }).first()).toBeVisible();
+  });
+
+  test("media-converter hub exposes all convert modes", async ({ page }) => {
+    await gotoTool(page, "media-converter");
+    await expect(page.getByRole("button", { name: "Video → Audio" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Video → Video" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Audio → Audio" })).toBeVisible();
+    await page.getByRole("button", { name: "Video → Video" }).click();
+    await expect(page.getByRole("button", { name: "MP4" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "WEBM" })).toBeVisible();
   });
 
   test("merge-pdf requires two files", async ({ page }) => {

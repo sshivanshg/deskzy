@@ -25,12 +25,6 @@ function looksLikeUrl(value: string): boolean {
 
 const SPARK = [4, 7, 6, 10, 9, 14, 12, 18, 16, 22, 20, 26];
 
-const TEASE_STATS = [
-  { label: "Clicks", value: "1.2k" },
-  { label: "Countries", value: "18" },
-  { label: "Top src", value: "IG" },
-] as const;
-
 function MiniSparkline({ className }: { className?: string }) {
   const w = 160;
   const h = 48;
@@ -49,7 +43,7 @@ function MiniSparkline({ className }: { className?: string }) {
       aria-hidden
       preserveAspectRatio="none"
     >
-      <polygon points={area} fill="var(--accent)" opacity="0.2" />
+      <polygon points={area} fill="var(--accent)" opacity="0.18" />
       <polyline
         points={points}
         fill="none"
@@ -62,92 +56,113 @@ function MiniSparkline({ className }: { className?: string }) {
   );
 }
 
-function AnalyticsTease({ hero }: { hero: boolean }) {
+/** Compact mobile tease — light, one CTA, no dark slab */
+function AnalyticsTeaseMobile() {
   return (
-    <div
-      className={`mt-3 overflow-hidden rounded-2xl border border-[var(--ink)]/10 bg-[var(--ink)] text-white ${
-        hero ? "p-4 sm:p-5" : "p-3.5"
-      }`}
-    >
+    <div className="mt-3 rounded-2xl border border-[var(--stroke)] bg-white p-3.5">
+      <div className="flex items-start gap-3">
+        <div className="relative h-12 w-[4.5rem] shrink-0 overflow-hidden rounded-xl border border-[var(--stroke)] bg-[var(--accent-soft)]/60">
+          <MiniSparkline className="h-full w-full" />
+          <span className="absolute inset-x-0 bottom-1 flex justify-center">
+            <span className="rounded-full bg-[var(--accent)] px-1.5 py-px text-[8px] font-semibold uppercase tracking-wide text-white">
+              Pro
+            </span>
+          </span>
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
+            Pro analytics · {formatInr(PRO_MONTHLY_INR)}/mo
+          </p>
+          <p className="mt-0.5 text-sm font-semibold leading-snug text-[var(--ink)]">
+            See who clicks this link
+          </p>
+          <p className="mt-0.5 text-xs leading-relaxed text-[var(--muted)]">
+            Cities, devices &amp; sources
+          </p>
+        </div>
+      </div>
+      <Link
+        href="/link-analytics"
+        className="btn-primary mt-3 w-full !rounded-full !py-2.5 text-sm"
+      >
+        <ChartLineUp size={16} weight="bold" />
+        Preview dashboard
+      </Link>
+      <Link
+        href="/pricing"
+        className="mt-2 block text-center text-xs font-medium text-[var(--muted)] underline-offset-2 hover:text-[var(--accent)] hover:underline"
+      >
+        Or upgrade to Pro — from {formatInr(PRO_MONTHLY_INR)}/mo
+      </Link>
+    </div>
+  );
+}
+
+/** Desktop hero tease — light card with chart preview */
+function AnalyticsTeaseDesktop() {
+  return (
+    <div className="mt-3 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/90">
+        <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
           <LockSimple size={11} weight="bold" />
           Pro analytics
         </span>
-        <span className="text-[11px] font-medium text-white/65">
+        <span className="text-[11px] font-medium text-[var(--muted)]">
           From {formatInr(PRO_MONTHLY_INR)}/mo
         </span>
       </div>
 
-      <div className={`mt-3 grid gap-3 ${hero ? "sm:grid-cols-[1.15fr_0.85fr] sm:items-end" : ""}`}>
+      <div className="mt-3 grid gap-4 sm:grid-cols-[1.2fr_0.8fr] sm:items-center">
         <div className="min-w-0">
-          <p
-            className={`font-display font-semibold tracking-tight text-white ${
-              hero ? "text-xl leading-snug" : "text-base"
-            }`}
-          >
+          <p className="font-display text-xl font-semibold leading-snug tracking-tight text-[var(--ink)]">
             See who clicks this link
           </p>
-          <p className="mt-1 text-xs leading-relaxed text-white/70 sm:text-sm">
+          <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">
             Cities, devices, Instagram vs WhatsApp — know what converts.
           </p>
-
-          <div className={`mt-3 grid grid-cols-3 gap-2 ${hero ? "max-w-sm" : ""}`}>
-            {TEASE_STATS.map((s) => (
-              <div
-                key={s.label}
-                className="rounded-xl border border-white/10 bg-white/5 px-2.5 py-2"
-              >
-                <p className="text-[10px] uppercase tracking-[0.12em] text-white/55">
-                  {s.label}
-                </p>
-                <p className="mt-0.5 font-display text-lg font-semibold tabular-nums tracking-tight">
-                  {s.value}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div className={`mt-3.5 flex flex-wrap gap-2 ${hero ? "" : ""}`}>
+          <div className="mt-4 flex flex-wrap gap-2">
             <Link
               href="/link-analytics"
-              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-semibold text-[var(--ink)] transition hover:bg-white/90 active:scale-[0.98]"
+              className="btn-primary !rounded-full !px-4 !py-2.5 text-xs"
             >
               <ChartLineUp size={14} weight="bold" />
               Preview dashboard
             </Link>
             <Link
               href="/pricing"
-              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-white/25 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10 active:scale-[0.98]"
+              className="btn-secondary !rounded-full !px-4 !py-2.5 text-xs"
             >
               <Sparkle size={14} weight="fill" />
-              Upgrade
+              Upgrade to Pro
             </Link>
           </div>
         </div>
 
-        {hero ? (
-          <div
-            className="relative hidden overflow-hidden rounded-xl border border-white/10 bg-white/5 p-3 sm:block"
-            aria-hidden
-          >
-            <div className="mb-2 flex items-center justify-between text-[10px] text-white/55">
-              <span>Clicks · 30d</span>
-              <span className="rounded-full bg-[var(--accent)]/90 px-1.5 py-0.5 font-semibold text-white">
-                +18%
-              </span>
-            </div>
-            <MiniSparkline className="h-12 w-full opacity-95" />
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[var(--ink)]/25 backdrop-blur-[1px]">
-              <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--ink)]">
-                Locked preview
-              </span>
-            </div>
+        <div
+          className="relative overflow-hidden rounded-xl border border-[var(--stroke)] bg-[var(--accent-soft)]/50 p-3"
+          aria-hidden
+        >
+          <div className="mb-1.5 flex items-center justify-between text-[10px] text-[var(--muted)]">
+            <span>Clicks · 30d</span>
+            <span className="rounded-full bg-[var(--accent)] px-1.5 py-0.5 font-semibold text-white">
+              +18%
+            </span>
           </div>
-        ) : null}
+          <MiniSparkline className="h-14 w-full" />
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white/35 backdrop-blur-[1.5px]">
+            <span className="inline-flex items-center gap-1 rounded-full border border-[var(--stroke)] bg-white px-2.5 py-1 text-[10px] font-semibold text-[var(--ink)] shadow-sm">
+              <LockSimple size={10} weight="bold" />
+              Locked
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
+}
+
+function AnalyticsTease({ hero }: { hero: boolean }) {
+  return hero ? <AnalyticsTeaseDesktop /> : <AnalyticsTeaseMobile />;
 }
 
 type HomeShortenDockProps = {

@@ -70,6 +70,7 @@ export const metadata: Metadata = {
   },
   other: {
     "google-adsense-account": ADSENSE_CLIENT,
+    monetag: "a529d7913d549da1734a75594234444d",
   },
 };
 

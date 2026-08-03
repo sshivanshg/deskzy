@@ -344,7 +344,7 @@ function LivePreview({
   if (mode === "desktop") {
     return (
       <div className="overflow-hidden rounded-2xl border border-[var(--stroke)] shadow-sm">
-        <div className="flex items-center gap-1.5 border-b border-[var(--stroke)] bg-white/60 px-3 py-2">
+        <div className="flex items-center gap-1.5 border-b border-[var(--stroke)] bg-[var(--panel-muted)] px-3 py-2">
           <span className="h-2.5 w-2.5 rounded-full bg-[var(--stroke-strong)]" />
           <span className="h-2.5 w-2.5 rounded-full bg-[var(--stroke-strong)]" />
           <span className="h-2.5 w-2.5 rounded-full bg-[var(--stroke-strong)]" />
@@ -404,7 +404,7 @@ function BlockEditor({
 
   return (
     <div
-      className={`rounded-2xl border bg-white/40 p-3 transition-colors ${
+      className={`rounded-2xl border bg-[var(--panel-faint)] p-3 transition-colors ${
         dragOver
           ? "border-[var(--accent)] bg-[var(--accent-soft)]/40"
           : "border-[var(--stroke)]"
@@ -476,7 +476,7 @@ function BlockEditor({
             return (
               <div key={i} className="flex items-start gap-2">
                 <span
-                  className="mt-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[var(--stroke)] bg-white/70 text-[var(--ink)]"
+                  className="mt-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[var(--stroke)] bg-[var(--panel-soft)] text-[var(--ink)]"
                   title={platform}
                 >
                   <SocialIcon platform={platform} size={16} />
@@ -580,14 +580,14 @@ function BlockEditor({
               />
               <button
                 type="button"
-                className="chip absolute right-2 top-2 !bg-white/90"
+                className="chip absolute right-2 top-2 !bg-[var(--panel-soft)]"
                 onClick={() => onChange({ ...block, imageData: "" })}
               >
                 Remove
               </button>
             </div>
           ) : (
-            <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-[var(--stroke)] bg-white/50 px-4 py-6 text-center text-sm text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]">
+            <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-[var(--stroke)] bg-[var(--panel-muted)] px-4 py-6 text-center text-sm text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]">
               <ImageIcon size={22} />
               <span>Upload banner image</span>
               <span className="text-xs">Stays in your browser · embedded as base64</span>
@@ -797,7 +797,7 @@ export function BioLinkBuilder({ options, setOptions }: OptionsProps) {
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-[var(--stroke)] bg-white/40 px-3 py-2 text-xs text-[var(--muted)]">
+      <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-[var(--stroke)] bg-[var(--panel-faint)] px-3 py-2 text-xs text-[var(--muted)]">
         <span className="text-[var(--accent)]">
           <LockSimple size={14} weight="bold" />
         </span>
@@ -817,7 +817,7 @@ export function BioLinkBuilder({ options, setOptions }: OptionsProps) {
             <div className="flex items-start gap-4">
               <button
                 type="button"
-                className="group relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-[var(--stroke)] bg-white/60"
+                className="group relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-[var(--stroke)] bg-[var(--panel-muted)]"
                 onClick={() => avatarInputRef.current?.click()}
                 aria-label="Upload profile photo"
               >
@@ -1209,7 +1209,7 @@ export function BioLinkBuilder({ options, setOptions }: OptionsProps) {
             (config.blocks.length === 2 &&
               isDefaultLookingConfig(config) &&
               !config.profile.displayName) ? (
-              <div className="rounded-2xl border border-dashed border-[var(--stroke)] bg-white/30 px-4 py-6 text-center">
+              <div className="rounded-2xl border border-dashed border-[var(--stroke)] bg-[var(--panel-ghost)] px-4 py-6 text-center">
                 <p className="text-sm font-medium text-[var(--ink)]">
                   Build your bio page
                 </p>
@@ -1330,7 +1330,7 @@ export function BioLinkBuilder({ options, setOptions }: OptionsProps) {
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
               Live preview
             </p>
-            <div className="flex gap-1 rounded-full border border-[var(--stroke)] bg-white/50 p-0.5">
+            <div className="flex gap-1 rounded-full border border-[var(--stroke)] bg-[var(--panel-muted)] p-0.5">
               <button
                 type="button"
                 className="chip !rounded-full !border-0 !px-2.5 !py-1"

@@ -63,7 +63,7 @@ export function SiteFooter() {
                   href={CONTACT_X_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex w-fit items-center gap-2 rounded-full border border-[var(--stroke)] bg-white/55 px-3.5 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--stroke-strong)] hover:bg-white/80"
+                  className="inline-flex w-fit items-center gap-2 rounded-full border border-[var(--stroke)] bg-[var(--panel-muted)] px-3.5 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--stroke-strong)] hover:bg-[var(--panel-soft)]"
                 >
                   <XLogo size={16} weight="bold" />
                   Contact @{CONTACT_X_HANDLE}

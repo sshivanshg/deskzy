@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
+  color-scheme: light;
+
   --bg: #f3f1ec;
   --bg-elevated: #faf9f6;
   --surface: #ebe8e1;
@@ -21,7 +25,91 @@
   --radius-shell: 1.75rem;
   --radius-core: 1.35rem;
 
+  /* Panels / glass — replace hard-coded whites */
+  --panel: #ffffff;
+  --panel-soft: rgba(255, 255, 255, 0.7);
+  --panel-muted: rgba(255, 255, 255, 0.55);
+  --panel-faint: rgba(255, 255, 255, 0.4);
+  --panel-ghost: rgba(255, 255, 255, 0.3);
+  --hover-fill: rgba(255, 255, 255, 0.5);
+  --scrim: rgba(26, 28, 25, 0.32);
+
+  --shell-outer-bg: rgba(255, 255, 255, 0.35);
+  --shell-outer-border: rgba(26, 28, 25, 0.06);
+  --shell-inner-bg: color-mix(in srgb, var(--bg-elevated) 88%, white);
+  --shell-inner-border: rgba(255, 255, 255, 0.55);
+  --shell-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
+  --field-bg: rgba(255, 255, 255, 0.7);
+  --field-bg-focus: #fff;
+  --btn-secondary-bg: rgba(255, 255, 255, 0.55);
+  --btn-secondary-bg-hover: rgba(255, 255, 255, 0.8);
+  --chip-bg: rgba(255, 255, 255, 0.45);
+
+  --body-glow-a: rgba(31, 107, 87, 0.12);
+  --body-glow-b: rgba(90, 110, 130, 0.1);
+  --body-top: #f7f5f0;
+  --body-bottom: #eceae4;
+
   /* Minimal shadcn/chart token bridges → Deskzy */
+  --background: var(--bg-elevated);
+  --foreground: var(--ink);
+  --muted-foreground: var(--muted);
+  --border: var(--stroke);
+  --primary: var(--accent);
+  --primary-foreground: #f7faf8;
+  --secondary: var(--accent-soft);
+  --secondary-foreground: var(--accent-ink);
+  --card: var(--bg-elevated);
+  --card-foreground: var(--ink);
+  --ring: var(--accent);
+}
+
+.dark {
+  color-scheme: dark;
+
+  --bg: #121410;
+  --bg-elevated: #1a1d18;
+  --surface: #242820;
+  --ink: #eceae4;
+  --muted: #9a9f96;
+  --stroke: #33382f;
+  --stroke-strong: #4a5046;
+  --accent: #3d9a7f;
+  --accent-hover: #4aad90;
+  --accent-soft: #1a332c;
+  --accent-ink: #a8dccb;
+  --warn-bg: #3a241e;
+  --warn-ink: #e8a090;
+  --ok-bg: #1a332c;
+  --ok-ink: #7dcca8;
+  --shadow: 0 18px 50px -28px rgba(0, 0, 0, 0.7);
+
+  --panel: #22261e;
+  --panel-soft: rgba(34, 38, 30, 0.82);
+  --panel-muted: rgba(34, 38, 30, 0.65);
+  --panel-faint: rgba(34, 38, 30, 0.45);
+  --panel-ghost: rgba(34, 38, 30, 0.3);
+  --hover-fill: rgba(255, 255, 255, 0.06);
+  --scrim: rgba(0, 0, 0, 0.55);
+
+  --shell-outer-bg: rgba(255, 255, 255, 0.04);
+  --shell-outer-border: rgba(255, 255, 255, 0.08);
+  --shell-inner-bg: color-mix(in srgb, var(--bg-elevated) 92%, #2a3028);
+  --shell-inner-border: rgba(255, 255, 255, 0.08);
+  --shell-inner-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  --field-bg: rgba(18, 20, 16, 0.65);
+  --field-bg-focus: #1e221c;
+  --btn-secondary-bg: rgba(255, 255, 255, 0.06);
+  --btn-secondary-bg-hover: rgba(255, 255, 255, 0.1);
+  --chip-bg: rgba(255, 255, 255, 0.06);
+
+  --body-glow-a: rgba(61, 154, 127, 0.14);
+  --body-glow-b: rgba(90, 110, 130, 0.08);
+  --body-top: #161814;
+  --body-bottom: #0e100c;
+
   --background: var(--bg-elevated);
   --foreground: var(--ink);
   --muted-foreground: var(--muted);
@@ -65,9 +153,9 @@ body {
   color: var(--ink);
   font-family: var(--font-body), system-ui, sans-serif;
   background:
-    radial-gradient(900px 520px at 8% -5%, rgba(31, 107, 87, 0.12), transparent 55%),
-    radial-gradient(700px 420px at 92% 8%, rgba(90, 110, 130, 0.1), transparent 50%),
-    linear-gradient(180deg, #f7f5f0 0%, var(--bg) 42%, #eceae4 100%);
+    radial-gradient(900px 520px at 8% -5%, var(--body-glow-a), transparent 55%),
+    radial-gradient(700px 420px at 92% 8%, var(--body-glow-b), transparent 50%),
+    linear-gradient(180deg, var(--body-top) 0%, var(--bg) 42%, var(--body-bottom) 100%);
 }
 
 body::before {
@@ -78,6 +166,10 @@ body::before {
   z-index: 60;
   opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.dark body::before {
+  opacity: 0.05;
 }
 
 ::selection {
@@ -102,17 +194,17 @@ textarea {
 
 .shell {
   border-radius: var(--radius-shell);
-  border: 1px solid rgba(26, 28, 25, 0.06);
-  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid var(--shell-outer-border);
+  background: var(--shell-outer-bg);
   padding: 0.35rem;
   box-shadow: var(--shadow);
 }
 
 .shell-core {
   border-radius: var(--radius-core);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  background: color-mix(in srgb, var(--bg-elevated) 88%, white);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--shell-inner-border);
+  background: var(--shell-inner-bg);
+  box-shadow: var(--shell-inner-highlight);
 }
 
 .btn-primary {
@@ -154,7 +246,7 @@ textarea {
   gap: 0.5rem;
   border-radius: 999px;
   border: 1px solid var(--stroke);
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--btn-secondary-bg);
   color: var(--ink);
   padding: 0.85rem 1.25rem;
   font-size: 0.925rem;
@@ -167,7 +259,7 @@ textarea {
 
 .btn-secondary:hover {
   border-color: var(--stroke-strong);
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--btn-secondary-bg-hover);
 }
 
 .btn-secondary:active {
@@ -179,7 +271,7 @@ textarea {
   align-items: center;
   border-radius: 999px;
   border: 1px solid var(--stroke);
-  background: rgba(255, 255, 255, 0.45);
+  background: var(--chip-bg);
   color: var(--muted);
   padding: 0.45rem 0.85rem;
   font-size: 0.75rem;
@@ -211,7 +303,7 @@ textarea {
   width: 100%;
   border-radius: 1rem;
   border: 1px solid var(--stroke);
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--field-bg);
   color: var(--ink);
   padding: 0.9rem 1rem;
   outline: none;
@@ -224,7 +316,7 @@ textarea {
 .field:focus {
   border-color: color-mix(in srgb, var(--accent) 45%, var(--stroke));
   box-shadow: 0 0 0 4px var(--accent-soft);
-  background: #fff;
+  background: var(--field-bg-focus);
 }
 
 .field-mono {

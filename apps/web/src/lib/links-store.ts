@@ -2,12 +2,25 @@
 
 export type LinkRecord = {
   code: string;
+  /** Single destination, or first URL for list links (account list / OG fallback). */
   dest: string;
   hits: number;
   createdAt: string;
   userId?: string | null;
   isCustom?: boolean;
+  /** Omitted or "single" for classic one-dest links; "list" for multi-URL paste. */
+  kind?: "single" | "list";
+  /** Present when kind === "list" — normalized destinations in paste order. */
+  urls?: string[];
 };
+
+export function isListLink(
+  link: LinkRecord,
+): link is LinkRecord & { kind: "list"; urls: string[] } {
+  return (
+    link.kind === "list" && Array.isArray(link.urls) && link.urls.length > 0
+  );
+}
 
 type KvPutOptions = { expirationTtl?: number };
 
@@ -46,6 +59,8 @@ const RESERVED_SLUGS = new Set([
   "shorten",
   "short",
   "link",
+  "list",
+  "multilink",
   "admin",
   "www",
   "app",
@@ -105,6 +120,29 @@ export async function putLink(
   const record: LinkRecord = {
     code,
     dest,
+    hits: 0,
+    createdAt: new Date().toISOString(),
+    userId: opts?.userId ?? null,
+    isCustom: opts?.isCustom ?? false,
+    kind: "single",
+  };
+  await putLinkRecord(record);
+  return record;
+}
+
+export async function putListLink(
+  code: string,
+  urls: string[],
+  opts?: { userId?: string | null; isCustom?: boolean },
+): Promise<LinkRecord> {
+  if (urls.length < 2) {
+    throw new Error("list links require at least 2 urls");
+  }
+  const record: LinkRecord = {
+    code,
+    dest: urls[0],
+    urls,
+    kind: "list",
     hits: 0,
     createdAt: new Date().toISOString(),
     userId: opts?.userId ?? null,

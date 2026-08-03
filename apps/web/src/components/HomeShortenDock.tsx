@@ -3,31 +3,24 @@
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import {
+  ArrowSquareOut,
   ChartLineUp,
   LinkSimple,
+  ListBullets,
   LockSimple,
+  PencilSimple,
   Sparkle,
 } from "@phosphor-icons/react";
+import { MultiLinkBuilder } from "@/components/MultiLinkBuilder";
 import { ClippedAreaChart } from "@/components/ui/advanced-stats-utils/charts";
+import { looksLikeUrl } from "@/lib/normalize-url";
 import { formatInr, PRO_MONTHLY_INR } from "@/lib/pricing";
-import { shortenUrl } from "@/lib/tools/text";
-
-function looksLikeUrl(value: string): boolean {
-  const v = value.trim();
-  if (!v) return false;
-  try {
-    const withProtocol = /^https?:\/\//i.test(v) ? v : `https://${v}`;
-    const u = new URL(withProtocol);
-    return u.hostname.includes(".");
-  } catch {
-    return false;
-  }
-}
+import { shortenUrl, shortenUrlList } from "@/lib/tools/text";
 
 /** Compact mobile tease — light, one CTA, no dark slab */
 function AnalyticsTeaseMobile() {
   return (
-    <div className="mt-3 rounded-2xl border border-[var(--stroke)] bg-white p-3.5">
+    <div className="mt-3 rounded-2xl border border-[var(--stroke)] bg-[var(--panel)] p-3.5">
       <div className="flex items-start gap-3">
         <div className="relative h-12 w-[4.5rem] shrink-0 overflow-hidden rounded-xl border border-[var(--stroke)] bg-[var(--accent-soft)]/60">
           <ClippedAreaChart
@@ -73,7 +66,7 @@ function AnalyticsTeaseMobile() {
 /** Desktop hero tease — light card with chart preview */
 function AnalyticsTeaseDesktop() {
   return (
-    <div className="mt-3 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white p-4 sm:p-5">
+    <div className="mt-3 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--panel)] p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
           <LockSimple size={11} weight="bold" />
@@ -125,8 +118,8 @@ function AnalyticsTeaseDesktop() {
             showAxes={false}
             className="min-h-[56px] !aspect-[2.6/1]"
           />
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white/35 backdrop-blur-[1.5px]">
-            <span className="inline-flex items-center gap-1 rounded-full border border-[var(--stroke)] bg-white px-2.5 py-1 text-[10px] font-semibold text-[var(--ink)] shadow-sm">
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[var(--panel-faint)] backdrop-blur-[1.5px]">
+            <span className="inline-flex items-center gap-1 rounded-full border border-[var(--stroke)] bg-[var(--panel)] px-2.5 py-1 text-[10px] font-semibold text-[var(--ink)] shadow-sm">
               <LockSimple size={10} weight="bold" />
               Locked
             </span>
@@ -141,17 +134,30 @@ function AnalyticsTease({ hero }: { hero: boolean }) {
   return hero ? <AnalyticsTeaseDesktop /> : <AnalyticsTeaseMobile />;
 }
 
+function hostPreview(raw: string): string {
+  try {
+    const withScheme = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+    const u = new URL(withScheme);
+    return u.host;
+  } catch {
+    return raw;
+  }
+}
+
 type HomeShortenDockProps = {
   /** compact = mobile dock; hero = larger desktop primary CTA */
   size?: "compact" | "hero";
 };
 
 export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
-  const inputId = useId();
   const errorId = useId();
   const isHero = size === "hero";
+  const [mode, setMode] = useState<"single" | "multi">("single");
   const [url, setUrl] = useState("");
+  const [links, setLinks] = useState<string[]>([]);
   const [shortUrl, setShortUrl] = useState<string | null>(null);
+  const [resultKind, setResultKind] = useState<"single" | "list">("single");
+  const [resultUrls, setResultUrls] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -166,23 +172,64 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
 
   useEffect(() => () => clearCopiedTimeout(), []);
 
+  const canShorten =
+    mode === "single" ? looksLikeUrl(url) : links.length >= 2;
+
   const reset = () => {
     clearCopiedTimeout();
     setShortUrl(null);
+    setResultKind("single");
+    setResultUrls([]);
     setError(null);
     setCopied(false);
     setUrl("");
+    setLinks([]);
+    setMode("single");
+  };
+
+  const editResultList = () => {
+    clearCopiedTimeout();
+    setShortUrl(null);
+    setCopied(false);
+    setError(null);
+    setMode("multi");
+    setLinks(resultUrls.length >= 2 ? resultUrls : links);
+    setResultUrls([]);
+  };
+
+  const enterMulti = () => {
+    setMode("multi");
+    setError(null);
+    const seed = looksLikeUrl(url) ? [url.trim()] : [];
+    setLinks(seed);
+    setUrl("");
+  };
+
+  const exitMulti = () => {
+    setMode("single");
+    setError(null);
+    setUrl(links[0] || "");
+    setLinks([]);
   };
 
   const onShorten = async () => {
-    if (!looksLikeUrl(url) || busy) return;
+    if (busy || !canShorten) return;
     setBusy(true);
     setError(null);
     try {
-      const raw = url.trim();
-      const normalized = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
-      const result = await shortenUrl(normalized, "/api");
-      setShortUrl(result.text);
+      if (mode === "multi") {
+        const result = await shortenUrlList(links, "/api");
+        setShortUrl(result.text);
+        setResultKind("list");
+        setResultUrls(links);
+      } else {
+        const raw = url.trim();
+        const normalized = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+        const result = await shortenUrl(normalized, "/api");
+        setShortUrl(result.text);
+        setResultKind("single");
+        setResultUrls([normalized]);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to shorten URL");
     } finally {
@@ -211,6 +258,7 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
     : "rounded-2xl border border-[var(--accent)]/28 bg-[var(--accent-soft)] p-3";
 
   if (shortUrl) {
+    const isList = resultKind === "list";
     return (
       <div className={shellClass}>
         <div
@@ -218,11 +266,15 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
             isHero ? "text-base" : "text-sm"
           }`}
         >
-          <LinkSimple size={isHero ? 20 : 18} weight="bold" />
-          Short link ready
+          {isList ? (
+            <ListBullets size={isHero ? 20 : 18} weight="bold" />
+          ) : (
+            <LinkSimple size={isHero ? 20 : 18} weight="bold" />
+          )}
+          {isList ? "List short link ready" : "Short link ready"}
         </div>
         <p
-          className={`mb-3 break-all rounded-xl border border-[var(--stroke)] bg-white font-mono text-[var(--ink)] ${
+          className={`mb-3 break-all rounded-xl border border-[var(--stroke)] bg-[var(--panel)] font-mono text-[var(--ink)] ${
             isHero ? "px-4 py-3 text-base" : "px-3 py-2.5 text-sm"
           }`}
         >
@@ -236,14 +288,68 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
           >
             {copied ? "Copied" : "Copy"}
           </button>
-          <button
-            type="button"
-            className={`btn-secondary flex-1 ${isHero ? "!py-3" : "!py-2.5"}`}
-            onClick={reset}
-          >
-            Shorten another
-          </button>
+          {isList ? (
+            <a
+              href={shortUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`btn-secondary flex-1 ${isHero ? "!py-3" : "!py-2.5"}`}
+            >
+              Open list
+              <ArrowSquareOut size={14} weight="bold" />
+            </a>
+          ) : (
+            <button
+              type="button"
+              className={`btn-secondary flex-1 ${isHero ? "!py-3" : "!py-2.5"}`}
+              onClick={reset}
+            >
+              Shorten another
+            </button>
+          )}
         </div>
+
+        {isList && resultUrls.length > 0 ? (
+          <div className="mt-3 rounded-xl border border-[var(--stroke)] bg-[var(--panel-soft)] p-3">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
+              {resultUrls.length} links in this list
+            </p>
+            <ol className="mt-2 space-y-1.5">
+              {resultUrls.map((dest, i) => (
+                <li
+                  key={`${i}-${dest}`}
+                  className="flex items-baseline gap-2 text-sm text-[var(--ink)]"
+                >
+                  <span className="shrink-0 text-xs font-medium text-[var(--muted)]">
+                    {i + 1}.
+                  </span>
+                  <span className="min-w-0 truncate">{hostPreview(dest)}</span>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="btn-secondary !py-2 !text-xs"
+                onClick={editResultList}
+              >
+                <PencilSimple size={14} weight="bold" />
+                Edit links
+              </button>
+              <button
+                type="button"
+                className="btn-secondary !py-2 !text-xs"
+                onClick={reset}
+              >
+                Shorten another
+              </button>
+            </div>
+            <p className="mt-2 text-[11px] leading-relaxed text-[var(--muted)]">
+              Edit creates a new short link with your changes.
+            </p>
+          </div>
+        ) : null}
+
         {error ? (
           <p id={errorId} className="mt-2 text-sm text-[var(--warn-ink)]" role="alert">
             {error}
@@ -251,13 +357,6 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
         ) : null}
 
         <AnalyticsTease hero={isHero} />
-
-        <Link
-          href="/tools/url-shortener"
-          className="mt-3 inline-block text-xs font-medium text-[var(--accent)] underline-offset-2 hover:underline"
-        >
-          Open full shortener
-        </Link>
       </div>
     );
   }
@@ -267,58 +366,114 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
       {isHero ? (
         <div className="mb-3 flex items-center gap-2 text-base font-semibold text-[var(--accent-ink)]">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--accent)] text-white">
-            <LinkSimple size={18} weight="bold" />
+            {mode === "multi" ? (
+              <ListBullets size={18} weight="bold" />
+            ) : (
+              <LinkSimple size={18} weight="bold" />
+            )}
           </span>
-          Shorten a link
+          {mode === "multi" ? "Share multiple links" : "Shorten a link"}
         </div>
       ) : (
         <label
-          htmlFor={inputId}
+          htmlFor="home-shorten-url"
           className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-[var(--accent-ink)]"
         >
-          Shorten a link
+          {mode === "multi" ? "Share multiple links" : "Shorten a link"}
         </label>
       )}
-      <div className={`flex gap-2 ${isHero ? "flex-col sm:flex-row" : ""}`}>
-        {isHero ? (
-          <label className="sr-only" htmlFor={inputId}>
-            URL to shorten
-          </label>
-        ) : null}
-        <input
-          id={inputId}
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") void onShorten();
-          }}
-          placeholder="Paste a long URL…"
-          disabled={busy}
-          className={`field min-w-0 flex-1 !rounded-xl !text-base ${
-            isHero ? "!py-3.5" : "!py-3"
-          }`}
-          autoComplete="url"
-          inputMode="url"
-          aria-invalid={Boolean(error)}
-          aria-describedby={error ? errorId : undefined}
-        />
-        <button
-          type="button"
-          className={`btn-primary shrink-0 ${
-            isHero ? "!px-6 !py-3.5 sm:min-w-[8.5rem]" : "!px-4 !py-3"
-          }`}
-          disabled={busy || !looksLikeUrl(url)}
-          onClick={() => void onShorten()}
-        >
-          {busy ? "…" : "Shorten"}
-        </button>
-      </div>
+
+      {mode === "single" ? (
+        <>
+          <div className={`flex gap-2 ${isHero ? "flex-col sm:flex-row" : ""}`}>
+            {isHero ? (
+              <label className="sr-only" htmlFor="home-shorten-url">
+                URL to shorten
+              </label>
+            ) : null}
+            <input
+              id={isHero ? undefined : "home-shorten-url"}
+              type="url"
+              inputMode="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  void onShorten();
+                }
+              }}
+              placeholder="Paste a long URL…"
+              disabled={busy}
+              className={`field min-w-0 flex-1 !rounded-xl !text-base ${
+                isHero ? "!py-3.5" : "!py-3"
+              }`}
+              autoComplete="url"
+              aria-invalid={Boolean(error)}
+              aria-describedby={error ? errorId : undefined}
+            />
+            <button
+              type="button"
+              className={`btn-primary shrink-0 ${
+                isHero ? "!px-6 !py-3.5 sm:min-w-[8.5rem]" : "!px-4 !py-3"
+              }`}
+              disabled={busy || !canShorten}
+              onClick={() => void onShorten()}
+            >
+              {busy ? "…" : "Shorten"}
+            </button>
+          </div>
+          <button
+            type="button"
+            className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--accent)] underline-offset-2 hover:underline"
+            onClick={enterMulti}
+            disabled={busy}
+          >
+            <ListBullets size={14} weight="bold" />
+            Add more links as one short URL
+          </button>
+        </>
+      ) : (
+        <>
+          <MultiLinkBuilder
+            links={links}
+            onChange={setLinks}
+            disabled={busy}
+            density="compact"
+            draftPlaceholder="Next link…"
+          />
+          <div className={`mt-3 flex gap-2 ${isHero ? "sm:max-w-md" : ""}`}>
+            <button
+              type="button"
+              className={`btn-primary flex-1 ${isHero ? "!py-3" : "!py-2.5"}`}
+              disabled={busy || !canShorten}
+              onClick={() => void onShorten()}
+            >
+              {busy ? "…" : "Shorten list"}
+            </button>
+            <button
+              type="button"
+              className={`btn-secondary ${isHero ? "!py-3 !px-4" : "!py-2.5 !px-3"}`}
+              disabled={busy}
+              onClick={exitMulti}
+            >
+              One link
+            </button>
+          </div>
+          {links.length === 1 ? (
+            <p className="mt-2 text-xs text-[var(--muted)]">
+              Add at least one more link to create a list.
+            </p>
+          ) : null}
+        </>
+      )}
+
       {error ? (
         <p id={errorId} className="mt-2 text-sm text-[var(--warn-ink)]" role="alert">
           {error}
         </p>
       ) : null}
-      {isHero ? (
+      {isHero && mode === "single" ? (
         <p className="mt-3 text-xs leading-relaxed text-[var(--accent-ink)]/75">
           Free deskzy.xyz short links. No signup. Only the URL string is sent —
           never your files.

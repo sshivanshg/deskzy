@@ -34,8 +34,8 @@ export function BrandLogo({
         priority={priority}
         className={
           isMark
-            ? "h-8 w-8 object-contain"
-            : "h-7 w-auto object-contain object-left md:h-8"
+            ? "h-8 w-8 object-contain dark:brightness-[1.55] dark:saturate-[1.15]"
+            : "h-7 w-auto object-contain object-left dark:brightness-[1.55] dark:saturate-[1.15] md:h-8"
         }
       />
     </Link>

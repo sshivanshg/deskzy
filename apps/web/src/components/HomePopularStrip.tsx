@@ -10,7 +10,7 @@ export function HomePopularStrip({ tools }: { tools: ToolDefinition[] }) {
           <Link
             key={t.slug}
             href={`/tools/${t.slug}`}
-            className="w-[9.5rem] shrink-0 rounded-2xl border border-[var(--stroke)] bg-white/60 px-3.5 py-3"
+            className="w-[9.5rem] shrink-0 rounded-2xl border border-[var(--stroke)] bg-[var(--panel-muted)] px-3.5 py-3"
           >
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
               {t.category}

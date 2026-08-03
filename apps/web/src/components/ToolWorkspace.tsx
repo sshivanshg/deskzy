@@ -29,6 +29,7 @@ import {
 import { freeDailyCap } from "@/lib/entitlements";
 import {
   BioLinkBuilder,
+  LinkListForm,
   UtmBuilderForm,
   WhatsAppLinkForm,
 } from "./LinkToolForms";
@@ -61,6 +62,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
     if (tool.slug === "whatsapp-link") return { country: "IN", dial: "91" };
     if (tool.slug === "bio-link") return { theme: "custom", format: "html" };
     if (tool.slug === "url-shortener") return { slug: "" };
+    if (tool.slug === "link-list") return { links: "[]", slug: "" };
     if (tool.slug === "compress-image") {
       return {
         preset: "web",
@@ -210,7 +212,16 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
           ? Boolean(options.phone?.trim())
           : tool.slug === "bio-link"
             ? options.canExport === "1"
-            : true
+            : tool.slug === "link-list"
+              ? (() => {
+                  try {
+                    const parsed = JSON.parse(options.links || "[]") as unknown;
+                    return Array.isArray(parsed) && parsed.length >= 2;
+                  } catch {
+                    return false;
+                  }
+                })()
+              : true
       : tool.input === "text"
         ? tool.slug === "uuid-generator" ||
           tool.slug === "password-generator" ||
@@ -236,7 +247,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                   className={`block rounded-xl px-3 py-2 text-sm transition-colors ${
                     t.slug === tool.slug
                       ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
-                      : "text-[var(--muted)] hover:bg-white/50 hover:text-[var(--ink)]"
+                      : "text-[var(--muted)] hover:bg-[var(--panel-muted)] hover:text-[var(--ink)]"
                   }`}
                 >
                   {t.name}
@@ -251,7 +262,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-[var(--muted)]">
           <Link
             href={`/${tool.category}`}
-            className="rounded-full border border-[var(--stroke)] bg-white/40 px-2.5 py-0.5 text-xs font-medium uppercase tracking-[0.12em] hover:text-[var(--ink)]"
+            className="rounded-full border border-[var(--stroke)] bg-[var(--panel-faint)] px-2.5 py-0.5 text-xs font-medium uppercase tracking-[0.12em] hover:text-[var(--ink)]"
           >
             {tool.category}
           </Link>
@@ -303,7 +314,11 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                       value={text}
                       onChange={(e) => setText(e.target.value)}
                       rows={10}
-                      placeholder="Paste input here…"
+                      placeholder={
+                        tool.slug === "url-shortener"
+                          ? "Paste a long URL…"
+                          : "Paste input here…"
+                      }
                       className="field field-mono !rounded-[calc(var(--radius-core)-2px)] !border-0 bg-transparent shadow-none focus:!shadow-none"
                       disabled={busy}
                     />
@@ -422,6 +437,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                 {meta && (
                   <p className="mt-2 text-sm text-[var(--muted)]">
                     {Object.entries(meta)
+                      .filter(([k]) => k !== "urlsJson" && k !== "dest")
                       .map(([k, v]) =>
                         k === "before" || k === "after"
                           ? `${k}: ${formatBytes(Number(v))}`
@@ -430,6 +446,28 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                       .join(" · ")}
                   </p>
                 )}
+                {meta?.kind === "list" && typeof meta.urlsJson === "string" ? (
+                  <ol className="mt-3 space-y-1.5 rounded-2xl border border-[var(--stroke)] bg-[var(--bg)] p-4 text-sm">
+                    {(() => {
+                      try {
+                        const list = JSON.parse(String(meta.urlsJson)) as string[];
+                        if (!Array.isArray(list)) return null;
+                        return list.map((u, i) => (
+                          <li key={`${i}-${u}`} className="flex gap-2">
+                            <span className="shrink-0 text-[var(--muted)]">
+                              {i + 1}.
+                            </span>
+                            <span className="min-w-0 break-all text-[var(--ink)]">
+                              {u}
+                            </span>
+                          </li>
+                        ));
+                      } catch {
+                        return null;
+                      }
+                    })()}
+                  </ol>
+                ) : null}
 
                 {resultText && (
                   <div className="mt-4 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--bg)]">
@@ -478,7 +516,8 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                   )}
                   {(tool.slug === "utm-builder" ||
                     tool.slug === "whatsapp-link" ||
-                    tool.slug === "url-shortener") &&
+                    tool.slug === "url-shortener" ||
+                    tool.slug === "link-list") &&
                     resultText &&
                     !resultText.startsWith("data:image") && (
                       <Link
@@ -488,6 +527,16 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                         Make QR
                       </Link>
                     )}
+                  {tool.slug === "link-list" && resultText ? (
+                    <a
+                      href={resultText}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-secondary"
+                    >
+                      Open list
+                    </a>
+                  ) : null}
                   {tool.slug === "utm-builder" && resultText && (
                     <Link
                       href="/tools/url-shortener"
@@ -563,6 +612,7 @@ function actionLabel(slug: string) {
   )
     return "Convert";
   if (slug === "url-shortener") return "Shorten";
+  if (slug === "link-list") return "Shorten list";
   if (slug === "utm-builder" || slug === "whatsapp-link") return "Generate link";
   if (slug.includes("generator") || slug === "qr-code") return "Generate";
   if (slug === "json-formatter") return "Format";
@@ -1072,7 +1122,11 @@ function ToolOptions({
           <Link href="/pricing" className="text-[var(--accent)] underline-offset-2 hover:underline">
             Pro
           </Link>
-          . Free short links are unlimited.
+          . Free short links are unlimited. Need several URLs in one share?{" "}
+          <Link href="/tools/link-list" className="text-[var(--accent)] underline-offset-2 hover:underline">
+            Multi-link shortener
+          </Link>
+          .
         </p>
       </div>
     );
@@ -1082,6 +1136,9 @@ function ToolOptions({
   }
   if (slug === "whatsapp-link") {
     return <WhatsAppLinkForm options={options} setOptions={setOptions} />;
+  }
+  if (slug === "link-list") {
+    return <LinkListForm options={options} setOptions={setOptions} />;
   }
   if (slug === "bio-link") {
     return <BioLinkBuilder options={options} setOptions={setOptions} />;

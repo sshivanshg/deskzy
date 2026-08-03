@@ -84,7 +84,7 @@ export function PricingPlans({
 
       <div className="mt-8 flex flex-col items-center gap-2">
         <div
-          className="relative inline-flex rounded-full border border-[var(--stroke)] bg-white/60 p-1"
+          className="relative inline-flex rounded-full border border-[var(--stroke)] bg-[var(--panel-muted)] p-1"
           role="group"
           aria-label="Billing cycle"
         >
@@ -205,14 +205,14 @@ export function PricingPlans({
               />
             </div>
 
-            <div className="mt-5 rounded-2xl border border-[var(--stroke)] bg-white/50 px-3 py-3">
+            <div className="mt-5 rounded-2xl border border-[var(--stroke)] bg-[var(--panel-muted)] px-3 py-3">
               <p className="text-xs font-medium text-[var(--muted)]">
                 How many users do you need? (Up to {PRO_SEAT_MAX})
               </p>
               <div className="mt-2 flex items-center justify-center gap-3">
                 <button
                   type="button"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--stroke)] bg-white text-[var(--ink)] disabled:opacity-40"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--stroke)] bg-[var(--panel)] text-[var(--ink)] disabled:opacity-40"
                   onClick={() => setSeatCount(seats - 1)}
                   disabled={seats <= PRO_SEAT_MIN}
                   aria-label="Decrease seats"
@@ -230,7 +230,7 @@ export function PricingPlans({
                 />
                 <button
                   type="button"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--stroke)] bg-white text-[var(--ink)] disabled:opacity-40"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--stroke)] bg-[var(--panel)] text-[var(--ink)] disabled:opacity-40"
                   onClick={() => setSeatCount(seats + 1)}
                   disabled={seats >= PRO_SEAT_MAX}
                   aria-label="Increase seats"
@@ -284,7 +284,7 @@ export function PricingPlans({
               href={CONTACT_X_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full border border-[var(--stroke-strong)] bg-white/70 px-4 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--ink)]"
+              className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full border border-[var(--stroke-strong)] bg-[var(--panel-soft)] px-4 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--ink)]"
             >
               <XLogo size={16} weight="bold" />
               Contact sales
@@ -315,7 +315,7 @@ export function PricingPlans({
         >
           Compare the plans
         </h2>
-        <div className="mt-4 overflow-x-auto rounded-2xl border border-[var(--stroke)] bg-white/40">
+        <div className="mt-4 overflow-x-auto rounded-2xl border border-[var(--stroke)] bg-[var(--panel-faint)]">
           <table className="w-full min-w-[36rem] text-left text-sm">
             <thead>
               <tr className="border-b border-[var(--stroke)] bg-[var(--surface)]/60">

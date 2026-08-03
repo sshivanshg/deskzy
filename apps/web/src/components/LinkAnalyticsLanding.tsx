@@ -68,12 +68,12 @@ export function LinkAnalyticsLanding({ loggedIn = false }: { loggedIn?: boolean 
     <div className="mx-auto max-w-6xl px-4 pb-20 pt-10 md:pt-14">
       {/* Hero — brand + one job */}
       <section
-        className={`relative overflow-hidden rounded-[var(--radius-shell)] border border-[rgba(26,28,25,0.06)] transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+        className={`relative overflow-hidden rounded-[var(--radius-shell)] border border-[var(--shell-outer-border)] transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
           visible ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
         }`}
         style={{
           background:
-            "linear-gradient(145deg, color-mix(in srgb, var(--accent-soft) 55%, white) 0%, var(--bg-elevated) 45%, #f7f5f0 100%)",
+            "linear-gradient(145deg, color-mix(in srgb, var(--accent-soft) 55%, var(--bg-elevated)) 0%, var(--bg-elevated) 45%, var(--body-bottom) 100%)",
         }}
       >
         <div
@@ -240,7 +240,7 @@ export function LinkAnalyticsLanding({ loggedIn = false }: { loggedIn?: boolean 
               ].map((c) => (
                 <li
                   key={c.name}
-                  className="rounded-xl border border-[var(--stroke)] bg-white/70 px-3 py-2.5"
+                  className="rounded-xl border border-[var(--stroke)] bg-[var(--panel-soft)] px-3 py-2.5"
                 >
                   <span className="font-semibold text-[var(--ink)]">{c.name}</span>
                   <span className="ml-1.5 tabular-nums text-[var(--muted)]">
@@ -334,7 +334,7 @@ export function LinkAnalyticsLanding({ loggedIn = false }: { loggedIn?: boolean 
               </ul>
             </div>
 
-            <div className="flex flex-col justify-center rounded-[1.2rem] border border-[var(--stroke)] bg-white/70 p-6 md:p-7">
+            <div className="flex flex-col justify-center rounded-[1.2rem] border border-[var(--stroke)] bg-[var(--panel-soft)] p-6 md:p-7">
               <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
                 Starting at
               </p>

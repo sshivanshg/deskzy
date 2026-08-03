@@ -2,11 +2,12 @@ import { test, expect } from "@playwright/test";
 import { clickPrimary, expectDone, gotoTool } from "./helpers";
 
 test.describe("Link tools", () => {
-  test("links category hub lists all five", async ({ page }) => {
+  test("links category hub lists all six", async ({ page }) => {
     await page.goto("/links");
     await expect(page.getByRole("heading", { level: 1 })).toContainText(/Links/i);
     for (const slug of [
       "url-shortener",
+      "link-list",
       "qr-code",
       "utm-builder",
       "whatsapp-link",
@@ -71,12 +72,35 @@ test.describe("Link tools", () => {
     await expect(page.locator("pre")).toContainText("<!DOCTYPE html>");
   });
 
-  test("shortcuts /utm /whatsapp /bio", async ({ page }) => {
+  test("link-list creates multi destination hop", async ({ page }) => {
+    await gotoTool(page, "link-list");
+    const draft = page.getByPlaceholder("https://…");
+    await draft.fill("https://example.com/one");
+    await page.getByRole("button", { name: /^Add$/i }).click();
+    await draft.fill("https://example.com/two");
+    await page.getByRole("button", { name: /^Add$/i }).click();
+    await clickPrimary(page, /Shorten list/i);
+    await expectDone(page);
+    const shortUrl = (await page.locator("pre").innerText()).trim();
+    expect(shortUrl).toMatch(/\/r\/[A-Za-z0-9]+$/);
+
+    await page.goto(shortUrl);
+    await expect(page.getByText(/2 links/i)).toBeVisible();
+    await expect(page.getByText("Pick a destination")).toBeVisible();
+    await expect(page.getByRole("link", { name: /^Open$/ }).first()).toHaveAttribute(
+      "href",
+      /example\.com\/one/,
+    );
+  });
+
+  test("shortcuts /utm /whatsapp /bio /list", async ({ page }) => {
     await page.goto("/utm");
     await expect(page).toHaveURL(/\/tools\/utm-builder/);
     await page.goto("/whatsapp");
     await expect(page).toHaveURL(/\/tools\/whatsapp-link/);
     await page.goto("/bio");
     await expect(page).toHaveURL(/\/tools\/bio-link/);
+    await page.goto("/list");
+    await expect(page).toHaveURL(/\/tools\/link-list/);
   });
 });

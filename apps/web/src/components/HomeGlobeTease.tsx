@@ -27,7 +27,7 @@ export function HomeGlobeTease({ size = "compact" }: HomeGlobeTeaseProps) {
     return (
       <Link
         href="/link-analytics"
-        className="group flex items-center gap-3 rounded-2xl border border-[var(--stroke)] bg-white/70 p-2.5 pr-3.5 transition-colors hover:border-[var(--accent)]/35 hover:bg-[var(--accent-soft)]/40"
+        className="group flex items-center gap-3 rounded-2xl border border-[var(--stroke)] bg-[var(--panel-soft)] p-2.5 pr-3.5 transition-colors hover:border-[var(--accent)]/35 hover:bg-[var(--accent-soft)]/40"
       >
         <div className="relative h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden rounded-xl bg-[var(--accent-soft)]/50">
           <GlobeAnalytics

@@ -99,7 +99,7 @@ export function AuthNavLinks({ mobile = false }: { mobile?: boolean }) {
         className={`hidden items-center gap-2 rounded-full py-1 pl-1 pr-2.5 text-sm sm:inline-flex ${
           active
             ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
-            : "text-[var(--muted)] hover:bg-white/50 hover:text-[var(--ink)]"
+            : "text-[var(--muted)] hover:bg-[var(--panel-muted)] hover:text-[var(--ink)]"
         }`}
       >
         <span

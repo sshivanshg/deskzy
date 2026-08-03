@@ -178,7 +178,7 @@ function WorldHeatmap() {
         {COUNTRIES.slice(0, 4).map((c) => (
           <li
             key={c.code}
-            className="flex items-center justify-between gap-2 rounded-lg bg-white/80 px-2.5 py-2 text-xs text-[var(--muted)] sm:block sm:px-2 sm:py-1.5 sm:text-[11px]"
+            className="flex items-center justify-between gap-2 rounded-lg bg-[var(--panel-soft)] px-2.5 py-2 text-xs text-[var(--muted)] sm:block sm:px-2 sm:py-1.5 sm:text-[11px]"
           >
             <span className="min-w-0 truncate font-semibold text-[var(--ink)]">
               {c.name}
@@ -210,7 +210,7 @@ function QrPreview() {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
       <div
-        className="grid shrink-0 grid-cols-11 gap-0.5 rounded-2xl border border-[var(--stroke)] bg-white p-3"
+        className="grid shrink-0 grid-cols-11 gap-0.5 rounded-2xl border border-[var(--stroke)] bg-[var(--panel)] p-3"
         aria-hidden
       >
         {cells.map((on, i) => (
@@ -294,7 +294,7 @@ export function ProAnalyticsPreview({
           ].map((s) => (
             <div
               key={s.label}
-              className="min-w-0 rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:p-4"
+              className="min-w-0 rounded-2xl border border-[var(--stroke)] bg-[var(--panel-soft)] p-3 sm:p-4"
             >
               <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)] sm:text-[11px]">
                 {s.label}
@@ -308,7 +308,7 @@ export function ProAnalyticsPreview({
         </div>
 
         {/* Main chart — AdvancedStats clipped area */}
-        <section className="mt-3 min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:mt-4 sm:p-4 md:p-5">
+        <section className="mt-3 min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--panel-soft)] p-3 sm:mt-4 sm:p-4 md:p-5">
           <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
             <div className="min-w-0">
               <h3 className="font-display text-base font-semibold tracking-tight text-[var(--ink)] sm:text-lg">
@@ -334,7 +334,7 @@ export function ProAnalyticsPreview({
             }`}
           >
             <section
-              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:p-4 md:p-5 ${
+              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--panel-soft)] p-3 sm:p-4 md:p-5 ${
                 locked ? "blur-[2.5px]" : ""
               }`}
             >
@@ -351,7 +351,7 @@ export function ProAnalyticsPreview({
             </section>
 
             <section
-              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:p-4 md:p-5 ${
+              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--panel-soft)] p-3 sm:p-4 md:p-5 ${
                 locked ? "blur-[2.5px]" : ""
               }`}
             >
@@ -365,7 +365,7 @@ export function ProAnalyticsPreview({
             </section>
 
             <section
-              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:p-4 md:p-5 lg:col-span-2 ${
+              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--panel-soft)] p-3 sm:p-4 md:p-5 lg:col-span-2 ${
                 locked ? "blur-[3px]" : ""
               }`}
             >
@@ -441,7 +441,7 @@ export function ProAnalyticsPreview({
             </section>
 
             <section
-              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:p-4 md:p-5 ${
+              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--panel-soft)] p-3 sm:p-4 md:p-5 ${
                 locked ? "blur-[2px]" : ""
               }`}
             >
@@ -477,7 +477,7 @@ export function ProAnalyticsPreview({
             </section>
 
             <section
-              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-white/70 p-3 sm:p-4 md:p-5 ${
+              className={`min-w-0 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--panel-soft)] p-3 sm:p-4 md:p-5 ${
                 locked ? "blur-[2px]" : ""
               }`}
             >
@@ -511,10 +511,10 @@ export function ProAnalyticsPreview({
               />
               <div className="absolute inset-x-3 top-1/3 z-10 mx-auto max-w-md -translate-y-4 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 md:top-[38%]">
                 <div
-                  className="rounded-[1.35rem] border border-white/70 p-4 shadow-[var(--shadow)] backdrop-blur-xl sm:p-6"
+                  className="rounded-[1.35rem] border border-[var(--stroke)] p-4 shadow-[var(--shadow)] backdrop-blur-xl sm:p-6"
                   style={{
                     background:
-                      "color-mix(in srgb, var(--bg-elevated) 90%, white)",
+                      "color-mix(in srgb, var(--bg-elevated) 88%, var(--panel))",
                   }}
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--accent)] text-white">

@@ -24,6 +24,10 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
         a: "Yes. Deskzy's URL shortener is free with no signup or daily limits for normal use.",
       },
       {
+        q: "Can I paste multiple links?",
+        a: "For one short link that opens a list of destinations, use the Multi-Link Shortener (or tap “Add more links” on the home shortener). The single URL shortener stays one link at a time.",
+      },
+      {
         q: "Do you upload my files when I shorten a link?",
         a: "No. Only the URL string is processed. All PDF, image, and most text tools run entirely in your browser.",
       },
@@ -38,6 +42,31 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
       {
         q: "Is there an alternative to bit.ly without signup?",
         a: "Deskzy offers a free link shortener with no account wall — paste a URL and copy your short link immediately.",
+      },
+    ],
+  },
+  "link-list": {
+    intro:
+      "Share several long URLs as one short deskzy.xyz link. Recipients open a list page and pick which destination to visit. Free, no signup.",
+    steps: [
+      "Add each link with the Add button (or paste several at once into the field).",
+      "Click Shorten list to create one deskzy.xyz short link.",
+      "Share the short link — recipients see every destination on one page.",
+    ],
+    privacy:
+      "Only the URL strings are sent to Deskzy's edge API and stored in Cloudflare KV so the list page works. We do not upload files.",
+    faqs: [
+      {
+        q: "Is the multi-link shortener free?",
+        a: "Yes. Creating list short links is free with no signup. Abuse is rate-limited per IP like other short links.",
+      },
+      {
+        q: "How do I add links on my phone?",
+        a: "Type or paste one URL, tap Add, then repeat. You don’t need spaces or Enter between links. Pasting several copied links at once still works.",
+      },
+      {
+        q: "What do recipients see?",
+        a: "They open deskzy.xyz/r/your-code and see a list of destinations. Each link opens externally when they tap it.",
       },
     ],
   },

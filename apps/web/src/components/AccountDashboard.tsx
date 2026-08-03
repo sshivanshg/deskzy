@@ -313,7 +313,7 @@ export function AccountDashboard(props: AccountDashboardProps) {
                     {paid ? <CrownSimple size={14} weight="fill" /> : null}
                     {planLabel}
                   </span>
-                  <span className="inline-flex items-center rounded-full border border-[var(--stroke)] bg-white/70 px-3 py-1 text-xs font-medium text-[var(--muted)]">
+                  <span className="inline-flex items-center rounded-full border border-[var(--stroke)] bg-[var(--panel-soft)] px-3 py-1 text-xs font-medium text-[var(--muted)]">
                     {statusLabel}
                   </span>
                 </div>
@@ -498,7 +498,7 @@ export function AccountDashboard(props: AccountDashboardProps) {
         <div className="flex flex-wrap gap-2">
           <Link
             href="/pricing"
-            className="inline-flex rounded-full border border-[var(--stroke)] bg-white/70 px-4 py-2 text-sm font-medium hover:border-[var(--stroke-strong)]"
+            className="inline-flex rounded-full border border-[var(--stroke)] bg-[var(--panel-soft)] px-4 py-2 text-sm font-medium hover:border-[var(--stroke-strong)]"
           >
             {paid ? "Manage plan" : "View pricing"}
           </Link>
@@ -644,7 +644,7 @@ function OverviewTab({
                 <button
                   type="button"
                   onClick={onOpenTeam}
-                  className="flex items-center gap-3 rounded-xl border border-[var(--stroke)] bg-white/60 px-3 py-2.5 text-left text-sm font-medium transition hover:border-[var(--stroke-strong)]"
+                  className="flex items-center gap-3 rounded-xl border border-[var(--stroke)] bg-[var(--panel-muted)] px-3 py-2.5 text-left text-sm font-medium transition hover:border-[var(--stroke-strong)]"
                 >
                   <span className="text-[var(--accent)]">
                     <UsersThree size={16} weight="bold" />
@@ -671,7 +671,7 @@ function StatCard({
   muted?: boolean;
   onClick?: () => void;
 }) {
-  const className = `rounded-2xl border border-[var(--stroke)] bg-white/55 p-4 text-left ${
+  const className = `rounded-2xl border border-[var(--stroke)] bg-[var(--panel-muted)] p-4 text-left ${
     onClick ? "transition hover:border-[var(--stroke-strong)]" : ""
   }`;
   const body = (
@@ -710,7 +710,7 @@ function QuickLink({
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 rounded-xl border border-[var(--stroke)] bg-white/60 px-3 py-2.5 text-sm font-medium transition hover:border-[var(--stroke-strong)]"
+      className="flex items-center gap-3 rounded-xl border border-[var(--stroke)] bg-[var(--panel-muted)] px-3 py-2.5 text-sm font-medium transition hover:border-[var(--stroke-strong)]"
     >
       <span className="text-[var(--accent)]">{icon}</span>
       {label}
@@ -901,7 +901,7 @@ function TeamTab({
             </span>
             <span className="tabular-nums text-[var(--muted)]">{pct}%</span>
           </div>
-          <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/80">
+          <div className="mt-2 h-2 overflow-hidden rounded-full bg-[var(--panel-soft)]">
             <div
               className="h-full rounded-full bg-[var(--accent)] transition-[width] duration-300"
               style={{ width: `${pct}%` }}
@@ -942,7 +942,7 @@ function TeamTab({
             </p>
             <button
               type="button"
-              className="shrink-0 rounded-full border border-[var(--accent)]/30 bg-white/70 px-3 py-1.5 text-xs font-semibold text-[var(--accent-ink)]"
+              className="shrink-0 rounded-full border border-[var(--accent)]/30 bg-[var(--panel-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--accent-ink)]"
               onClick={() => void onCopyInvite(inviteUrl)}
             >
               {copied === "invite" ? "Copied" : "Copy link"}
@@ -959,7 +959,7 @@ function TeamTab({
             {invites.map((inv) => (
               <li
                 key={inv.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--stroke)] bg-white/50 px-3 py-2.5 text-sm"
+                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--stroke)] bg-[var(--panel-muted)] px-3 py-2.5 text-sm"
               >
                 <div>
                   <p className="font-medium text-[var(--ink)]">{inv.email}</p>
@@ -1035,7 +1035,7 @@ function PresetsTab({
             {presets.map((p) => (
               <li
                 key={p.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-[var(--stroke)] bg-white/55 px-3 py-3"
+                className="flex items-center justify-between gap-3 rounded-xl border border-[var(--stroke)] bg-[var(--panel-muted)] px-3 py-3"
               >
                 <div className="min-w-0">
                   <p className="truncate font-medium text-[var(--ink)]">{p.name}</p>

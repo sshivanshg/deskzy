@@ -15,6 +15,7 @@ import {
   hashText,
   markdownToHtml,
   shortenUrl,
+  shortenUrlList,
   urlEncodeDecode,
   wordCount,
 } from "./text";
@@ -124,6 +125,24 @@ export async function runTool(
           slug: options.slug || undefined,
         })),
       };
+    case "link-list": {
+      let urls: string[] = [];
+      try {
+        const parsed = JSON.parse(options.links || "[]") as unknown;
+        if (Array.isArray(parsed)) urls = parsed.map(String).filter(Boolean);
+      } catch {
+        urls = [];
+      }
+      if (urls.length < 2) {
+        throw new Error("Add at least two links");
+      }
+      return {
+        kind: "text",
+        ...(await shortenUrlList(urls, apiBase(), {
+          slug: options.slug || undefined,
+        })),
+      };
+    }
     case "utm-builder":
       return { kind: "text", ...runUtmBuilder(options) };
     case "whatsapp-link":

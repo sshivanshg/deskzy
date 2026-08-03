@@ -15,6 +15,7 @@ import {
 } from "@phosphor-icons/react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { AuthNavLinks } from "@/components/AuthNavLinks";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { CONTACT_X_HANDLE, CONTACT_X_URL } from "@/lib/seo/site";
 import { searchTools } from "@/lib/tools/registry";
 
@@ -172,6 +173,8 @@ export function SiteHeader() {
 
                 <AuthNavLinks />
 
+                <ThemeToggle />
+
                 <Link
                   href="/privacy"
                   className="hidden items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-[var(--muted)] transition-colors hover:text-[var(--ink)] lg:inline-flex"
@@ -185,7 +188,7 @@ export function SiteHeader() {
                   className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border transition-colors md:rounded-full lg:hidden ${
                     mobileSearchOpen
                       ? "border-[var(--accent)]/30 bg-[var(--accent-soft)] text-[var(--accent)]"
-                      : "border-[var(--stroke)] bg-white/55 text-[var(--ink)]"
+                      : "border-[var(--stroke)] bg-[var(--panel-muted)] text-[var(--ink)]"
                   }`}
                   onClick={() =>
                     mobileSearchOpen ? closeOverlays() : openMobileSearch()
@@ -204,7 +207,7 @@ export function SiteHeader() {
                   className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border transition-colors md:hidden ${
                     menuOpen
                       ? "border-[var(--accent)]/30 bg-[var(--accent-soft)] text-[var(--accent)]"
-                      : "border-[var(--stroke)] bg-white/55 text-[var(--ink)]"
+                      : "border-[var(--stroke)] bg-[var(--panel-muted)] text-[var(--ink)]"
                   }`}
                   onClick={() => (menuOpen ? closeOverlays() : openMenu())}
                   aria-label={menuOpen ? "Close menu" : "Open menu"}
@@ -227,7 +230,7 @@ export function SiteHeader() {
         <div className="fixed inset-0 z-30 lg:hidden">
           <button
             type="button"
-            className="absolute inset-0 bg-[rgba(26,28,25,0.32)] backdrop-blur-[2px]"
+            className="absolute inset-0 bg-[var(--scrim)] backdrop-blur-[2px]"
             aria-label="Dismiss search"
             onClick={closeOverlays}
           />
@@ -242,7 +245,7 @@ export function SiteHeader() {
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   placeholder="Search tools…"
-                  className="field !rounded-xl !border-[var(--stroke)] !bg-white !py-3 !pl-11 !pr-10 !text-base"
+                  className="field !rounded-xl !border-[var(--stroke)] !bg-[var(--panel)] !py-3 !pl-11 !pr-10 !text-base"
                   aria-label="Search tools"
                   autoComplete="off"
                   autoCorrect="off"
@@ -301,7 +304,7 @@ export function SiteHeader() {
         <div className="fixed inset-0 z-30 md:hidden">
           <button
             type="button"
-            className="absolute inset-0 bg-[rgba(26,28,25,0.32)] backdrop-blur-[2px]"
+            className="absolute inset-0 bg-[var(--scrim)] backdrop-blur-[2px]"
             aria-label="Dismiss menu"
             onClick={closeOverlays}
           />

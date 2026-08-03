@@ -286,7 +286,7 @@ export default function HomePage() {
                 <Link
                   key={item.slug}
                   href={`/tools/${item.slug}`}
-                  className="group rounded-[var(--radius-core)] border border-[var(--stroke)] bg-white/50 px-4 py-4 transition-colors hover:border-[var(--accent)]/40 hover:bg-[var(--accent-soft)]/50"
+                  className="group rounded-[var(--radius-core)] border border-[var(--stroke)] bg-[var(--panel-muted)] px-4 py-4 transition-colors hover:border-[var(--accent)]/40 hover:bg-[var(--accent-soft)]/50"
                 >
                   <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)]">
                     <Icon size={18} weight="duotone" />
@@ -329,7 +329,7 @@ export default function HomePage() {
                 <Link
                   key={slug}
                   href={`/tools/${slug}`}
-                  className="group rounded-[var(--radius-core)] border border-[var(--stroke)] bg-white/50 px-4 py-4 transition-colors hover:border-[var(--accent)]/40 hover:bg-[var(--accent-soft)]/50"
+                  className="group rounded-[var(--radius-core)] border border-[var(--stroke)] bg-[var(--panel-muted)] px-4 py-4 transition-colors hover:border-[var(--accent)]/40 hover:bg-[var(--accent-soft)]/50"
                 >
                   <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
                     {tool.category}

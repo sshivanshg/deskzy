@@ -9,6 +9,7 @@ import {
   buildWhatsAppUrl,
   type UtmPresetId,
 } from "@/lib/tools/links";
+import { MultiLinkBuilder } from "./MultiLinkBuilder";
 import { SavedPresetsBar } from "./SavedPresetsBar";
 
 export { BioLinkBuilder } from "./BioLinkBuilder";
@@ -276,6 +277,61 @@ export function WhatsAppLinkForm({ options, setOptions }: OptionsProps) {
           Make QR
         </Link>
       )}
+    </div>
+  );
+}
+
+function parseLinksOption(raw: string | undefined): string[] {
+  if (!raw?.trim()) return [];
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map(String).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+export function LinkListForm({ options, setOptions }: OptionsProps) {
+  const links = useMemo(() => parseLinksOption(options.links), [options.links]);
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <p className="mb-1.5 text-sm font-medium text-[var(--ink)]">Your links</p>
+        <p className="mb-3 text-xs text-[var(--muted)]">
+          Add each link one at a time — better on phones than spaces or Enter.
+          Paste several at once into the field if you already copied them.
+        </p>
+        <MultiLinkBuilder
+          links={links}
+          onChange={(next) =>
+            setOptions({ ...options, links: JSON.stringify(next) })
+          }
+          density="roomy"
+          draftPlaceholder="https://…"
+        />
+      </div>
+
+      <label className="block text-sm text-[var(--muted)]">
+        Custom slug{" "}
+        <span className="text-xs text-[var(--accent)]">(Pro)</span>
+        <div className="mt-2 flex items-center gap-2">
+          <span className="shrink-0 font-mono text-sm text-[var(--muted)]">
+            deskzy.xyz/r/
+          </span>
+          <input
+            value={options.slug || ""}
+            onChange={(e) =>
+              setOptions({ ...options, slug: e.target.value.toLowerCase() })
+            }
+            placeholder="your-brand"
+            className="field flex-1 font-mono"
+            autoComplete="off"
+            spellCheck={false}
+          />
+        </div>
+      </label>
     </div>
   );
 }

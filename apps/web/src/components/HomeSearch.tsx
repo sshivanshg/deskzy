@@ -38,7 +38,7 @@ export function HomeSearch({
         </div>
 
         {q.trim() ? (
-          <div className="mt-3 max-h-64 overflow-auto overscroll-contain rounded-xl border border-[var(--stroke)] bg-white/70 sm:max-h-72 sm:rounded-2xl">
+          <div className="mt-3 max-h-64 overflow-auto overscroll-contain rounded-xl border border-[var(--stroke)] bg-[var(--panel-soft)] sm:max-h-72 sm:rounded-2xl">
             {results.length === 0 ? (
               <p className="px-4 py-4 text-sm text-[var(--muted)]">
                 No tools matched. Try “shorten”, “pdf”, or “image”.

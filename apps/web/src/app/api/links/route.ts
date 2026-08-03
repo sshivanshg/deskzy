@@ -1,45 +1,19 @@
 import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { isLinksApiAuthorized } from "@/lib/links-api-auth";
 import {
   allowLinkCreate,
   hasLink,
   normalizeCustomSlug,
   putLink,
+  putListLink,
 } from "@/lib/links-store";
+import {
+  normalizeUrlBatch,
+  resolveCreateUrlTokens,
+} from "@/lib/parse-pasted-urls";
 import { getUserPlan, persistOwnedLink } from "@/lib/pro-links";
 import { createClient } from "@/lib/supabase/server";
-
-function normalizeUrl(raw: string): string {
-  const trimmed = raw.trim();
-  if (!trimmed) throw new Error("url required");
-  if (trimmed.length > 2048) throw new Error("url too long");
-  const withScheme = /:\/\//.test(trimmed) ? trimmed : `https://${trimmed}`;
-  let u: URL;
-  try {
-    u = new URL(withScheme);
-  } catch {
-    throw new Error("invalid url");
-  }
-  if (u.protocol !== "http:" && u.protocol !== "https:") {
-    throw new Error("only http/https allowed");
-  }
-  if (!u.host || u.host.includes(" ")) throw new Error("invalid url");
-  if (u.username || u.password) throw new Error("credentials in url not allowed");
-  const host = u.hostname.toLowerCase();
-  if (
-    host === "localhost" ||
-    host === "127.0.0.1" ||
-    host === "0.0.0.0" ||
-    host === "::1" ||
-    host.endsWith(".local") ||
-    host.endsWith(".internal") ||
-    /^(10\.|192\.168\.|169\.254\.|127\.)/.test(host) ||
-    /^172\.(1[6-9]|2\d|3[0-1])\./.test(host)
-  ) {
-    throw new Error("url not allowed");
-  }
-  return u.toString();
-}
 
 function clientIp(req: NextRequest): string {
   return (
@@ -59,14 +33,64 @@ function randomCode(n = 7): string {
   return out;
 }
 
+type CreateBody = {
+  url?: string;
+  urls?: string[];
+  slug?: string;
+};
+
+async function allocateCode(
+  slug: string | undefined,
+  plan: string,
+): Promise<{ code: string; isCustom: boolean } | NextResponse> {
+  if (slug?.trim()) {
+    if (plan === "free") {
+      return NextResponse.json(
+        {
+          error:
+            "Custom slugs are a Pro feature. Upgrade to choose your short path.",
+          upgradeUrl: "/pricing",
+        },
+        { status: 402 },
+      );
+    }
+    const code = normalizeCustomSlug(slug);
+    if (await hasLink(code)) {
+      return NextResponse.json(
+        { error: "That slug is already taken" },
+        { status: 409 },
+      );
+    }
+    return { code, isCustom: true };
+  }
+
+  for (let i = 0; i < 8; i++) {
+    const candidate = randomCode(7);
+    if (!(await hasLink(candidate))) {
+      return { code: candidate, isCustom: false };
+    }
+  }
+  return NextResponse.json(
+    { error: "could not allocate code" },
+    { status: 409 },
+  );
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const ip = clientIp(req);
-    if (!(await allowLinkCreate(ip))) {
-      return NextResponse.json(
-        { error: "rate limit exceeded — try again in a minute" },
-        { status: 429, headers: { "Retry-After": "60" } },
-      );
+    const apiAuthed = await isLinksApiAuthorized(
+      req.headers.get("authorization"),
+    );
+
+    // Public creates are IP rate-limited; machine API key bypasses for pipelines.
+    if (!apiAuthed) {
+      const ip = clientIp(req);
+      if (!(await allowLinkCreate(ip))) {
+        return NextResponse.json(
+          { error: "rate limit exceeded — try again in a minute" },
+          { status: 429, headers: { "Retry-After": "60" } },
+        );
+      }
     }
 
     let userId: string | null = null;
@@ -81,46 +105,45 @@ export async function POST(req: NextRequest) {
     }
 
     const { plan } = await getUserPlan(userId);
-    const body = (await req.json()) as { url?: string; slug?: string };
-    const dest = normalizeUrl(body.url || "");
+    const body = (await req.json()) as CreateBody;
 
-    let code = "";
-    let isCustom = false;
-
-    if (body.slug?.trim()) {
-      if (plan === "free") {
-        return NextResponse.json(
-          {
-            error: "Custom slugs are a Pro feature. Upgrade to choose your short path.",
-            upgradeUrl: "/pricing",
-          },
-          { status: 402 },
-        );
-      }
-      code = normalizeCustomSlug(body.slug);
-      if (await hasLink(code)) {
-        return NextResponse.json(
-          { error: "That slug is already taken" },
-          { status: 409 },
-        );
-      }
-      isCustom = true;
-    } else {
-      for (let i = 0; i < 8; i++) {
-        const candidate = randomCode(7);
-        if (!(await hasLink(candidate))) {
-          code = candidate;
-          break;
-        }
-      }
-      if (!code) {
-        return NextResponse.json(
-          { error: "could not allocate code" },
-          { status: 409 },
-        );
-      }
+    const rawList = resolveCreateUrlTokens(body);
+    const batch = normalizeUrlBatch(rawList);
+    if (!batch.ok) {
+      return NextResponse.json({ error: batch.error }, { status: 400 });
     }
 
+    const allocated = await allocateCode(body.slug, plan);
+    if (allocated instanceof NextResponse) return allocated;
+    const { code, isCustom } = allocated;
+
+    const origin = req.nextUrl.origin;
+
+    if (batch.urls.length >= 2) {
+      const record = await putListLink(code, batch.urls, { userId, isCustom });
+      if (userId) {
+        await persistOwnedLink({
+          code: record.code,
+          dest: record.dest,
+          userId,
+          isCustom,
+        });
+      }
+      return NextResponse.json(
+        {
+          code,
+          kind: "list" as const,
+          dest: record.dest,
+          urls: record.urls,
+          shortUrl: `${origin}/r/${record.code}`,
+          createdAt: record.createdAt,
+          isCustom,
+        },
+        { status: 201 },
+      );
+    }
+
+    const dest = batch.urls[0];
     const record = await putLink(code, dest, { userId, isCustom });
     if (userId) {
       await persistOwnedLink({
@@ -131,10 +154,10 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const origin = req.nextUrl.origin;
     return NextResponse.json(
       {
         code,
+        kind: "single" as const,
         dest,
         shortUrl: `${origin}/r/${record.code}`,
         createdAt: record.createdAt,

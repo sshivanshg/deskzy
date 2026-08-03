@@ -132,6 +132,7 @@ test.describe("Navigation & shell", () => {
       "uuid-generator",
       "qr-code",
       "url-shortener",
+      "link-list",
       "url-encode",
       "word-counter",
       "case-converter",

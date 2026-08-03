@@ -3,9 +3,12 @@ import { Analytics } from "@/components/Analytics";
 import { SiteChromeGate } from "@/components/SiteChromeGate";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { Outfit, Syne } from "next/font/google";
 import { DEFAULT_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo/site";
 import "./globals.css";
+
+const ADSENSE_CLIENT = "ca-pub-3303889870292458";
 
 const body = Outfit({
   variable: "--font-body",
@@ -65,6 +68,9 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
+  other: {
+    "google-adsense-account": ADSENSE_CLIENT,
+  },
 };
 
 export default function RootLayout({
@@ -73,16 +79,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className={`${body.variable} ${display.variable} antialiased`}>
-        <SiteChromeGate mode="header">
-          <SiteHeader />
-        </SiteChromeGate>
-        <SiteChromeGate mode="main">{children}</SiteChromeGate>
-        <SiteChromeGate mode="footer">
-          <SiteFooter />
-        </SiteChromeGate>
-        <Analytics />
+        <ThemeProvider>
+          <SiteChromeGate mode="header">
+            <SiteHeader />
+          </SiteChromeGate>
+          <SiteChromeGate mode="main">{children}</SiteChromeGate>
+          <SiteChromeGate mode="footer">
+            <SiteFooter />
+          </SiteChromeGate>
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   );

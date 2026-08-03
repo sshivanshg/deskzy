@@ -7,6 +7,8 @@ interface DeskzyKvNamespace {
 
 interface CloudflareEnv {
   LINKS: DeskzyKvNamespace;
+  /** Machine Bearer token for POST /api/links (single + multi-link). */
+  LINKS_API_KEY?: string;
   ASSETS: unknown;
   WORKER_SELF_REFERENCE: unknown;
   NEXTJS_ENV?: string;

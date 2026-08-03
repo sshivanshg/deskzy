@@ -87,7 +87,7 @@ export function Analytics() {
           <button
             type="button"
             onClick={() => choose("denied")}
-            className="rounded-full border border-[var(--stroke)] bg-white/70 px-4 py-2 text-sm font-medium text-[var(--ink)] hover:border-[var(--stroke-strong)]"
+            className="rounded-full border border-[var(--stroke)] bg-[var(--panel-soft)] px-4 py-2 text-sm font-medium text-[var(--ink)] hover:border-[var(--stroke-strong)]"
           >
             Decline
           </button>

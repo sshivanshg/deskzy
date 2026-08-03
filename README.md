@@ -60,7 +60,7 @@ In Cloudflare Dashboard → Workers & Pages → `deskzy` → Settings → Builds
 PDF: merge, split, compress, reorder, PDF→images  
 Image: compress, resize, convert, WebP→PNG  
 Text: JSON, Base64, hash, UUID, encode, word count, case, markdown, password  
-Links: URL shortener, QR, UTM builder, WhatsApp link, bio link creator  
+Links: URL shortener, multi-link shortener, QR, UTM builder, WhatsApp link, bio link creator  
 Media: Media Converter, Video→MP3/WAV, Audio Converter (ffmpeg.wasm in-browser)
 
 ## Scripts
@@ -76,6 +76,73 @@ Media: Media Converter, Video→MP3/WAV, Audio Converter (ffmpeg.wasm in-browser
 
 ## Privacy
 
-Browser tools never upload files. The URL shortener only sends the URL string to the API (KV-backed on Cloudflare, ~12 month TTL, rate-limited).
+Browser tools never upload files. The URL shortener only sends the URL string(s) to the API (KV-backed on Cloudflare, ~12 month TTL, rate-limited).
+
+### Machine API (scripted shortens)
+
+```bash
+# one-time secret on the Worker
+printf '%s' 'your-secret' | npx wrangler secret put LINKS_API_KEY -c apps/web/wrangler.jsonc
+```
+
+Authenticated creates (`Authorization: Bearer <LINKS_API_KEY>`) bypass the public per-IP rate limit. Keep the key out of git.
+
+**Single URL**
+
+```bash
+curl -X POST https://deskzy.xyz/api/links \
+  -H "Authorization: Bearer your-secret" \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com"}'
+```
+
+Response (`201`):
+
+```json
+{
+  "code": "Ab12CdE",
+  "kind": "single",
+  "dest": "https://example.com/",
+  "shortUrl": "https://deskzy.xyz/r/Ab12CdE",
+  "createdAt": "...",
+  "isCustom": false
+}
+```
+
+**Multi-link (list page)** — pass `urls` as an array, or whitespace-separated links in `url`:
+
+```bash
+# preferred: explicit array
+curl -X POST https://deskzy.xyz/api/links \
+  -H "Authorization: Bearer your-secret" \
+  -H "Content-Type: application/json" \
+  -d '{"urls":["https://example.com/a","https://example.com/b","https://example.com/c"]}'
+
+# also works: space / newline separated paste in url
+curl -X POST https://deskzy.xyz/api/links \
+  -H "Authorization: Bearer your-secret" \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com/a https://example.com/b"}'
+```
+
+Response (`201`):
+
+```json
+{
+  "code": "Xy98ZqW",
+  "kind": "list",
+  "dest": "https://example.com/a",
+  "urls": [
+    "https://example.com/a",
+    "https://example.com/b",
+    "https://example.com/c"
+  ],
+  "shortUrl": "https://deskzy.xyz/r/Xy98ZqW",
+  "createdAt": "...",
+  "isCustom": false
+}
+```
+
+`shortUrl` opens a list hop at `/r/{code}` where recipients pick a destination. Optional `slug` (Pro session only) works the same as single creates.
 
 Legal pages on the live site: [/privacy](https://deskzy.xyz/privacy) · [/terms](https://deskzy.xyz/terms)

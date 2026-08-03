@@ -74,7 +74,7 @@ export function AdvancedStats({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-[var(--stroke)] bg-white/70",
+        "rounded-2xl border border-[var(--stroke)] bg-[var(--panel-soft)]",
         compact ? "p-3 md:p-4" : "p-4 md:p-5",
         className,
       )}

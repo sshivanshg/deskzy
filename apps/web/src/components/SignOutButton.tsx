@@ -11,7 +11,7 @@ export function SignOutButton() {
   return (
     <button
       type="button"
-      className="inline-flex rounded-full border border-[var(--stroke)] bg-white/70 px-4 py-2 text-sm font-medium hover:border-[var(--stroke-strong)] disabled:opacity-50"
+      className="inline-flex rounded-full border border-[var(--stroke)] bg-[var(--panel-soft)] px-4 py-2 text-sm font-medium hover:border-[var(--stroke-strong)] disabled:opacity-50"
       disabled={busy}
       onClick={async () => {
         setBusy(true);

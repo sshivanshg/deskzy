@@ -124,7 +124,7 @@ export default async function CategoryPage({ params }: Props) {
             {seo.faqs.map((faq) => (
               <div
                 key={faq.q}
-                className="rounded-2xl border border-[var(--stroke)] bg-white/40 px-4 py-4"
+                className="rounded-2xl border border-[var(--stroke)] bg-[var(--panel-faint)] px-4 py-4"
               >
                 <dt className="font-medium text-[var(--ink)]">{faq.q}</dt>
                 <dd className="mt-2 text-sm leading-relaxed text-[var(--muted)]">

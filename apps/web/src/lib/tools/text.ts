@@ -152,6 +152,8 @@ export async function shortenUrl(
     shortUrl?: string;
     code?: string;
     dest?: string;
+    kind?: string;
+    urls?: string[];
     upgradeUrl?: string;
   } = {};
   try {
@@ -178,6 +180,62 @@ export async function shortenUrl(
     meta: {
       code: data.code || "",
       dest: data.dest || "",
+      kind: data.kind || "single",
+      count: data.urls?.length || (data.dest ? 1 : 0),
+    },
+  };
+}
+
+/** Create a multi-link short URL from an explicit URL list. */
+export async function shortenUrlList(
+  urls: string[],
+  apiBase: string,
+  opts?: { slug?: string },
+): Promise<TextResult> {
+  const body: { urls: string[]; slug?: string } = { urls };
+  if (opts?.slug?.trim()) body.slug = opts.slug.trim();
+
+  const res = await fetch(`${apiBase}/links`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  let data: {
+    error?: string;
+    shortUrl?: string;
+    code?: string;
+    dest?: string;
+    kind?: string;
+    urls?: string[];
+    upgradeUrl?: string;
+  } = {};
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error(
+      res.ok
+        ? "Invalid response from shortener"
+        : "Shortener unavailable — try again in a moment",
+    );
+  }
+  if (!res.ok) {
+    const err = new Error(data.error || "Failed to shorten links") as Error & {
+      upgradeUrl?: string;
+      status?: number;
+    };
+    err.upgradeUrl = data.upgradeUrl;
+    err.status = res.status;
+    throw err;
+  }
+  if (!data.shortUrl) throw new Error("Shortener returned no URL");
+  return {
+    text: data.shortUrl,
+    meta: {
+      code: data.code || "",
+      dest: data.dest || "",
+      kind: data.kind || "list",
+      count: data.urls?.length || urls.length,
+      urlsJson: JSON.stringify(data.urls || urls),
     },
   };
 }

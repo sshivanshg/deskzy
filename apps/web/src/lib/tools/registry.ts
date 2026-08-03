@@ -281,7 +281,29 @@ export const TOOLS: ToolDefinition[] = [
       "tiny url",
       "bitly",
     ],
-    related: ["qr-code", "utm-builder", "bio-link"],
+    related: ["link-list", "qr-code", "utm-builder", "bio-link"],
+    popular: true,
+  },
+  {
+    slug: "link-list",
+    name: "Multi-Link Shortener",
+    category: "links",
+    description:
+      "Add several links one by one and get one short deskzy.xyz URL that opens a list page.",
+    seoTitle: "Multi-link shortener free — share multiple URLs as one",
+    seoDescription:
+      "Free multi-link shortener. Add several URLs and get one short deskzy.xyz link that opens a shareable list. No signup.",
+    runtime: "hybrid",
+    input: "form",
+    aliases: [
+      "paste links",
+      "multiple links",
+      "multi url shortener",
+      "link list",
+      "pastelinks",
+      "share multiple urls",
+    ],
+    related: ["url-shortener", "bio-link", "qr-code"],
     popular: true,
   },
   {
@@ -321,7 +343,7 @@ export const TOOLS: ToolDefinition[] = [
       "whatsapp url",
       "whatsapp message link",
     ],
-    related: ["qr-code", "url-shortener", "bio-link"],
+    related: ["qr-code", "url-shortener", "link-list"],
     popular: true,
   },
   {
@@ -341,7 +363,7 @@ export const TOOLS: ToolDefinition[] = [
       "linktree alternative",
       "bio page builder",
     ],
-    related: ["url-shortener", "qr-code", "whatsapp-link"],
+    related: ["url-shortener", "link-list", "qr-code"],
     popular: true,
   },
   {
@@ -513,6 +535,9 @@ export const ROUTE_SHORTCUTS: Record<string, string> = {
   shorten: "url-shortener",
   short: "url-shortener",
   link: "url-shortener",
+  list: "link-list",
+  multilink: "link-list",
+  "link-list": "link-list",
   compress: "compress-pdf",
   merge: "merge-pdf",
   split: "split-pdf",
@@ -548,6 +573,12 @@ export const USE_CASES: UseCase[] = [
     label: "Shorten a link",
     hint: "Paste any URL → short deskzy.xyz link",
     href: "/tools/url-shortener",
+  },
+  {
+    id: "link-list",
+    label: "Share multiple links",
+    hint: "Add links one by one → one list short URL",
+    href: "/tools/link-list",
   },
   {
     id: "qr",

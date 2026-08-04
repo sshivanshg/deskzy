@@ -9,7 +9,6 @@ import {
   Gift,
   Minus,
   Plus,
-  XLogo,
 } from "@phosphor-icons/react";
 import { ProCheckoutButton } from "@/components/ProCheckoutButton";
 import {
@@ -27,7 +26,6 @@ import {
   proTotalInr,
   proUnitInr,
 } from "@/lib/pricing";
-import { CONTACT_X_URL } from "@/lib/seo/site";
 
 export function PricingPlans({
   loggedIn = false,
@@ -280,15 +278,13 @@ export function PricingPlans({
               Scalable solutions for your business with customized pricing.
             </p>
 
-            <a
-              href={CONTACT_X_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/business"
               className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full border border-[var(--stroke-strong)] bg-[var(--panel-soft)] px-4 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--ink)]"
             >
-              <XLogo size={16} weight="bold" />
-              Contact sales
-            </a>
+              <Briefcase size={16} weight="bold" />
+              Explore Business
+            </Link>
 
             <p className="mt-6 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
               What&apos;s included
@@ -331,15 +327,16 @@ export function PricingPlans({
               {[
                 ["Best for", "Simple use", "Advanced use", "Growing teams"],
                 ["Tools", "Essential", "All tools", "All tools"],
-                ["Daily PDF & image", "Limited", "Unlimited", "Unlimited"],
+                ["Document processing", "Limited daily", "Unlimited", "Unlimited"],
                 ["Short links", "Unlimited", "Unlimited", "Unlimited"],
                 ["Files leave device", "Never*", "Never*", "Never*"],
                 ["Link analytics", "—", "Yes", "Yes"],
                 ["Custom short slugs", "—", "Yes", "Yes"],
+                ["API access", "—", "Yes", "Yes + higher limits"],
                 ["Saved presets", "—", "Yes", "Yes"],
                 ["Team seats", "1", "1–25", "25+"],
+                ["Priority support", "—", "Yes", "Yes"],
                 ["SSO", "—", "—", "Yes"],
-                ["API access", "—", "—", "Yes"],
               ].map(([feature, free, pro, biz]) => (
                 <tr
                   key={feature}

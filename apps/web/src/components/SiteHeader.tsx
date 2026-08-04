@@ -5,27 +5,39 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
+  Buildings,
+  ChartLine,
   CurrencyInr,
+  FilePdf,
+  Image as ImageIcon,
   LinkSimple,
   List,
   MagnifyingGlass,
   ShieldCheck,
+  TextT,
+  VideoCamera,
   X,
   XLogo,
 } from "@phosphor-icons/react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { AuthNavLinks } from "@/components/AuthNavLinks";
+import { NavToolsMenu } from "@/components/NavToolsMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CONTACT_X_HANDLE, CONTACT_X_URL } from "@/lib/seo/site";
-import { searchTools } from "@/lib/tools/registry";
+import {
+  CATEGORIES,
+  getPopularTools,
+  searchTools,
+  type ToolCategory,
+} from "@/lib/tools/registry";
 
-const NAV = [
-  { href: "/links", label: "Links" },
-  { href: "/pdf", label: "PDF" },
-  { href: "/image", label: "Image" },
-  { href: "/media", label: "Media" },
-  { href: "/text", label: "Text" },
-];
+const CATEGORY_ICON: Record<ToolCategory, typeof FilePdf> = {
+  links: LinkSimple,
+  pdf: FilePdf,
+  image: ImageIcon,
+  media: VideoCamera,
+  text: TextT,
+};
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -39,6 +51,7 @@ export function SiteHeader() {
     () => (q.trim() ? searchTools(q).slice(0, 8) : []),
     [q],
   );
+  const popular = useMemo(() => getPopularTools().slice(0, 4), []);
 
   const closeOverlays = () => {
     setMenuOpen(false);
@@ -90,30 +103,13 @@ export function SiteHeader() {
       <header className="sticky top-0 z-40 px-3 pt-3 md:px-4 md:pt-4">
         <div className="mx-auto max-w-6xl">
           <div className="shell !rounded-2xl !p-1.5 backdrop-blur-xl md:!rounded-full">
-            <div className="shell-core !rounded-[1.1rem] flex items-center gap-1.5 px-2 py-1.5 md:!rounded-full md:gap-3 md:px-3">
+            <div className="shell-core !rounded-[1.1rem] flex items-center gap-1.5 px-2 py-1.5 md:!rounded-full md:gap-2 md:px-3">
               <BrandLogo onClick={closeOverlays} priority />
 
-              <nav className="hidden items-center gap-0.5 md:flex" aria-label="Categories">
-                {NAV.map((item) => {
-                  const active = pathname === item.href;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`rounded-full px-3 py-1.5 text-sm transition-colors duration-200 ${
-                        active
-                          ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
-                          : "text-[var(--muted)] hover:text-[var(--ink)]"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </nav>
+              <NavToolsMenu pathname={pathname} />
 
               <div className="ml-auto flex items-center gap-1 sm:gap-1.5">
-                <div className="relative hidden w-[15rem] lg:block">
+                <div className="relative hidden w-[13rem] lg:block xl:w-[15rem]">
                   <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]">
                     <MagnifyingGlass size={16} weight="bold" />
                   </span>
@@ -150,10 +146,10 @@ export function SiteHeader() {
 
                 <Link
                   href="/tools/url-shortener"
-                  className={`hidden items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition-colors sm:inline-flex ${
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors md:hidden ${
                     pathname === "/tools/url-shortener"
-                      ? "bg-[var(--accent)] text-white"
-                      : "bg-[var(--accent)] text-white hover:opacity-90"
+                      ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
+                      : "text-[var(--muted)] hover:text-[var(--ink)]"
                   }`}
                 >
                   <LinkSimple size={16} weight="bold" />
@@ -174,14 +170,6 @@ export function SiteHeader() {
                 <AuthNavLinks />
 
                 <ThemeToggle />
-
-                <Link
-                  href="/privacy"
-                  className="hidden items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-[var(--muted)] transition-colors hover:text-[var(--ink)] lg:inline-flex"
-                >
-                  <ShieldCheck size={16} weight="duotone" />
-                  Privacy
-                </Link>
 
                 <button
                   type="button"
@@ -225,7 +213,6 @@ export function SiteHeader() {
         </div>
       </header>
 
-      {/* Mobile / tablet search sheet */}
       {mobileSearchOpen && (
         <div className="fixed inset-0 z-30 lg:hidden">
           <button
@@ -287,10 +274,7 @@ export function SiteHeader() {
                         {t.description}
                       </span>
                     </span>
-                    <ArrowRight
-                      size={16}
-                      color="var(--muted)"
-                    />
+                    <ArrowRight size={16} color="var(--muted)" />
                   </Link>
                 ))
               )}
@@ -299,7 +283,6 @@ export function SiteHeader() {
         </div>
       )}
 
-      {/* Phone menu drawer */}
       {menuOpen && (
         <div className="fixed inset-0 z-30 md:hidden">
           <button
@@ -309,7 +292,7 @@ export function SiteHeader() {
             onClick={closeOverlays}
           />
           <nav
-            className="relative mx-3 mt-[4.6rem] flex max-h-[min(78dvh,36rem)] flex-col overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--bg-elevated)] shadow-[var(--shadow)]"
+            className="relative mx-3 mt-[4.6rem] flex max-h-[min(78dvh,40rem)] flex-col overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--bg-elevated)] shadow-[var(--shadow)]"
             aria-label="Mobile"
           >
             <div className="overflow-y-auto overscroll-contain p-2">
@@ -317,23 +300,23 @@ export function SiteHeader() {
                 Categories
               </p>
               <ul className="space-y-0.5">
-                {NAV.map((item) => {
-                  const active = pathname === item.href;
+                {CATEGORIES.map((c) => {
+                  const Icon = CATEGORY_ICON[c.id];
+                  const href = `/${c.id}`;
+                  const active = pathname === href;
                   return (
-                    <li key={item.href}>
+                    <li key={c.id}>
                       <Link
-                        href={item.href}
+                        href={href}
                         onClick={closeOverlays}
-                        className={`flex items-center justify-between rounded-xl px-3 py-3 text-[15px] transition-colors ${
+                        className={`flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] transition-colors ${
                           active
                             ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
                             : "text-[var(--ink)] active:bg-[var(--surface)]"
                         }`}
                       >
-                        {item.label}
-                        <span className="opacity-40">
-                          <ArrowRight size={14} />
-                        </span>
+                        <Icon size={18} weight="duotone" />
+                        {c.name}
                       </Link>
                     </li>
                   );
@@ -342,15 +325,28 @@ export function SiteHeader() {
 
               <div className="my-2 border-t border-[var(--stroke)]" />
 
+              <p className="px-3 pb-1 pt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+                Solutions
+              </p>
               <ul className="space-y-0.5">
                 <li>
                   <Link
-                    href="/tools/url-shortener"
+                    href="/business"
                     onClick={closeOverlays}
-                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-medium text-[var(--accent)] active:bg-[var(--accent-soft)]"
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] text-[var(--ink)] active:bg-[var(--surface)]"
                   >
-                    <LinkSimple size={18} weight="bold" />
-                    Shorten URL
+                    <Buildings size={18} weight="duotone" />
+                    Business
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/link-analytics"
+                    onClick={closeOverlays}
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] text-[var(--ink)] active:bg-[var(--surface)]"
+                  >
+                    <ChartLine size={18} weight="duotone" />
+                    Link analytics
                   </Link>
                 </li>
                 <li>
@@ -367,6 +363,33 @@ export function SiteHeader() {
                     Pricing
                   </Link>
                 </li>
+              </ul>
+
+              <div className="my-2 border-t border-[var(--stroke)]" />
+
+              <p className="px-3 pb-1 pt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+                Popular
+              </p>
+              <ul className="space-y-0.5">
+                {popular.map((t) => (
+                  <li key={t.slug}>
+                    <Link
+                      href={`/tools/${t.slug}`}
+                      onClick={closeOverlays}
+                      className="flex items-center justify-between rounded-xl px-3 py-3 text-[15px] text-[var(--ink)] active:bg-[var(--surface)]"
+                    >
+                      {t.name}
+                      <span className="opacity-40">
+                        <ArrowRight size={14} />
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="my-2 border-t border-[var(--stroke)]" />
+
+              <ul className="space-y-0.5">
                 <AuthNavLinks mobile />
                 <li>
                   <Link
@@ -376,15 +399,6 @@ export function SiteHeader() {
                   >
                     <ShieldCheck size={18} weight="duotone" />
                     Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/terms"
-                    onClick={closeOverlays}
-                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] text-[var(--ink)] active:bg-[var(--surface)]"
-                  >
-                    Terms of Use
                   </Link>
                 </li>
                 <li>

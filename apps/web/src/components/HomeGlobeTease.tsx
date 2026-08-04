@@ -1,42 +1,150 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ChartLineUp } from "@phosphor-icons/react";
+import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
+import { ArrowRight, ChartLineUp, MapPin } from "@phosphor-icons/react";
+import { GlobeCdn } from "@/components/ui/cobe-globe-cdn";
 import {
-  GlobeAnalytics,
-  type AnalyticsMarker,
-} from "@/components/ui/cobe-globe-analytics";
+  EDGE_TRAFFIC_FALLBACK,
+  type EdgeArc,
+  type EdgeMarker,
+} from "@/lib/edge-traffic";
 import { formatInr, PRO_MONTHLY_INR } from "@/lib/pricing";
 
-const HERO_MARKERS: AnalyticsMarker[] = [
-  { id: "in", location: [19.08, 72.88], visitors: 1284, trend: 12 },
-  { id: "us", location: [40.71, -74.01], visitors: 742, trend: 8 },
-  { id: "gb", location: [51.51, -0.13], visitors: 318, trend: -2 },
-  { id: "de", location: [52.52, 13.41], visitors: 256, trend: 5 },
-  { id: "sg", location: [1.35, 103.82], visitors: 198, trend: 15 },
-  { id: "ae", location: [25.2, 55.27], visitors: 164, trend: 4 },
-];
+type EdgePayload = {
+  markers: EdgeMarker[];
+  arcs: EdgeArc[];
+  totalRequests: number;
+  source: "clicks" | "fallback";
+};
+
+const LIVE_CITIES = [
+  { city: "Mumbai", visitors: "BOM", x: 68, y: 48 },
+  { city: "Virginia", visitors: "IAD", x: 24, y: 36 },
+  { city: "Frankfurt", visitors: "FRA", x: 48, y: 28 },
+  { city: "Singapore", visitors: "SIN", x: 74, y: 58 },
+] as const;
 
 type HomeGlobeTeaseProps = {
-  /** compact = mobile strip; hero = desktop visual */
   size?: "compact" | "hero";
 };
 
+function MobileGeoTease() {
+  return (
+    <div
+      className="relative h-[4.75rem] w-[5.25rem] shrink-0 overflow-hidden rounded-xl"
+      style={{
+        background:
+          "radial-gradient(ellipse at 40% 45%, color-mix(in srgb, var(--accent) 22%, var(--accent-soft)), color-mix(in srgb, var(--accent-soft) 70%, transparent) 70%)",
+      }}
+      aria-hidden
+    >
+      <svg
+        viewBox="0 0 84 76"
+        className="absolute inset-0 h-full w-full"
+        fill="none"
+      >
+        <ellipse
+          cx="42"
+          cy="38"
+          rx="34"
+          ry="30"
+          stroke="var(--accent)"
+          strokeOpacity="0.22"
+          strokeWidth="1"
+        />
+        <ellipse
+          cx="42"
+          cy="38"
+          rx="22"
+          ry="30"
+          stroke="var(--accent)"
+          strokeOpacity="0.14"
+          strokeWidth="1"
+        />
+        <path
+          d="M8 38h68M14 22h56M14 54h56"
+          stroke="var(--accent)"
+          strokeOpacity="0.12"
+          strokeWidth="0.75"
+        />
+        <path
+          d="M20 36 C 36 18, 52 18, 62 46"
+          stroke="var(--accent)"
+          strokeOpacity="0.45"
+          strokeWidth="1.25"
+          strokeDasharray="3 3"
+          className="motion-safe:[animation:geo-dash_4s_linear_infinite]"
+        />
+        {LIVE_CITIES.map((c, i) => (
+          <g key={c.city}>
+            <circle
+              cx={c.x}
+              cy={c.y}
+              r="4"
+              fill="var(--accent)"
+              className="origin-center motion-safe:[animation:geo-ping_2.4s_ease-out_infinite]"
+              style={{
+                transformBox: "fill-box",
+                transformOrigin: "center",
+                animationDelay: `${i * 0.45}s`,
+              }}
+            />
+            <circle cx={c.x} cy={c.y} r="2.25" fill="var(--accent)" />
+          </g>
+        ))}
+      </svg>
+      <div className="absolute bottom-1 left-1 right-1 flex items-center gap-1 rounded-md bg-[var(--ink)]/80 px-1.5 py-0.5 backdrop-blur-[2px]">
+        <span className="relative flex h-1.5 w-1.5 shrink-0">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-70" />
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+        </span>
+        <span className="truncate font-mono text-[8px] font-medium tracking-tight text-white">
+          CF edge · BOM
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function useEdgeTraffic() {
+  const [data, setData] = useState<EdgePayload>(EDGE_TRAFFIC_FALLBACK);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch("/api/edge-traffic", { cache: "no-store" });
+        if (!res.ok) return;
+        const json = (await res.json()) as EdgePayload;
+        if (!cancelled && json.markers?.length) setData(json);
+      } catch {
+        /* keep fallback */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return data;
+}
+
 export function HomeGlobeTease({ size = "compact" }: HomeGlobeTeaseProps) {
+  const edge = useEdgeTraffic();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const dark = mounted && resolvedTheme === "dark";
+
   if (size === "compact") {
     return (
       <Link
         href="/link-analytics"
         className="group flex items-center gap-3 rounded-2xl border border-[var(--stroke)] bg-[var(--panel-soft)] p-2.5 pr-3.5 transition-colors hover:border-[var(--accent)]/35 hover:bg-[var(--accent-soft)]/40"
       >
-        <div className="relative h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden rounded-xl bg-[var(--accent-soft)]/50">
-          <GlobeAnalytics
-            markers={HERO_MARKERS}
-            className="h-full w-full"
-            speed={0.004}
-            showLabels={false}
-          />
-        </div>
+        <MobileGeoTease />
         <div className="min-w-0 flex-1">
           <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
             Pro analytics
@@ -44,8 +152,11 @@ export function HomeGlobeTease({ size = "compact" }: HomeGlobeTeaseProps) {
           <p className="mt-0.5 text-sm font-semibold leading-snug text-[var(--ink)]">
             See where clicks land
           </p>
-          <p className="mt-0.5 text-xs text-[var(--muted)]">
-            Live geography · from {formatInr(PRO_MONTHLY_INR)}/mo
+          <p className="mt-0.5 flex items-center gap-1 text-xs text-[var(--muted)]">
+            <span className="shrink-0 text-[var(--accent)]">
+              <MapPin size={11} weight="fill" />
+            </span>
+            Cloudflare edge · from {formatInr(PRO_MONTHLY_INR)}/mo
           </p>
         </div>
         <span className="shrink-0 text-[var(--muted)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-[var(--accent)]">
@@ -54,6 +165,20 @@ export function HomeGlobeTease({ size = "compact" }: HomeGlobeTeaseProps) {
       </Link>
     );
   }
+
+  const markers = edge.markers.map((m) => ({
+    id: m.id,
+    location: m.location,
+    region: m.region,
+  }));
+  const arcs = edge.arcs.map((a) => ({
+    id: a.id,
+    from: a.from,
+    to: a.to,
+  }));
+  const arcTraffic = Object.fromEntries(
+    edge.arcs.map((a) => [a.id, a.requests]),
+  );
 
   return (
     <div className="relative mx-auto w-full max-w-[340px] lg:max-w-[400px]">
@@ -65,17 +190,24 @@ export function HomeGlobeTease({ size = "compact" }: HomeGlobeTeaseProps) {
         }}
         aria-hidden
       />
-      <GlobeAnalytics
-        markers={HERO_MARKERS}
+      <GlobeCdn
+        markers={markers}
+        arcs={arcs}
+        arcTraffic={arcTraffic}
         className="w-full"
         speed={0.0028}
+        dark={dark}
       />
       <div className="mt-5 text-center">
         <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-          Click geography
+          Cloudflare edge
         </p>
         <p className="mt-1.5 font-display text-lg font-semibold tracking-tight text-[var(--ink)]">
-          Watch where your short links travel
+          Live colo traffic on deskzy.xyz
+        </p>
+        <p className="mt-1 text-xs text-[var(--muted)]">
+          {edge.totalRequests.toLocaleString("en-IN")} req ·{" "}
+          {edge.source === "clicks" ? "from your click geo" : "Worker colo map"}
         </p>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
           <Link

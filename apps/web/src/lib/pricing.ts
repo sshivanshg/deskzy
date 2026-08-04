@@ -36,18 +36,20 @@ export function formatInr(amount: number): string {
 
 export const FREE_FEATURES = [
   "Access to essential Deskzy tools",
-  "Unlimited free short links",
+  "Unlimited free short links on deskzy.xyz",
   "Limited daily PDF & image processing",
   "Browser-first — files stay on your device",
 ] as const;
 
 export const PRO_FEATURES = [
+  "Full access to all Deskzy tools",
   "Unlimited PDF & image processing",
   "Custom short slugs (deskzy.xyz/you)",
   "Link click analytics dashboard",
+  "API access for short links",
   "Saved UTM & image presets",
-  "Team seats (invite members)",
-  "Priority support",
+  "Team seats — invite up to 25 members",
+  "Priority customer support",
 ] as const;
 
 export const BUSINESS_FEATURES = [
@@ -55,7 +57,7 @@ export const BUSINESS_FEATURES = [
   "Custom contracts designed for scalability",
   "Dedicated account manager",
   "Single Sign-On (SSO)",
-  "API access & higher rate limits",
+  "Higher API rate limits",
 ] as const;
 
 export const PRICING_FAQS = [
@@ -65,7 +67,11 @@ export const PRICING_FAQS = [
   },
   {
     q: "Why upgrade to Pro?",
-    a: "Pro removes PDF/image daily limits, adds custom short slugs, click analytics, synced presets, and team seats. From ₹399 per user per month.",
+    a: "Pro removes PDF/image daily limits, adds custom short slugs, click analytics, short-link API keys (Account → API), synced presets, and team seats. From ₹399 per user per month.",
+  },
+  {
+    q: "Does Pro include an API?",
+    a: "Yes. Pro and Business members can create API keys in Account → API and call POST /api/links with Authorization: Bearer <key> to create short links from scripts or pipelines.",
   },
   {
     q: "Can I cancel anytime?",
@@ -77,6 +83,6 @@ export const PRICING_FAQS = [
   },
   {
     q: "How does Business pricing work?",
-    a: "For 25+ seats we custom-quote contracts, SSO, invoicing, and API limits. Contact sales and we’ll tailor a plan.",
+    a: "For 25+ seats we custom-quote contracts, SSO, invoicing, and higher API rate limits. Pro already includes short-link API keys. Contact sales and we’ll tailor a plan.",
   },
 ] as const;

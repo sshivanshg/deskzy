@@ -57,6 +57,8 @@ export async function recordLinkClick(input: {
   code: string;
   referrer?: string | null;
   userAgent?: string | null;
+  country?: string | null;
+  colo?: string | null;
 }): Promise<{ recorded: boolean; reason?: string }> {
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
     return { recorded: false, reason: "no_service_role" };
@@ -71,10 +73,15 @@ export async function recordLinkClick(input: {
     if (linkErr) return { recorded: false, reason: linkErr.message };
     if (!link) return { recorded: false, reason: "link_not_owned" };
 
+    const country = input.country?.trim().toUpperCase().slice(0, 2) || null;
+    const colo = input.colo?.trim().toUpperCase().slice(0, 8) || null;
+
     const { error: clickErr } = await admin.from("link_clicks").insert({
       code: input.code,
       referrer: input.referrer?.slice(0, 500) || null,
       user_agent: input.userAgent?.slice(0, 300) || null,
+      country,
+      colo,
     });
     if (clickErr) return { recorded: false, reason: clickErr.message };
 

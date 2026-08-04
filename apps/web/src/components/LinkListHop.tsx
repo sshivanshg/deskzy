@@ -12,6 +12,7 @@ import {
 } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "motion/react";
 import { BrandLogo } from "@/components/BrandLogo";
+import { HopAdSlot } from "@/components/HopAdSlot";
 
 type LinkListHopProps = {
   urls: string[];
@@ -212,6 +213,10 @@ export function LinkListHop({ urls, code }: LinkListHopProps) {
             />
           ))}
         </ul>
+
+        <motion.div variants={item}>
+          <HopAdSlot />
+        </motion.div>
 
         <motion.p
           className="mt-10 text-center text-sm leading-relaxed text-[var(--muted)]"

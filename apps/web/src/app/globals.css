@@ -360,6 +360,24 @@ textarea {
   }
 }
 
+@keyframes geo-dash {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+@keyframes geo-ping {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.55);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
 .busy-dot {
   width: 0.45rem;
   height: 0.45rem;

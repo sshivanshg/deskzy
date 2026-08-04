@@ -1,15 +1,25 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { resolveUserApiKey } from "@/lib/api-keys";
 
 /**
- * Machine API key for pipeline / script creates (single URL or multi-link list).
- * Set as Worker secret `LINKS_API_KEY` (wrangler secret put LINKS_API_KEY).
- * Local: LINKS_API_KEY in apps/web/.env.local or .dev.vars.
+ * Machine / Pro API auth for POST /api/links.
+ *
+ * Accepts either:
+ * - Global Worker secret `LINKS_API_KEY` (internal pipelines), or
+ * - A Pro/Business user key from Account (`dz_…`)
  *
  * POST /api/links body:
  * - `{ "url": "https://…" }` — single short link
- * - `{ "urls": ["https://…", "https://…"] }` — list short link (PasteLinks-style)
+ * - `{ "urls": ["https://…", "https://…"] }` — list short link
  * - `{ "url": "https://a … https://b" }` — whitespace-separated multi also works
+ * - `{ "slug": "custom" }` — Pro custom slug (user keys only attach ownership)
  */
+
+export type LinksApiAuth =
+  | { ok: true; kind: "global" }
+  | { ok: true; kind: "user"; userId: string }
+  | { ok: false };
+
 export async function getLinksApiKey(): Promise<string | null> {
   const fromProcess = process.env.LINKS_API_KEY?.trim();
   if (fromProcess) return fromProcess;
@@ -30,16 +40,38 @@ function timingSafeEqual(a: string, b: string): boolean {
   return out === 0;
 }
 
-/** Returns true if Authorization: Bearer <key> matches configured LINKS_API_KEY. */
+function extractBearer(authHeader: string | null): string | null {
+  if (!authHeader) return null;
+  const m = /^Bearer\s+(.+)$/i.exec(authHeader.trim());
+  if (!m) return null;
+  const token = m[1].trim();
+  return token || null;
+}
+
+/** Returns true if Authorization matches the global LINKS_API_KEY. */
 export async function isLinksApiAuthorized(
   authHeader: string | null,
 ): Promise<boolean> {
+  const result = await resolveLinksApiAuth(authHeader);
+  return result.ok;
+}
+
+/** Resolve Bearer token to global pipeline key or a paid user API key. */
+export async function resolveLinksApiAuth(
+  authHeader: string | null,
+): Promise<LinksApiAuth> {
+  const token = extractBearer(authHeader);
+  if (!token) return { ok: false };
+
   const expected = await getLinksApiKey();
-  if (!expected) return false;
-  if (!authHeader) return false;
-  const m = /^Bearer\s+(.+)$/i.exec(authHeader.trim());
-  if (!m) return false;
-  const token = m[1].trim();
-  if (!token) return false;
-  return timingSafeEqual(token, expected);
+  if (expected && timingSafeEqual(token, expected)) {
+    return { ok: true, kind: "global" };
+  }
+
+  const userKey = await resolveUserApiKey(token);
+  if (userKey) {
+    return { ok: true, kind: "user", userId: userKey.userId };
+  }
+
+  return { ok: false };
 }

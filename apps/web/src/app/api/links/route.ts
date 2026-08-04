@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { isLinksApiAuthorized } from "@/lib/links-api-auth";
+import { resolveLinksApiAuth } from "@/lib/links-api-auth";
 import {
   allowLinkCreate,
   hasLink,
@@ -78,12 +78,12 @@ async function allocateCode(
 
 export async function POST(req: NextRequest) {
   try {
-    const apiAuthed = await isLinksApiAuthorized(
+    const apiAuth = await resolveLinksApiAuth(
       req.headers.get("authorization"),
     );
 
-    // Public creates are IP rate-limited; machine API key bypasses for pipelines.
-    if (!apiAuthed) {
+    // Public creates are IP rate-limited; API keys (global or Pro user) bypass.
+    if (!apiAuth.ok) {
       const ip = clientIp(req);
       if (!(await allowLinkCreate(ip))) {
         return NextResponse.json(
@@ -94,14 +94,18 @@ export async function POST(req: NextRequest) {
     }
 
     let userId: string | null = null;
-    try {
-      const supabase = await createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      userId = user?.id ?? null;
-    } catch {
-      userId = null;
+    if (apiAuth.ok && apiAuth.kind === "user") {
+      userId = apiAuth.userId;
+    } else {
+      try {
+        const supabase = await createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        userId = user?.id ?? null;
+      } catch {
+        userId = null;
+      }
     }
 
     const { plan } = await getUserPlan(userId);
@@ -166,9 +170,17 @@ export async function POST(req: NextRequest) {
       { status: 201 },
     );
   } catch (e) {
+    const msg = e instanceof Error ? e.message : "invalid request";
+    const kvCapped = /kv put\(\) limit exceeded|limit exceeded for the day/i.test(
+      msg,
+    );
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : "invalid request" },
-      { status: 400 },
+      {
+        error: kvCapped
+          ? "Short-link storage is temporarily busy. Please try again in a moment."
+          : msg,
+      },
+      { status: kvCapped ? 503 : 400 },
     );
   }
 }

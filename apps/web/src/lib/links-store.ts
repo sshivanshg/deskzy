@@ -1,9 +1,10 @@
-/** Short-link store: Cloudflare KV in production, in-memory for local next dev. */
+/** Short-link store: Cloudflare KV in production, Supabase fallback, memory for local next dev. */
 
 export type LinkRecord = {
   code: string;
   /** Single destination, or first URL for list links (account list / OG fallback). */
   dest: string;
+  /** Legacy field kept for KV schema; click counts live in Supabase (`short_links.hits`). */
   hits: number;
   createdAt: string;
   userId?: string | null;
@@ -68,6 +69,11 @@ const RESERVED_SLUGS = new Set([
   "favicon",
 ]);
 
+function isKvWriteLimitError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err ?? "");
+  return /kv put\(\) limit exceeded|limit exceeded for the day/i.test(msg);
+}
+
 async function getKv(): Promise<KvLike | null> {
   try {
     const { getCloudflareContext } = await import("@opennextjs/cloudflare");
@@ -97,19 +103,95 @@ export function normalizeCustomSlug(raw: string): string {
   return slug;
 }
 
+function rowToLink(row: {
+  code: string;
+  dest: string;
+  hits?: number | null;
+  created_at?: string | null;
+  user_id?: string | null;
+  is_custom?: boolean | null;
+  kind?: string | null;
+  urls?: unknown;
+}): LinkRecord {
+  const urls = Array.isArray(row.urls)
+    ? row.urls.filter((u): u is string => typeof u === "string")
+    : undefined;
+  const kind =
+    row.kind === "list" || (urls && urls.length > 1) ? "list" : "single";
+  return {
+    code: row.code,
+    dest: row.dest,
+    hits: Number(row.hits ?? 0),
+    createdAt: row.created_at || new Date().toISOString(),
+    userId: row.user_id ?? null,
+    isCustom: row.is_custom ?? false,
+    kind,
+    ...(kind === "list" && urls ? { urls } : {}),
+  };
+}
+
+async function getLinkFromSupabase(
+  code: string,
+): Promise<LinkRecord | undefined> {
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) return undefined;
+  try {
+    const { createServiceClient } = await import("@/lib/supabase/admin");
+    const admin = createServiceClient();
+    const { data, error } = await admin
+      .from("short_links")
+      .select("code,dest,hits,created_at,user_id,is_custom,kind,urls")
+      .eq("code", code)
+      .maybeSingle();
+    if (error || !data) return undefined;
+    return rowToLink(data);
+  } catch {
+    return undefined;
+  }
+}
+
+async function putLinkToSupabase(record: LinkRecord): Promise<void> {
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error("Link storage unavailable (KV limit and no Supabase fallback)");
+  }
+  const { createServiceClient } = await import("@/lib/supabase/admin");
+  const admin = createServiceClient();
+  const kind = record.kind === "list" ? "list" : "single";
+  const { error } = await admin.from("short_links").upsert(
+    {
+      code: record.code,
+      dest: record.dest,
+      user_id: record.userId ?? null,
+      is_custom: record.isCustom ?? false,
+      kind,
+      urls: kind === "list" ? record.urls ?? null : null,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "code" },
+  );
+  if (error) throw new Error(error.message);
+}
+
 export async function getLink(code: string): Promise<LinkRecord | undefined> {
   if (!isSafeCode(code) && !/^[a-z0-9-]{3,32}$/.test(code)) return undefined;
   const kv = await getKv();
   if (kv) {
-    const raw = await kv.get(code);
-    if (!raw) return undefined;
     try {
-      return JSON.parse(raw) as LinkRecord;
+      const raw = await kv.get(code);
+      if (raw) {
+        try {
+          return JSON.parse(raw) as LinkRecord;
+        } catch {
+          /* fall through */
+        }
+      }
     } catch {
-      return undefined;
+      /* fall through to Supabase */
     }
+    const fromDb = await getLinkFromSupabase(code);
+    if (fromDb) return fromDb;
+    return undefined;
   }
-  return memory.get(code);
+  return memory.get(code) ?? (await getLinkFromSupabase(code));
 }
 
 export async function putLink(
@@ -156,28 +238,7 @@ export async function hasLink(code: string): Promise<boolean> {
   return (await getLink(code)) !== undefined;
 }
 
-export async function bumpLinkHits(code: string): Promise<void> {
-  const link = await getLink(code);
-  if (!link) return;
-  link.hits = (link.hits || 0) + 1;
-  await putLinkRecord(link);
-}
-
-/**
- * Simple per-IP create limit. Returns true if the request is allowed.
- * Fail-open if KV is unavailable so local/dev still works.
- */
-export async function allowLinkCreate(ip: string): Promise<boolean> {
-  const key = rateKey(ip);
-  const kv = await getKv();
-  if (kv) {
-    const raw = await kv.get(key);
-    const count = raw ? Number.parseInt(raw, 10) || 0 : 0;
-    if (count >= LINK_RATE_LIMIT_PER_MINUTE) return false;
-    await kv.put(key, String(count + 1), { expirationTtl: 120 });
-    return true;
-  }
-
+function allowFromMemory(key: string): boolean {
   const now = Date.now();
   const bucket = memoryRate.get(key);
   if (!bucket || bucket.resetAt <= now) {
@@ -189,6 +250,30 @@ export async function allowLinkCreate(ip: string): Promise<boolean> {
   return true;
 }
 
+/**
+ * Simple per-IP create limit. Returns true if the request is allowed.
+ * Fail-open if KV is unavailable / write-capped so creates still work.
+ */
+export async function allowLinkCreate(ip: string): Promise<boolean> {
+  const key = rateKey(ip);
+  const kv = await getKv();
+  if (kv) {
+    try {
+      const raw = await kv.get(key);
+      const count = raw ? Number.parseInt(raw, 10) || 0 : 0;
+      if (count >= LINK_RATE_LIMIT_PER_MINUTE) return false;
+      await kv.put(key, String(count + 1), { expirationTtl: 120 });
+      return true;
+    } catch (err) {
+      // Daily KV write cap (or transient KV errors) — don't block creates.
+      if (isKvWriteLimitError(err)) return allowFromMemory(key);
+      return allowFromMemory(key);
+    }
+  }
+
+  return allowFromMemory(key);
+}
+
 function rateKey(ip: string): string {
   const safe = (ip || "unknown").slice(0, 128).replace(/[^\w.:-]/g, "_");
   const minute = Math.floor(Date.now() / 60_000);
@@ -198,10 +283,17 @@ function rateKey(ip: string): string {
 async function putLinkRecord(record: LinkRecord): Promise<void> {
   const kv = await getKv();
   if (kv) {
-    await kv.put(record.code, JSON.stringify(record), {
-      expirationTtl: LINK_TTL_SECONDS,
-    });
-    return;
+    try {
+      await kv.put(record.code, JSON.stringify(record), {
+        expirationTtl: LINK_TTL_SECONDS,
+      });
+      return;
+    } catch {
+      // Free-plan daily write cap (or transient KV put failure) —
+      // persist in Supabase so creates/redirects still work.
+      await putLinkToSupabase(record);
+      return;
+    }
   }
   memory.set(record.code, record);
 }

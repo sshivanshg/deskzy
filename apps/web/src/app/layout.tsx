@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@/components/Analytics";
+import { HilltopAds } from "@/components/HilltopAds";
 import { SiteChromeGate } from "@/components/SiteChromeGate";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -68,9 +69,11 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
+  referrer: "no-referrer-when-downgrade",
   other: {
     "google-adsense-account": ADSENSE_CLIENT,
-    monetag: "a529d7913d549da1734a75594234444d",
+    "7a0eee65776bb9c3d94d5d2fa9ffcc7d81d4d370":
+      "7a0eee65776bb9c3d94d5d2fa9ffcc7d81d4d370",
   },
 };
 
@@ -98,6 +101,7 @@ export default function RootLayout({
             <SiteFooter />
           </SiteChromeGate>
           <Analytics />
+          <HilltopAds />
         </ThemeProvider>
       </body>
     </html>

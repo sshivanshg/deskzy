@@ -11,6 +11,7 @@ import {
   CopySimple,
   CrownSimple,
   Image as ImageIcon,
+  Key,
   LinkSimple,
   LockSimple,
   Plus,
@@ -48,6 +49,14 @@ type PresetRow = {
   created_at: string;
 };
 
+type ApiKeyRow = {
+  id: string;
+  name: string;
+  key_prefix: string;
+  created_at: string;
+  last_used_at: string | null;
+};
+
 export type AccountDashboardProps = {
   email: string;
   paid: boolean;
@@ -59,9 +68,16 @@ export type AccountDashboardProps = {
   flash?: "upgraded" | "joined" | null;
 };
 
-type Tab = "overview" | "links" | "analytics" | "team" | "presets";
+type Tab = "overview" | "links" | "analytics" | "team" | "presets" | "api";
 
-const TAB_IDS: Tab[] = ["overview", "links", "analytics", "team", "presets"];
+const TAB_IDS: Tab[] = [
+  "overview",
+  "links",
+  "analytics",
+  "team",
+  "presets",
+  "api",
+];
 
 function parseTab(raw: string | null): Tab | null {
   if (!raw) return null;
@@ -114,9 +130,13 @@ export function AccountDashboard(props: AccountDashboardProps) {
   const searchParams = useSearchParams();
   const initialTab = parseTab(searchParams.get("tab"));
   const [tab, setTabState] = useState<Tab>(
-    initialTab && (initialTab === "team" || initialTab === "presets") && !paid
+    initialTab &&
+      (initialTab === "team" ||
+        initialTab === "presets" ||
+        initialTab === "api") &&
+      !paid
       ? "analytics"
-      : initialTab ?? "overview",
+      : (initialTab ?? "overview"),
   );
 
   const setTab = useCallback(
@@ -133,6 +153,8 @@ export function AccountDashboard(props: AccountDashboardProps) {
   const [links, setLinks] = useState<LinkRow[]>([]);
   const [invites, setInvites] = useState<InviteRow[]>([]);
   const [presets, setPresets] = useState<PresetRow[]>([]);
+  const [apiKeys, setApiKeys] = useState<ApiKeyRow[]>([]);
+  const [apiSecret, setApiSecret] = useState<string | null>(null);
   const [seatCap, setSeatCap] = useState(seats);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
@@ -152,10 +174,11 @@ export function AccountDashboard(props: AccountDashboardProps) {
   const load = useCallback(async () => {
     setError(null);
     try {
-      const [linksRes, seatsRes, presetsRes] = await Promise.all([
+      const [linksRes, seatsRes, presetsRes, keysRes] = await Promise.all([
         fetch("/api/links"),
         fetch("/api/seats"),
         paid ? fetch("/api/presets") : Promise.resolve(null),
+        paid ? fetch("/api/keys") : Promise.resolve(null),
       ]);
       if (linksRes.ok) {
         const data = (await linksRes.json()) as { links?: LinkRow[] };
@@ -168,6 +191,10 @@ export function AccountDashboard(props: AccountDashboardProps) {
         };
         setInvites(data.invites ?? []);
         setSeatCap(data.seats ?? seats);
+      }
+      if (keysRes?.ok) {
+        const data = (await keysRes.json()) as { keys?: ApiKeyRow[] };
+        setApiKeys(data.keys ?? []);
       }
       if (presetsRes?.ok) {
         const data = (await presetsRes.json()) as { presets?: PresetRow[] };
@@ -225,6 +252,36 @@ export function AccountDashboard(props: AccountDashboardProps) {
     await load();
   };
 
+  const createApiKey = async () => {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    setApiSecret(null);
+    try {
+      const res = await fetch("/api/keys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: "Default" }),
+      });
+      const data = (await res.json()) as {
+        error?: string;
+        secret?: string;
+      };
+      if (!res.ok) throw new Error(data.error || "Could not create key");
+      setApiSecret(data.secret ?? null);
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not create key");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const revokeApiKey = async (id: string) => {
+    await fetch(`/api/keys?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+    await load();
+  };
+
   const tabs: { id: Tab; label: string; hint?: string }[] = [
     { id: "overview", label: "Overview" },
     {
@@ -249,6 +306,11 @@ export function AccountDashboard(props: AccountDashboardProps) {
             label: "Presets",
             hint: presets.length ? String(presets.length) : undefined,
           },
+          {
+            id: "api" as const,
+            label: "API",
+            hint: apiKeys.length ? String(apiKeys.length) : undefined,
+          },
         ]
       : []),
   ];
@@ -261,7 +323,7 @@ export function AccountDashboard(props: AccountDashboardProps) {
           <div>
             <p className="font-semibold">Welcome to Deskzy Pro</p>
             <p className="mt-0.5 opacity-90">
-              Unlimited processing, custom slugs, analytics, and team seats are unlocked.
+              Unlimited processing, custom slugs, analytics, API keys, and team seats are unlocked.
             </p>
           </div>
         </div>
@@ -487,6 +549,29 @@ export function AccountDashboard(props: AccountDashboardProps) {
             presets={presets}
             loading={loading}
             onDelete={(id) => void deletePreset(id)}
+          />
+        ) : null}
+
+        {tab === "api" && paid ? (
+          <ApiTab
+            keys={apiKeys}
+            loading={loading}
+            busy={busy}
+            secret={apiSecret}
+            copied={copied}
+            onCreate={() => void createApiKey()}
+            onRevoke={(id) => void revokeApiKey(id)}
+            onDismissSecret={() => setApiSecret(null)}
+            onCopySecret={async (secret) => {
+              await copyText(secret);
+              markCopied("api-secret");
+            }}
+            onCopyCurl={async () => {
+              await copyText(
+                `curl -X POST https://deskzy.xyz/api/links \\\n  -H "Authorization: Bearer YOUR_API_KEY" \\\n  -H "Content-Type: application/json" \\\n  -d '{"url":"https://example.com"}'`,
+              );
+              markCopied("api-curl");
+            }}
           />
         ) : null}
       </div>
@@ -1048,6 +1133,155 @@ function PresetsTab({
                   onClick={() => onDelete(p.id)}
                 >
                   <Trash size={16} weight="bold" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function ApiTab({
+  keys,
+  loading,
+  busy,
+  secret,
+  copied,
+  onCreate,
+  onRevoke,
+  onDismissSecret,
+  onCopySecret,
+  onCopyCurl,
+}: {
+  keys: ApiKeyRow[];
+  loading: boolean;
+  busy: boolean;
+  secret: string | null;
+  copied: string | null;
+  onCreate: () => void;
+  onRevoke: (id: string) => void;
+  onDismissSecret: () => void;
+  onCopySecret: (secret: string) => Promise<void>;
+  onCopyCurl: () => Promise<void>;
+}) {
+  return (
+    <section className="shell">
+      <div className="shell-core p-5 md:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 className="font-display text-xl font-semibold tracking-tight">
+              Short-link API
+            </h2>
+            <p className="mt-1 max-w-xl text-sm text-[var(--muted)]">
+              Create short links from scripts with{" "}
+              <code className="rounded bg-[var(--surface)] px-1 py-0.5 text-xs">
+                POST /api/links
+              </code>
+              . Keys bypass the public IP rate limit and attach links to your account.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="btn-primary shrink-0 !rounded-full"
+            disabled={busy || keys.length >= 5}
+            onClick={onCreate}
+          >
+            <Key size={16} weight="bold" />
+            {busy ? "Creating…" : "Generate key"}
+          </button>
+        </div>
+
+        {secret ? (
+          <div className="mt-5 rounded-2xl border border-[var(--accent)]/25 bg-[var(--ok-bg)] px-4 py-4 text-sm text-[var(--ok-ink)]">
+            <p className="font-semibold">Copy your key now — it won&apos;t be shown again.</p>
+            <code className="mt-2 block break-all rounded-xl bg-[var(--panel-soft)] px-3 py-2 font-mono text-xs text-[var(--ink)]">
+              {secret}
+            </code>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="btn-secondary !rounded-full !py-1.5 !text-xs"
+                onClick={() => void onCopySecret(secret)}
+              >
+                {copied === "api-secret" ? (
+                  <>
+                    <Check size={14} weight="bold" /> Copied
+                  </>
+                ) : (
+                  <>
+                    <CopySimple size={14} weight="bold" /> Copy key
+                  </>
+                )}
+              </button>
+              <button
+                type="button"
+                className="btn-secondary !rounded-full !py-1.5 !text-xs"
+                onClick={onDismissSecret}
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        ) : null}
+
+        <div className="mt-6 rounded-2xl border border-[var(--stroke)] bg-[var(--panel-muted)] p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+              Example
+            </p>
+            <button
+              type="button"
+              className="text-xs font-semibold text-[var(--accent)]"
+              onClick={() => void onCopyCurl()}
+            >
+              {copied === "api-curl" ? "Copied" : "Copy curl"}
+            </button>
+          </div>
+          <pre className="mt-2 overflow-x-auto text-xs leading-relaxed text-[var(--ink)]">
+{`curl -X POST https://deskzy.xyz/api/links \\
+  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{"url":"https://example.com"}'`}
+          </pre>
+        </div>
+
+        {loading ? (
+          <div className="mt-6 space-y-2">
+            {[1, 2].map((i) => (
+              <div
+                key={i}
+                className="h-14 animate-pulse rounded-xl bg-[var(--surface)]/80"
+              />
+            ))}
+          </div>
+        ) : keys.length === 0 ? (
+          <p className="mt-6 text-sm text-[var(--muted)]">
+            No API keys yet. Generate one to start creating links from your scripts.
+          </p>
+        ) : (
+          <ul className="mt-6 space-y-2">
+            {keys.map((k) => (
+              <li
+                key={k.id}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--stroke)] bg-[var(--panel-muted)] px-3 py-3"
+              >
+                <div className="min-w-0">
+                  <p className="font-medium text-[var(--ink)]">{k.name}</p>
+                  <p className="font-mono text-xs text-[var(--muted)]">
+                    {k.key_prefix}…
+                    {k.last_used_at
+                      ? ` · last used ${formatDay(k.last_used_at)}`
+                      : " · never used"}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="rounded-full px-3 py-1.5 text-xs font-semibold text-[var(--warn-ink)] hover:bg-[var(--warn-bg)]"
+                  onClick={() => onRevoke(k.id)}
+                >
+                  Revoke
                 </button>
               </li>
             ))}

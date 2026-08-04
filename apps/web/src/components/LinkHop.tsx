@@ -11,6 +11,7 @@ import {
 } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "motion/react";
 import { BrandLogo } from "@/components/BrandLogo";
+import { HopAdSlot } from "@/components/HopAdSlot";
 
 type LinkHopProps = {
   dest: string;
@@ -170,6 +171,10 @@ export function LinkHop({ dest, code }: LinkHopProps) {
               </>
             )}
           </button>
+        </motion.div>
+
+        <motion.div variants={item}>
+          <HopAdSlot />
         </motion.div>
 
         <motion.p

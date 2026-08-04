@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { AuthForm } from "@/components/AuthForm";
+import { SignIn1 } from "@/components/ui/modern-stunning-sign-in";
 import { buildPageMetadata } from "@/lib/seo/site";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -12,7 +12,7 @@ export const metadata: Metadata = buildPageMetadata({
 function AuthErrorBanner({ error }: { error?: string }) {
   if (error !== "auth" && error !== "auth_callback") return null;
   return (
-    <p className="mt-4 rounded-xl bg-[var(--warn-bg)] px-3 py-2 text-sm text-[var(--warn-ink)]">
+    <p className="mx-auto mt-4 max-w-sm rounded-xl bg-[var(--warn-bg)] px-3 py-2 text-sm text-[var(--warn-ink)]">
       Email confirmation failed or expired. Try logging in, or request a new
       signup email.
     </p>
@@ -26,25 +26,17 @@ export default async function LoginPage({
 }) {
   const params = await searchParams;
   return (
-    <div className="mx-auto max-w-md px-4 py-12 md:py-16">
-      <h1 className="font-display text-3xl font-semibold tracking-tight">Log in</h1>
-      <p className="mt-2 text-sm text-[var(--muted)]">
-        Access your account, billing, and Pro features.
-      </p>
+    <div className="w-full">
       <AuthErrorBanner error={params.error} />
-      <div className="mt-8">
-        <Suspense
-          fallback={
-            <div className="shell">
-              <div className="shell-core p-6 text-sm text-[var(--muted)]">
-                Loading…
-              </div>
-            </div>
-          }
-        >
-          <AuthForm mode="login" />
-        </Suspense>
-      </div>
+      <Suspense
+        fallback={
+          <div className="mx-auto flex min-h-[min(100dvh,720px)] max-w-sm items-center justify-center px-4 text-sm text-[var(--muted)]">
+            Loading…
+          </div>
+        }
+      >
+        <SignIn1 mode="login" />
+      </Suspense>
     </div>
   );
 }

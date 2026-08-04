@@ -36,6 +36,12 @@ export function SiteFooter() {
                   Terms of Use
                 </Link>
                 <Link
+                  href="/business"
+                  className="text-sm font-medium text-[var(--ink)] underline-offset-4 hover:underline"
+                >
+                  Business
+                </Link>
+                <Link
                   href="/pricing"
                   className="text-sm font-medium text-[var(--ink)] underline-offset-4 hover:underline"
                 >

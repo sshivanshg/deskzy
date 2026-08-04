@@ -5,11 +5,75 @@ Most tools run in the browser. URL shortening uses Cloudflare KV via the Next.js
 
 **Site:** [deskzy.xyz](https://deskzy.xyz) · **Preview:** [deskzy.sshivanshg.workers.dev](https://deskzy.sshivanshg.workers.dev)
 
-## Stack
+## System architecture
+
+Deskzy is a Next.js app deployed to the Cloudflare edge. Most PDF / image / text / media tools run entirely in the browser. Only link shortening, auth, billing, and analytics hit the server.
+
+```mermaid
+flowchart TB
+  subgraph Clients
+    User["User browser"]
+    Tools["Client-side tools<br/>pdf-lib · pdfjs · ffmpeg.wasm"]
+    Visitor["Short-link visitor"]
+  end
+
+  subgraph Edge["Cloudflare"]
+    DNS["deskzy.xyz / www<br/>CDN · TLS · cache"]
+    Worker["Worker: deskzy<br/>OpenNext · Next.js 15"]
+    Assets["ASSETS<br/>static files"]
+    KV["KV: LINKS<br/>short links · ~12mo TTL"]
+  end
+
+  subgraph Data["External services"]
+    SB["Supabase<br/>Auth · Postgres<br/>subscriptions · usage · clicks"]
+    RZP["Razorpay<br/>Subscriptions · webhooks"]
+  end
+
+  User -->|"UI + tool JS"| DNS --> Worker
+  Worker --> Assets
+  User --- Tools
+  Tools -.->|"files stay local"| User
+
+  User -->|"POST /api/links"| Worker
+  Worker -->|"read / write"| KV
+
+  Visitor -->|"GET /r/{code}"| DNS
+  Worker -->|"resolve code"| KV
+  Worker -->|"POST /api/links/.../click"| KV
+  Worker -->|"owned links · clicks · usage"| SB
+
+  User -->|"login / signup"| SB
+  Worker -->|"checkout / verify / webhook"| RZP
+  RZP -->|"webhook"| Worker
+  Worker -->|"entitlements"| SB
+```
+
+### Request paths
+
+| Path | Flow |
+|------|------|
+| **Browser tools** | Page + JS from Worker/ASSETS → process files in-browser → download result (no upload) |
+| **Shorten** | `POST /api/links` → rate limit / optional `LINKS_API_KEY` → write `LINKS` KV (+ Supabase if signed in) → `deskzy.xyz/r/{code}` |
+| **Open short link** | `GET /r/{code}` → read KV → hop UI → click bumps KV hits; Pro links also write `link_clicks` in Supabase |
+| **Auth / billing** | Supabase Auth for sessions; Razorpay for checkout; webhook updates `subscriptions` / seats / usage |
+
+### Components
+
+| Layer | Role |
+|-------|------|
+| **`apps/web`** | Product surface — UI, tool runners, App Router API routes |
+| **OpenNext + Worker `deskzy`** | SSR, API, static assets on Cloudflare (`deskzy.xyz`, `www.deskzy.xyz`) |
+| **KV `LINKS`** | Source of truth for short-link redirects |
+| **Supabase** | Auth, entitlements, owned-link analytics, daily usage |
+| **Razorpay** | Pro subscription checkout + webhooks |
+| **`services/api`** | Optional Go + Chi short-link API for local `/deskzy-api` only — **not used in production** |
+
+### Stack
 
 - **apps/web** — Next.js 15 (App Router) on **Cloudflare Workers** via OpenNext
 - **services/api** — Go + Chi short-link API (optional local; production uses Next `/api` + KV)
 - Short links stored in Cloudflare KV (`LINKS`)
+- Auth / billing / analytics data in **Supabase**; payments via **Razorpay**
 
 ## Quick start (local)
 
@@ -80,12 +144,15 @@ Browser tools never upload files. The URL shortener only sends the URL string(s)
 
 ### Machine API (scripted shortens)
 
+**Pro / Business:** generate a key in Account → API (`dz_…`). Creates are owned by that user and skip the public IP rate limit.
+
+**Internal pipeline:** optional Worker secret `LINKS_API_KEY` (not for customers):
+
 ```bash
-# one-time secret on the Worker
 printf '%s' 'your-secret' | npx wrangler secret put LINKS_API_KEY -c apps/web/wrangler.jsonc
 ```
 
-Authenticated creates (`Authorization: Bearer <LINKS_API_KEY>`) bypass the public per-IP rate limit. Keep the key out of git.
+Authenticated creates (`Authorization: Bearer <key>`) bypass the public per-IP rate limit. Keep secrets out of git.
 
 **Single URL**
 

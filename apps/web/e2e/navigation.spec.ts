@@ -1,20 +1,26 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Navigation & shell", () => {
-  test("home shows brand, search, popular, categories", async ({ page }) => {
+  test("home shows brand, shorten dock, share stack, categories", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
     await expect(
       page.getByRole("heading", {
-        name: /Free online file tools — private & no signup/i,
+        level: 1,
+        name: /Own short links on deskzy\.xyz — plus private file tools/i,
       }),
     ).toBeVisible();
-    await expect(page.getByText("Every file tool. One place.", { exact: true })).toBeVisible();
-    await expect(page.locator("#home-tool-search-desktop")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "URL Shortener" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "What do you need?" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Popular right now" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Browse by category" })).toBeVisible();
+    await expect(page.locator("#home-shorten-url")).toBeVisible();
+    await expect(page.getByRole("button", { name: /^Shorten$/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Share stack" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Also free file tools" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Browse by category" }),
+    ).toBeVisible();
     await expect(page.getByRole("link", { name: /^PDF$/ }).first()).toBeVisible();
   });
 
@@ -24,10 +30,10 @@ test.describe("Navigation & shell", () => {
     await expect(page.getByRole("heading", { name: "URL Shortener" })).toBeVisible();
   });
 
-  test("home search finds compress pdf and navigates", async ({ page }) => {
+  test("header search finds compress pdf and navigates", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
-    await page.locator("#home-tool-search-desktop").fill("compress pdf");
+    await page.getByRole("textbox", { name: "Search tools" }).fill("compress pdf");
     await expect(page.getByRole("link", { name: /Compress PDF/i }).first()).toBeVisible();
     await page.getByRole("link", { name: /Compress PDF/i }).first().click();
     await expect(page).toHaveURL(/\/tools\/compress-pdf/);
@@ -101,12 +107,14 @@ test.describe("Navigation & shell", () => {
     await expect(page.getByText(/Browser-first/i)).toBeVisible();
   });
 
-  test("header nav links work", async ({ page }) => {
+  test("header all-tools menu reaches categories", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
-    await page.locator("nav").getByRole("link", { name: "PDF", exact: true }).click();
+    await page.getByRole("button", { name: /All tools/i }).click();
+    await page.getByRole("menuitem", { name: /PDF/i }).first().click();
     await expect(page).toHaveURL(/\/pdf$/);
-    await page.locator("nav").getByRole("link", { name: "Image", exact: true }).click();
+    await page.getByRole("button", { name: /All tools/i }).click();
+    await page.getByRole("menuitem", { name: /Image/i }).first().click();
     await expect(page).toHaveURL(/\/image$/);
   });
 

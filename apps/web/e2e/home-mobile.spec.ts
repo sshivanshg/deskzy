@@ -38,7 +38,7 @@ test.describe("Mobile home launcher", () => {
     await expect(
       page.getByRole("heading", {
         level: 1,
-        name: /Free online file tools — private & no signup/i,
+        name: /Own short links on deskzy\.xyz — plus private file tools/i,
       }),
     ).toBeAttached();
   });

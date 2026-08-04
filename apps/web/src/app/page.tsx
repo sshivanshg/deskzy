@@ -100,14 +100,14 @@ const TRUST = [
     detail: "Start in one paste",
   },
   {
+    icon: LinkSimple,
+    label: "Own deskzy.xyz links",
+    detail: "Free short links you control",
+  },
+  {
     icon: LockSimple,
     label: "Files stay local",
     detail: "PDF & images in-browser",
-  },
-  {
-    icon: LinkSimple,
-    label: "deskzy.xyz links",
-    detail: "Short links you own",
   },
 ] as const;
 
@@ -124,21 +124,48 @@ export default function HomePage() {
     <>
       <JsonLd data={buildWebsiteJsonLd()} />
 
-      {/* Mobile hero — brand + shorten CTA; globe tease sits just under */}
+      {/* Mobile — action-first fold: brand, promise, shorten, trust */}
       <div className="mx-auto max-w-6xl px-4 pb-8 pt-5 md:hidden">
         <div className="reveal space-y-5">
-          <div className="space-y-2">
-            <h1 className="font-display text-[2rem] font-semibold tracking-tight text-[var(--ink)] leading-[1.05]">
+          <div className="space-y-2.5">
+            <p className="font-display text-[2rem] font-semibold tracking-tight text-[var(--ink)] leading-[1.05]">
               Deskzy
+            </p>
+            <h1 className="max-w-[22ch] font-display text-xl font-semibold tracking-tight text-[var(--ink)] leading-snug">
+              Own short links on deskzy.xyz — plus private file tools
             </h1>
-            <p className="max-w-[28ch] text-[15px] leading-snug text-[var(--muted)]">
-              Short links on deskzy.xyz — free &amp; private
+            <p className="max-w-[34ch] text-[15px] leading-snug text-[var(--muted)]">
+              Free, no signup. Files never leave your browser.
             </p>
           </div>
+
           <HomeShortenDock size="compact" />
-          <p className="text-xs leading-relaxed text-[var(--muted)]">
-            No signup · Files stay local · deskzy.xyz links
-          </p>
+
+          <ul className="flex flex-wrap gap-x-4 gap-y-2">
+            {TRUST.map((t) => {
+              const Icon = t.icon;
+              return (
+                <li
+                  key={t.label}
+                  className="inline-flex items-center gap-1.5 text-xs text-[var(--muted)]"
+                >
+                  <span className="text-[var(--accent)]">
+                    <Icon size={14} weight="duotone" />
+                  </span>
+                  <span className="font-medium text-[var(--ink)]">{t.label}</span>
+                </li>
+              );
+            })}
+          </ul>
+
+          <Link
+            href="#file-tools"
+            className="inline-flex items-center gap-1 text-sm font-medium text-[var(--accent)]"
+          >
+            Browse PDF &amp; image tools
+            <ArrowRight size={14} />
+          </Link>
+
           <HomeGlobeTease size="compact" />
         </div>
 
@@ -178,7 +205,7 @@ export default function HomePage() {
           </ul>
         </section>
 
-        <section className="mt-12">
+        <section id="file-tools" className="mt-12 scroll-mt-24">
           <h2 className="font-display text-lg font-semibold tracking-tight">
             Also free file tools
           </h2>
@@ -216,19 +243,19 @@ export default function HomePage() {
         <HomePopularStrip tools={popular} />
       </div>
 
-      {/* Desktop — split hero: shorten left, globe attractor right */}
+      {/* Desktop — action-first split: shorten left, globe attractor right */}
       <div className="mx-auto hidden max-w-6xl px-4 pb-8 pt-10 md:block md:pt-14">
-        <section className="reveal grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+        <section className="reveal grid min-h-[min(72dvh,40rem)] items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
           <div>
             <p className="font-display text-5xl font-semibold tracking-tight text-[var(--ink)] md:text-6xl md:leading-[0.95]">
               Deskzy
             </p>
-            <h1 className="mt-4 max-w-[18ch] font-display text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl md:leading-[1.1]">
-              Short links on deskzy.xyz — free, private tools
+            <h1 className="mt-4 max-w-[20ch] font-display text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl md:leading-[1.1]">
+              Own short links on deskzy.xyz — plus private file tools
             </h1>
-            <p className="mt-4 max-w-[40ch] text-lg leading-relaxed text-[var(--muted)]">
-              Paste a URL. Get a clean short link. PDF and image tools stay in
-              your browser.
+            <p className="mt-4 max-w-[38ch] text-lg leading-relaxed text-[var(--muted)]">
+              Free, no signup. Paste a URL for a clean short link. PDF and image
+              tools stay in your browser.
             </p>
 
             <div className="reveal reveal-delay-1 mt-8 max-w-xl">
@@ -253,6 +280,14 @@ export default function HomePage() {
                 );
               })}
             </ul>
+
+            <Link
+              href="#file-tools-desktop"
+              className="reveal reveal-delay-1 mt-5 inline-flex items-center gap-1 text-sm font-medium text-[var(--accent)] transition-colors hover:text-[var(--accent-hover)]"
+            >
+              Browse PDF &amp; image tools
+              <ArrowRight size={14} />
+            </Link>
           </div>
 
           <div className="reveal reveal-delay-2 flex justify-center lg:justify-end">
@@ -309,15 +344,18 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="mt-16 reveal reveal-delay-2 md:mt-20">
+        <section
+          id="file-tools-desktop"
+          className="mt-16 scroll-mt-28 reveal reveal-delay-2 md:mt-20"
+        >
           <div className="mb-5 flex items-end justify-between gap-4">
             <div>
               <h2 className="font-display text-2xl font-semibold tracking-tight">
                 Also free file tools
               </h2>
               <p className="mt-1 max-w-xl text-sm text-[var(--muted)]">
-                Compress PDFs and images privately in your browser — complementary
-                tools when you need them
+                Compress PDFs and images privately in your browser — when you
+                need them
               </p>
             </div>
           </div>

@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
-import { Analytics } from "@/components/Analytics";
-import { HilltopAds } from "@/components/HilltopAds";
-import { SiteChromeGate } from "@/components/SiteChromeGate";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Outfit, Syne } from "next/font/google";
 import { DEFAULT_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo/site";
 import "./globals.css";
-
-const ADSENSE_CLIENT = "ca-pub-3303889870292458";
 
 const body = Outfit({
   variable: "--font-body",
@@ -71,7 +64,6 @@ export const metadata: Metadata = {
   },
   referrer: "no-referrer-when-downgrade",
   other: {
-    "google-adsense-account": ADSENSE_CLIENT,
     "7a0eee65776bb9c3d94d5d2fa9ffcc7d81d4d370":
       "7a0eee65776bb9c3d94d5d2fa9ffcc7d81d4d370",
   },
@@ -84,25 +76,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-          crossOrigin="anonymous"
-        />
-      </head>
       <body className={`${body.variable} ${display.variable} antialiased`}>
-        <ThemeProvider>
-          <SiteChromeGate mode="header">
-            <SiteHeader />
-          </SiteChromeGate>
-          <SiteChromeGate mode="main">{children}</SiteChromeGate>
-          <SiteChromeGate mode="footer">
-            <SiteFooter />
-          </SiteChromeGate>
-          <Analytics />
-          <HilltopAds />
-        </ThemeProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

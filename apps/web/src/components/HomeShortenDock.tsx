@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useState } from "react";
 import {
   ArrowSquareOut,
   ChartLineUp,
@@ -12,6 +12,7 @@ import {
   Sparkle,
 } from "@phosphor-icons/react";
 import { MultiLinkBuilder } from "@/components/MultiLinkBuilder";
+import { ShareResultPanel } from "@/components/ShareResultPanel";
 import { ClippedAreaChart } from "@/components/ui/advanced-stats-utils/charts";
 import { looksLikeUrl } from "@/lib/normalize-url";
 import { formatInr, PRO_MONTHLY_INR } from "@/lib/pricing";
@@ -160,37 +161,22 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
   const [resultUrls, setResultUrls] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const copiedTimeoutRef = useRef<number | null>(null);
-
-  const clearCopiedTimeout = () => {
-    if (copiedTimeoutRef.current !== null) {
-      window.clearTimeout(copiedTimeoutRef.current);
-      copiedTimeoutRef.current = null;
-    }
-  };
-
-  useEffect(() => () => clearCopiedTimeout(), []);
 
   const canShorten =
     mode === "single" ? looksLikeUrl(url) : links.length >= 2;
 
   const reset = () => {
-    clearCopiedTimeout();
     setShortUrl(null);
     setResultKind("single");
     setResultUrls([]);
     setError(null);
-    setCopied(false);
     setUrl("");
     setLinks([]);
     setMode("single");
   };
 
   const editResultList = () => {
-    clearCopiedTimeout();
     setShortUrl(null);
-    setCopied(false);
     setError(null);
     setMode("multi");
     setLinks(resultUrls.length >= 2 ? resultUrls : links);
@@ -231,25 +217,9 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
         setResultUrls([normalized]);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to shorten URL");
+      setError(e instanceof Error ? e.message : "Failed to publish link");
     } finally {
       setBusy(false);
-    }
-  };
-
-  const onCopy = async () => {
-    if (!shortUrl) return;
-    setError(null);
-    try {
-      await navigator.clipboard.writeText(shortUrl);
-      clearCopiedTimeout();
-      setCopied(true);
-      copiedTimeoutRef.current = window.setTimeout(() => {
-        setCopied(false);
-        copiedTimeoutRef.current = null;
-      }, 1600);
-    } catch {
-      setError("Could not copy — select the link and copy manually");
     }
   };
 
@@ -271,23 +241,15 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
           ) : (
             <LinkSimple size={isHero ? 20 : 18} weight="bold" />
           )}
-          {isList ? "List short link ready" : "Short link ready"}
+          {isList ? "Link list ready" : "Link ready"}
         </div>
-        <p
-          className={`mb-3 break-all rounded-xl border border-[var(--stroke)] bg-[var(--panel)] font-mono text-[var(--ink)] ${
-            isHero ? "px-4 py-3 text-base" : "px-3 py-2.5 text-sm"
-          }`}
-        >
-          {shortUrl}
-        </p>
-        <div className={`flex gap-2 ${isHero ? "sm:max-w-md" : ""}`}>
-          <button
-            type="button"
-            className={`btn-primary flex-1 ${isHero ? "!py-3" : "!py-2.5"}`}
-            onClick={onCopy}
-          >
-            {copied ? "Copied" : "Copy"}
-          </button>
+
+        <ShareResultPanel
+          shareUrlOrCode={shortUrl}
+          density={isHero ? "roomy" : "compact"}
+        />
+
+        <div className={`mt-3 flex gap-2 ${isHero ? "sm:max-w-md" : ""}`}>
           {isList ? (
             <a
               href={shortUrl}
@@ -298,15 +260,14 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
               Open list
               <ArrowSquareOut size={14} weight="bold" />
             </a>
-          ) : (
-            <button
-              type="button"
-              className={`btn-secondary flex-1 ${isHero ? "!py-3" : "!py-2.5"}`}
-              onClick={reset}
-            >
-              Shorten another
-            </button>
-          )}
+          ) : null}
+          <button
+            type="button"
+            className={`${isList ? "btn-secondary" : "btn-primary"} flex-1 ${isHero ? "!py-3" : "!py-2.5"}`}
+            onClick={reset}
+          >
+            Publish another
+          </button>
         </div>
 
         {isList && resultUrls.length > 0 ? (
@@ -336,16 +297,9 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
                 <PencilSimple size={14} weight="bold" />
                 Edit links
               </button>
-              <button
-                type="button"
-                className="btn-secondary !py-2 !text-xs"
-                onClick={reset}
-              >
-                Shorten another
-              </button>
             </div>
             <p className="mt-2 text-[11px] leading-relaxed text-[var(--muted)]">
-              Edit creates a new short link with your changes.
+              Edit creates a new published page with your changes.
             </p>
           </div>
         ) : null}
@@ -372,14 +326,14 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
               <LinkSimple size={18} weight="bold" />
             )}
           </span>
-          {mode === "multi" ? "Share multiple links" : "Shorten a link"}
+          {mode === "multi" ? "Share multiple links" : "Share a link"}
         </div>
       ) : (
         <label
           htmlFor="home-shorten-url"
           className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-[var(--accent-ink)]"
         >
-          {mode === "multi" ? "Share multiple links" : "Shorten a link"}
+          {mode === "multi" ? "Share multiple links" : "Share a link"}
         </label>
       )}
 
@@ -388,7 +342,7 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
           <div className={`flex gap-2 ${isHero ? "flex-col sm:flex-row" : ""}`}>
             {isHero ? (
               <label className="sr-only" htmlFor="home-shorten-url">
-                URL to shorten
+                URL to publish
               </label>
             ) : null}
             <input
@@ -420,7 +374,7 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
               disabled={busy || !canShorten}
               onClick={() => void onShorten()}
             >
-              {busy ? "…" : "Shorten"}
+              {busy ? "…" : "Publish"}
             </button>
           </div>
           <button
@@ -430,7 +384,7 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
             disabled={busy}
           >
             <ListBullets size={14} weight="bold" />
-            Add more links as one short URL
+            Add more links on one page
           </button>
         </>
       ) : (
@@ -449,7 +403,7 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
               disabled={busy || !canShorten}
               onClick={() => void onShorten()}
             >
-              {busy ? "…" : "Shorten list"}
+              {busy ? "…" : "Publish list"}
             </button>
             <button
               type="button"
@@ -475,7 +429,7 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
       ) : null}
       {isHero && mode === "single" ? (
         <p className="mt-3 text-xs leading-relaxed text-[var(--accent-ink)]/75">
-          Free deskzy.xyz short links. No signup. Only the URL string is sent —
+          Free deskzy.xyz share pages. No signup. Only the URL string is sent —
           never your files.
         </p>
       ) : null}

@@ -19,7 +19,7 @@ export const CATEGORY_SEO: Record<ToolCategory, CategorySeo> = {
     body: [
       "Teams and freelancers often need to combine scanned pages, shrink a file before email, or pull a single page from a longer packet. Uploading those documents to a random converter site creates unnecessary risk. Deskzy keeps PDF work on your device using browser APIs, so you stay in control of sensitive material.",
       "Start with Merge PDF when you have several files to combine, Split PDF when you need a page range, or Compress PDF when attachments bounce for size. Reorder PDF helps you fix page sequence after a scan, and PDF to Images turns pages into PNGs for slides, tickets, or social posts.",
-      "Every tool on this page is free to try without an account. Prefer a URL shortener or QR code for sharing the finished file? Deskzy Links tools sit alongside these PDF utilities in the same toolkit.",
+      "Every tool on this page is free to try without an account. Prefer a share page or QR code for sharing the finished file? Deskzy Links tools sit alongside these PDF utilities in the same toolkit.",
     ],
     faqs: [
       {
@@ -93,39 +93,48 @@ export const CATEGORY_SEO: Record<ToolCategory, CategorySeo> = {
     seoDescription:
       "Free developer text tools — JSON formatter, Base64, hash generator, UUID, password, and case converter. Private in your browser, no signup. Open Deskzy.",
     intro:
-      "Format JSON, encode Base64, generate UUIDs and passwords, convert case, and more. Browser-first utilities with no signup. Looking for short links, QR, UTM, or WhatsApp? See Deskzy Links tools.",
+      "Format JSON, encode Base64, generate UUIDs and passwords, convert case, and more. Browser-first utilities with no signup. Looking for shared links, QR, UTM, or WhatsApp? See Deskzy Links tools.",
+    body: [
+      "Small developer utilities should be quick, predictable, and easy to inspect. Deskzy text tools keep input on the page and run locally in the browser, which makes them useful for formatting snippets, checking copied payloads, creating identifiers, and cleaning draft text without opening a heavy dashboard.",
+      "Use JSON Formatter for readable API responses, Base64 for encoding and decoding strings, Hash Generator for checksums, UUID Generator for identifiers, and Password Generator when you need a random value for a non-shared credential workflow. Case Converter, URL Encode, Word Counter, and Markdown to HTML cover everyday writing and publishing cleanup.",
+      "These tools are not a substitute for your company's secret-management policy. If a production token, private key, or regulated record should never enter a web page, keep following that rule. For ordinary snippets and drafts, the browser-first workflow keeps the job fast and avoids unnecessary uploads.",
+    ],
     faqs: [
       {
-        q: "Where did the URL shortener go?",
-        a: "URL shortener, QR codes, UTM builder, WhatsApp links, and bio pages live under Deskzy Links tools.",
+        q: "Where did Share Link go?",
+        a: "Share Link, QR codes, UTM builder, WhatsApp links, and bio pages live under Deskzy Links tools.",
       },
       {
         q: "Are developer tools safe for production secrets?",
         a: "Browser tools don't upload input, but avoid pasting live secrets on any website if policy forbids it.",
       },
+      {
+        q: "Do text tools require an account?",
+        a: "No. They open immediately and run in your browser.",
+      },
     ],
   },
   links: {
-    seoTitle: "Deskzy Links — free URL shortener, QR, UTM, WhatsApp",
+    seoTitle: "Deskzy Links — share links, QR, UTM, WhatsApp",
     seoDescription:
-      "Deskzy Links: free URL shortener on deskzy.xyz, QR codes, UTM builder, WhatsApp wa.me links, and bio pages. No signup. Share faster with Deskzy.",
+      "Deskzy Links: publish share pages on deskzy.xyz, QR codes, UTM builder, WhatsApp wa.me links, and bio pages. No signup. Share faster with Deskzy.",
     intro:
-      "Deskzy Links is the share stack: paste a long URL and get a clean deskzy.xyz short link, then pair it with a QR code, UTM campaign params, a WhatsApp wa.me link, or a downloadable bio page — mostly in your browser, no account required.",
+      "Deskzy Links is the share stack: paste a URL and publish a clean deskzy.xyz page, then pair it with a QR code, UTM campaign params, a WhatsApp wa.me link, or a downloadable bio page — mostly in your browser, no account required.",
     body: [
-      "Short links are the core. Only the URL string is sent to Deskzy’s edge API so redirects work; we do not upload files. QR, UTM, WhatsApp, and bio builders run locally so campaign text and contact details stay on your device.",
+      "Shared links are the core. Only the URL string is sent to Deskzy’s edge API so pages work; we do not upload files. QR, UTM, WhatsApp, and bio builders run locally so campaign text and contact details stay on your device.",
       "Need to compress a PDF or image before you share? Deskzy’s file tools sit alongside Links and process privately in the browser — complementary utilities, same no-signup start.",
     ],
     faqs: [
       {
-        q: "Is the URL shortener free?",
-        a: "Yes. Create deskzy.xyz short links with no signup. Only the URL string is sent to our edge API.",
+        q: "Is Share Link free?",
+        a: "Yes. Create deskzy.xyz share pages with no signup. Only the URL string is sent to our edge API.",
       },
       {
         q: "Do UTM, WhatsApp, and bio tools upload my data?",
         a: "No. Those builders run entirely in your browser. Bio pages are downloaded as HTML — Deskzy does not host them.",
       },
       {
-        q: "Can I make a QR code for my short or WhatsApp link?",
+        q: "Can I make a QR code for my shared or WhatsApp link?",
         a: "Yes. Use Make QR from the tool result, or open the QR generator and paste any URL.",
       },
     ],

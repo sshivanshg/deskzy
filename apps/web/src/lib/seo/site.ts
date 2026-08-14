@@ -4,8 +4,12 @@ export const SITE_NAME = "Deskzy";
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://deskzy.xyz";
 
+/** Share/paste host for published links (dedicated domain). */
+export const SHARE_URL =
+  process.env.NEXT_PUBLIC_SHARE_URL || "https://yoururl.buzz";
+
 export const DEFAULT_DESCRIPTION =
-  "Free URL shortener on deskzy.xyz — plus private PDF and image tools in your browser. No signup. Most files never leave your device. Try Deskzy.";
+  "Publish and share links on deskzy.xyz — plus private PDF and image tools in your browser. No signup. Most files never leave your device. Try Deskzy.";
 
 /** Founder / support contact (X). Prefer a product email later if you add one. */
 export const CONTACT_X_HANDLE = "sshivanshg";

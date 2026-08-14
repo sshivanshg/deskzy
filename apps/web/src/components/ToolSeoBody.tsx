@@ -48,6 +48,37 @@ export function ToolSeoBody({ tool }: { tool: ToolDefinition }) {
           </ol>
         </section>
 
+        {content.bestFor && content.bestFor.length > 0 && (
+          <section>
+            <h2 className="font-display text-xl font-semibold tracking-tight text-[var(--ink)]">
+              Best uses
+            </h2>
+            <ul className="mt-4 space-y-3">
+              {content.bestFor.map((item) => (
+                <li
+                  key={item}
+                  className="rounded-2xl border border-[var(--stroke)] bg-[var(--panel-faint)] px-4 py-3 text-sm leading-relaxed text-[var(--muted)]"
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {content.limits && content.limits.length > 0 && (
+          <section>
+            <h2 className="font-display text-xl font-semibold tracking-tight text-[var(--ink)]">
+              Limits and safe use
+            </h2>
+            <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-[var(--muted)]">
+              {content.limits.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         <section>
           <h2 className="font-display text-xl font-semibold tracking-tight text-[var(--ink)]">
             Privacy

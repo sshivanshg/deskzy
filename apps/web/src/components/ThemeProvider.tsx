@@ -21,7 +21,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       attribute="class"
       defaultTheme="system"
       enableSystem
-      storageKey="deskzy-theme"
+      storageKey="site-theme"
       disableTransitionOnChange
     >
       {children}

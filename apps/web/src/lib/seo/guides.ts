@@ -135,7 +135,7 @@ Private merge is ideal for contracts, homework packs, and travel documents you w
       },
       {
         q: "What domain do short links use?",
-        a: "Short links use deskzy.xyz with a /r/ path, for example deskzy.xyz/r/your-code.",
+        a: "Short links use deskzy.xyz with a /p/ path, for example deskzy.xyz/p/your-code.",
       },
       {
         q: "Do you upload my files when I shorten a link?",
@@ -148,7 +148,7 @@ Private merge is ideal for contracts, homework packs, and travel documents you w
 
 1. Open the [URL Shortener](/tools/url-shortener) (or go to \`/shorten\`).
 2. Paste your full URL and click Shorten.
-3. Copy the \`deskzy.xyz/r/...\` link and share it.
+3. Copy the \`deskzy.xyz/p/...\` link and share it.
 
 ## Pair short links with other Deskzy tools
 

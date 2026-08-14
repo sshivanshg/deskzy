@@ -111,6 +111,7 @@ describe("looksLikeUrl", () => {
   it("detects common shapes", () => {
     assert.equal(looksLikeUrl("https://deskzy.xyz"), true);
     assert.equal(looksLikeUrl("deskzy.xyz/r/abc"), true);
+    assert.equal(looksLikeUrl("deskzy.xyz/p/abc"), true);
     assert.equal(looksLikeUrl("nope"), false);
   });
 });

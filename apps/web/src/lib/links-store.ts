@@ -57,6 +57,7 @@ const RESERVED_SLUGS = new Set([
   "text",
   "links",
   "r",
+  "p",
   "shorten",
   "short",
   "link",

@@ -46,7 +46,7 @@ export const CATEGORIES: {
     id: "links",
     name: "Links",
     description:
-      "Shorten on deskzy.xyz, then QR, UTM, WhatsApp, and bio — the share stack.",
+      "Publish links on deskzy.xyz, then QR, UTM, WhatsApp, and bio — the share stack.",
   },
 ];
 
@@ -265,15 +265,19 @@ export const TOOLS: ToolDefinition[] = [
   },
   {
     slug: "url-shortener",
-    name: "URL Shortener",
+    name: "Share Link",
     category: "links",
-    description: "Turn long links into short deskzy.xyz URLs in one paste.",
-    seoTitle: "URL shortener free — shorten links online",
+    description: "Paste a URL and publish a clean deskzy.xyz page to share.",
+    seoTitle: "Share a link free — publish on deskzy.xyz",
     seoDescription:
-      "Free URL shortener with no signup. Paste a long link and get a short deskzy.xyz URL instantly. Only the URL string is sent — shorten links online now.",
+      "Free link sharing with no signup. Paste a URL and get a clean deskzy.xyz page instantly. Only the URL string is sent — publish and share now.",
     runtime: "hybrid",
     input: "text",
     aliases: [
+      "share link",
+      "publish link",
+      "paste link",
+      "share url",
       "short link",
       "link shortener",
       "shorten url",
@@ -286,13 +290,13 @@ export const TOOLS: ToolDefinition[] = [
   },
   {
     slug: "link-list",
-    name: "Multi-Link Shortener",
+    name: "Share Links",
     category: "links",
     description:
-      "Add several links one by one and get one short deskzy.xyz URL that opens a list page.",
-    seoTitle: "Multi-link shortener free — share multiple URLs as one",
+      "Add several links and publish one deskzy.xyz page that lists them all.",
+    seoTitle: "Share multiple links free — one published page",
     seoDescription:
-      "Free multi-link shortener. Add several URLs and get one short deskzy.xyz link that opens a shareable list. No signup.",
+      "Free multi-link sharing. Add several URLs and get one deskzy.xyz page that opens a shareable list. No signup.",
     runtime: "hybrid",
     input: "form",
     aliases: [
@@ -302,6 +306,7 @@ export const TOOLS: ToolDefinition[] = [
       "link list",
       "pastelinks",
       "share multiple urls",
+      "publish links",
     ],
     related: ["url-shortener", "bio-link", "qr-code"],
     popular: true,
@@ -570,14 +575,14 @@ export type UseCase = {
 export const USE_CASES: UseCase[] = [
   {
     id: "shorten",
-    label: "Shorten a link",
-    hint: "Paste any URL → short deskzy.xyz link",
+    label: "Share a link",
+    hint: "Paste any URL → publish on deskzy.xyz",
     href: "/tools/url-shortener",
   },
   {
     id: "link-list",
     label: "Share multiple links",
-    hint: "Add links one by one → one list short URL",
+    hint: "Add links one by one → one published list page",
     href: "/tools/link-list",
   },
   {

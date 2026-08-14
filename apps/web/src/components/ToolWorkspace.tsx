@@ -34,6 +34,8 @@ import {
   WhatsAppLinkForm,
 } from "./LinkToolForms";
 import { Dropzone } from "./Dropzone";
+import { MonetizationSlot } from "./MonetizationSlot";
+import { ShareResultPanel } from "./ShareResultPanel";
 import { ToolBusyEffect } from "./ToolBusyEffect";
 import { UpgradeModal, gateToolUsage } from "./UpgradeModal";
 import { SavedPresetsBar } from "./SavedPresetsBar";
@@ -469,7 +471,13 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                   </ol>
                 ) : null}
 
-                {resultText && (
+                {resultText &&
+                (tool.slug === "url-shortener" || tool.slug === "link-list") &&
+                !resultText.startsWith("data:image") ? (
+                  <div className="mt-4">
+                    <ShareResultPanel shareUrlOrCode={resultText} density="roomy" />
+                  </div>
+                ) : resultText ? (
                   <div className="mt-4 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--bg)]">
                     {resultText.startsWith("data:image") ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -484,7 +492,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                       </pre>
                     )}
                   </div>
-                )}
+                ) : null}
 
                 <div className="mt-4 flex flex-wrap gap-2">
                   {resultUrl && resultName && (
@@ -500,7 +508,10 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                       </span>
                     </a>
                   )}
-                  {resultText && !resultText.startsWith("data:image") && (
+                  {resultText &&
+                    !resultText.startsWith("data:image") &&
+                    tool.slug !== "url-shortener" &&
+                    tool.slug !== "link-list" && (
                     <button
                       type="button"
                       className="btn-secondary"
@@ -552,7 +563,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                         }
                       }}
                     >
-                      Shorten
+                      Publish
                     </Link>
                   )}
                 </div>
@@ -575,6 +586,10 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                     </div>
                   </div>
                 )}
+
+                <div className="mt-6">
+                  <MonetizationSlot slot="tool" size="compact" />
+                </div>
               </div>
             </div>
           )}
@@ -611,8 +626,8 @@ function actionLabel(slug: string) {
     isMediaToolSlug(slug)
   )
     return "Convert";
-  if (slug === "url-shortener") return "Shorten";
-  if (slug === "link-list") return "Shorten list";
+  if (slug === "url-shortener") return "Publish";
+  if (slug === "link-list") return "Publish list";
   if (slug === "utm-builder" || slug === "whatsapp-link") return "Generate link";
   if (slug.includes("generator") || slug === "qr-code") return "Generate";
   if (slug === "json-formatter") return "Format";
@@ -1105,7 +1120,7 @@ function ToolOptions({
           <span className="text-xs text-[var(--accent)]">(Pro)</span>
           <div className="mt-2 flex items-center gap-2">
             <span className="shrink-0 font-mono text-sm text-[var(--muted)]">
-              deskzy.xyz/r/
+              yoururl.buzz/p/
             </span>
             <input
               value={options.slug || ""}
@@ -1122,9 +1137,9 @@ function ToolOptions({
           <Link href="/pricing" className="text-[var(--accent)] underline-offset-2 hover:underline">
             Pro
           </Link>
-          . Free short links are unlimited. Need several URLs in one share?{" "}
+          . Free shared links are unlimited. Need several URLs in one share?{" "}
           <Link href="/tools/link-list" className="text-[var(--accent)] underline-offset-2 hover:underline">
-            Multi-link shortener
+            Share Links
           </Link>
           .
         </p>

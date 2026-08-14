@@ -16,6 +16,7 @@ import {
   PRO_MONTHLY_INR,
   proEffectiveMonthlyInr,
 } from "@/lib/pricing";
+import { publicLinkUrl } from "@/lib/link-path";
 
 type LinkMeta = {
   code: string;
@@ -102,10 +103,7 @@ export function LinkStatsView({
     [data],
   );
 
-  const shortUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/r/${code}`
-      : `https://deskzy.xyz/r/${code}`;
+  const shortUrl = publicLinkUrl(code);
 
   const copyLink = async () => {
     await navigator.clipboard.writeText(shortUrl);
@@ -133,7 +131,7 @@ export function LinkStatsView({
             Link analytics
           </p>
           <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-            /r/{code}
+            /p/{code}
           </h1>
           {data ? (
             <p className="mt-2 truncate text-sm text-[var(--muted)]">
@@ -151,7 +149,7 @@ export function LinkStatsView({
             {copied ? "Copied" : "Copy link"}
           </button>
           <a
-            href={`/r/${code}`}
+            href={shortUrl}
             target="_blank"
             rel="noreferrer"
             className="btn-primary !rounded-full !px-4 !py-2.5 text-sm"
@@ -391,7 +389,7 @@ function StatsPaywall({ code }: { code: string }) {
               Pro
             </span>
             <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              Unlock stats for /r/{code}
+              Unlock stats for /p/{code}
             </h1>
             <p className="mt-3 max-w-lg text-base leading-relaxed text-[var(--muted)]">
               See daily clicks, referrers, and a live feed for every short link.

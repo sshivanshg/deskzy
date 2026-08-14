@@ -153,7 +153,7 @@ export function SiteHeader() {
                   }`}
                 >
                   <LinkSimple size={16} weight="bold" />
-                  Shorten
+                  Share
                 </Link>
 
                 <Link

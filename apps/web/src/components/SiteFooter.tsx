@@ -133,7 +133,7 @@ export function SiteFooter() {
           </div>
 
           <p className="mt-8 border-t border-[var(--stroke)] pt-6 text-xs text-[var(--muted)]">
-            Free online file tools · PDF · Image · Text · URL shortener ·{" "}
+            Free online file tools · PDF · Image · Text · Share links ·{" "}
             <Link href="/guides" className="hover:text-[var(--ink)]">
               Guides
             </Link>

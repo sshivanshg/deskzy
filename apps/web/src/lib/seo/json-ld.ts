@@ -171,7 +171,7 @@ export function buildWebsiteJsonLd() {
       name: SITE_NAME,
       url: SITE_URL,
       description:
-        "Free URL shortener on deskzy.xyz — plus private PDF and image tools in your browser.",
+        "Free link sharing on deskzy.xyz — plus private PDF and image tools in your browser.",
       publisher: {
         "@type": "Organization",
         name: SITE_NAME,

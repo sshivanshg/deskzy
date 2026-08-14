@@ -79,7 +79,7 @@ export function NavToolsMenu({ pathname }: NavToolsMenuProps) {
         }`}
       >
         <LinkSimple size={16} weight="bold" />
-        Shorten
+        Share
       </Link>
 
       {TOP_TOOLS.map((item) => {
@@ -204,7 +204,7 @@ export function NavToolsMenu({ pathname }: NavToolsMenuProps) {
                         Link analytics
                       </span>
                       <span className="mt-0.5 block text-xs text-[var(--muted)]">
-                        See who clicks your short links
+                        See who opens your shared links
                       </span>
                     </span>
                   </Link>

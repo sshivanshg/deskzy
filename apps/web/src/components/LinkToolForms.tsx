@@ -171,7 +171,7 @@ export function UtmBuilderForm({ options, setOptions }: OptionsProps) {
               }
             }}
           >
-            Shorten with Deskzy
+            Publish with Deskzy
           </Link>
           <Link
             href={`/tools/qr-code?url=${encodeURIComponent(preview.url)}`}
@@ -318,7 +318,7 @@ export function LinkListForm({ options, setOptions }: OptionsProps) {
         <span className="text-xs text-[var(--accent)]">(Pro)</span>
         <div className="mt-2 flex items-center gap-2">
           <span className="shrink-0 font-mono text-sm text-[var(--muted)]">
-            deskzy.xyz/r/
+            yoururl.buzz/p/
           </span>
           <input
             value={options.slug || ""}

@@ -149,6 +149,7 @@ export async function shortenUrl(
   });
   let data: {
     error?: string;
+    shareUrl?: string;
     shortUrl?: string;
     code?: string;
     dest?: string;
@@ -161,12 +162,12 @@ export async function shortenUrl(
   } catch {
     throw new Error(
       res.ok
-        ? "Invalid response from shortener"
-        : "Shortener unavailable — try again in a moment",
+        ? "Invalid response from publish API"
+        : "Publish unavailable — try again in a moment",
     );
   }
   if (!res.ok) {
-    const err = new Error(data.error || "Failed to shorten URL") as Error & {
+    const err = new Error(data.error || "Failed to publish URL") as Error & {
       upgradeUrl?: string;
       status?: number;
     };
@@ -174,9 +175,10 @@ export async function shortenUrl(
     err.status = res.status;
     throw err;
   }
-  if (!data.shortUrl) throw new Error("Shortener returned no URL");
+  const published = data.shareUrl || data.shortUrl;
+  if (!published) throw new Error("Publish API returned no URL");
   return {
-    text: data.shortUrl,
+    text: published,
     meta: {
       code: data.code || "",
       dest: data.dest || "",
@@ -186,7 +188,7 @@ export async function shortenUrl(
   };
 }
 
-/** Create a multi-link short URL from an explicit URL list. */
+/** Create a multi-link published page from an explicit URL list. */
 export async function shortenUrlList(
   urls: string[],
   apiBase: string,
@@ -202,6 +204,7 @@ export async function shortenUrlList(
   });
   let data: {
     error?: string;
+    shareUrl?: string;
     shortUrl?: string;
     code?: string;
     dest?: string;
@@ -214,12 +217,12 @@ export async function shortenUrlList(
   } catch {
     throw new Error(
       res.ok
-        ? "Invalid response from shortener"
-        : "Shortener unavailable — try again in a moment",
+        ? "Invalid response from publish API"
+        : "Publish unavailable — try again in a moment",
     );
   }
   if (!res.ok) {
-    const err = new Error(data.error || "Failed to shorten links") as Error & {
+    const err = new Error(data.error || "Failed to publish links") as Error & {
       upgradeUrl?: string;
       status?: number;
     };
@@ -227,9 +230,10 @@ export async function shortenUrlList(
     err.status = res.status;
     throw err;
   }
-  if (!data.shortUrl) throw new Error("Shortener returned no URL");
+  const published = data.shareUrl || data.shortUrl;
+  if (!published) throw new Error("Publish API returned no URL");
   return {
-    text: data.shortUrl,
+    text: published,
     meta: {
       code: data.code || "",
       dest: data.dest || "",

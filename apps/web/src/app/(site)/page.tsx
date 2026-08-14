@@ -17,6 +17,7 @@ import { HomePopularStrip } from "@/components/HomePopularStrip";
 import { HomeSearch } from "@/components/HomeSearch";
 import { HomeShortenDock } from "@/components/HomeShortenDock";
 import { JsonLd } from "@/components/JsonLd";
+import { MonetizationSlot } from "@/components/MonetizationSlot";
 import { buildWebsiteJsonLd } from "@/lib/seo/json-ld";
 import {
   buildPageMetadata,
@@ -32,12 +33,13 @@ import {
 } from "@/lib/tools/registry";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: `${SITE_NAME} — Short links on deskzy.xyz, private file tools`,
+  title: `${SITE_NAME} — Share links on deskzy.xyz, private file tools`,
   description: DEFAULT_DESCRIPTION,
   path: "/",
   keywords: [
-    "url shortener free",
-    "deskzy.xyz short link",
+    "share link free",
+    "publish links online",
+    "deskzy.xyz share",
     "private file tools",
     "pdf tools online",
     "image compressor",
@@ -102,7 +104,7 @@ const TRUST = [
   {
     icon: LinkSimple,
     label: "Own deskzy.xyz links",
-    detail: "Free short links you control",
+    detail: "Free shared links you control",
   },
   {
     icon: LockSimple,
@@ -132,7 +134,7 @@ export default function HomePage() {
               Deskzy
             </p>
             <h1 className="max-w-[22ch] font-display text-xl font-semibold tracking-tight text-[var(--ink)] leading-snug">
-              Own short links on deskzy.xyz — plus private file tools
+              Own shared links on deskzy.xyz — plus private file tools
             </h1>
             <p className="max-w-[34ch] text-[15px] leading-snug text-[var(--muted)]">
               Free, no signup. Files never leave your browser.
@@ -241,6 +243,10 @@ export default function HomePage() {
           <HomeCategoryChips />
         </div>
         <HomePopularStrip tools={popular} />
+
+        <div className="mt-10">
+          <MonetizationSlot slot="home" size="banner" />
+        </div>
       </div>
 
       {/* Desktop — action-first split: shorten left, globe attractor right */}
@@ -251,10 +257,10 @@ export default function HomePage() {
               Deskzy
             </p>
             <h1 className="mt-4 max-w-[20ch] font-display text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl md:leading-[1.1]">
-              Own short links on deskzy.xyz — plus private file tools
+              Own shared links on deskzy.xyz — plus private file tools
             </h1>
             <p className="mt-4 max-w-[38ch] text-lg leading-relaxed text-[var(--muted)]">
-              Free, no signup. Paste a URL for a clean short link. PDF and image
+              Free, no signup. Paste a URL for a clean share page. PDF and image
               tools stay in your browser.
             </p>
 
@@ -302,7 +308,7 @@ export default function HomePage() {
                 Share stack
               </h2>
               <p className="mt-1 text-sm text-[var(--muted)]">
-                Pair your short link with QR, campaigns, WhatsApp, or a bio page
+                Pair your shared link with QR, campaigns, WhatsApp, or a bio page
               </p>
             </div>
             <Link
@@ -413,7 +419,7 @@ export default function HomePage() {
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center justify-between gap-3">
                         <span className="font-display text-lg font-semibold tracking-tight">
-                          {isLinks ? "Links — shortener & share tools" : c.name}
+                          {isLinks ? "Links — share & publish tools" : c.name}
                         </span>
                         <span className="text-[var(--muted)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-[var(--accent)]">
                           <ArrowRight size={16} />
@@ -421,7 +427,7 @@ export default function HomePage() {
                       </span>
                       <span className="mt-1 block text-sm leading-relaxed text-[var(--muted)]">
                         {isLinks
-                          ? "URL shortener on deskzy.xyz, QR, UTM, WhatsApp, and bio pages."
+                          ? "Publish links on deskzy.xyz, QR, UTM, WhatsApp, and bio pages."
                           : c.description}
                       </span>
                     </span>
@@ -431,6 +437,10 @@ export default function HomePage() {
             })}
           </div>
         </section>
+
+        <div className="mt-14 reveal reveal-delay-3 md:mt-16">
+          <MonetizationSlot slot="home" size="banner" />
+        </div>
       </div>
     </>
   );

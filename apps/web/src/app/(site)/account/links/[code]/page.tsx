@@ -12,7 +12,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { code } = await params;
   return buildPageMetadata({
-    title: `Stats · /r/${decodeURIComponent(code)}`,
+    title: `Stats · /p/${decodeURIComponent(code)}`,
     description: "Click analytics for your Deskzy short link.",
     path: `/account/links/${encodeURIComponent(code)}`,
   });

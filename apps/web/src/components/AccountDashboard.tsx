@@ -21,6 +21,7 @@ import {
   WarningCircle,
 } from "@phosphor-icons/react";
 import { formatInr, PRO_FEATURES, proUnitInr, type BillingCycle } from "@/lib/pricing";
+import { publicLinkUrl } from "@/lib/link-path";
 import { CONTACT_X_URL } from "@/lib/seo/site";
 import { ProAnalyticsPreview } from "@/components/ProAnalyticsPreview";
 import { SignOutButton } from "@/components/SignOutButton";
@@ -511,7 +512,7 @@ export function AccountDashboard(props: AccountDashboardProps) {
             links={links}
             copied={copied}
             onCopy={async (code, key) => {
-              await copyText(`${window.location.origin}/r/${code}`);
+              await copyText(publicLinkUrl(code));
               markCopied(key);
             }}
           />
@@ -722,7 +723,7 @@ function OverviewTab({
           <div className="shell-core p-5">
             <h3 className="font-display text-base font-semibold">Quick start</h3>
             <div className="mt-3 grid gap-2">
-              <QuickLink href="/tools/url-shortener" label="Shorten a URL" icon={<LinkSimple size={16} weight="bold" />} />
+              <QuickLink href="/tools/url-shortener" label="Share a URL" icon={<LinkSimple size={16} weight="bold" />} />
               <QuickLink href="/tools/compress-pdf" label="Compress a PDF" icon={<Sparkle size={16} weight="bold" />} />
               <QuickLink href="/tools/utm-builder" label="Build a UTM link" icon={<ChartLine size={16} weight="bold" />} />
               {paid ? (
@@ -835,7 +836,7 @@ function LinksTab({
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <h2 className="font-display text-xl font-semibold tracking-tight">
-                Your short links
+                Your shared links
               </h2>
               <p className="mt-1 text-sm text-[var(--muted)]">
                 Links created while signed in are owned by you
@@ -855,7 +856,7 @@ function LinksTab({
               </div>
               <p className="mt-4 font-display text-lg font-semibold">No owned links yet</p>
               <p className="mx-auto mt-1 max-w-sm text-sm text-[var(--muted)]">
-                Shorten a URL while signed in to track it here
+                Share a URL while signed in to track it here
                 {paid ? " with custom slugs and charts" : ""}.
               </p>
               <Link href="/tools/url-shortener" className="btn-primary mt-5 !rounded-full">
@@ -872,12 +873,12 @@ function LinksTab({
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <a
-                        href={`/r/${l.code}`}
+                        href={publicLinkUrl(l.code)}
                         className="font-mono text-sm font-semibold text-[var(--accent-ink)] hover:underline"
                         target="_blank"
                         rel="noreferrer"
                       >
-                        deskzy.xyz/r/{l.code}
+                        yoururl.buzz/p/{l.code}
                       </a>
                       {l.is_custom ? (
                         <span className="rounded-full bg-[var(--accent-soft)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--accent)]">
@@ -1175,7 +1176,7 @@ function ApiTab({
               Short-link API
             </h2>
             <p className="mt-1 max-w-xl text-sm text-[var(--muted)]">
-              Create short links from scripts with{" "}
+              Create shared links from scripts with{" "}
               <code className="rounded bg-[var(--surface)] px-1 py-0.5 text-xs">
                 POST /api/links
               </code>

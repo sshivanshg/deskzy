@@ -12,6 +12,7 @@ import {
   normalizeUrlBatch,
   resolveCreateUrlTokens,
 } from "@/lib/parse-pasted-urls";
+import { publicLinkUrl } from "@/lib/link-path";
 import { getUserPlan, persistOwnedLink } from "@/lib/pro-links";
 import { createClient } from "@/lib/supabase/server";
 
@@ -24,7 +25,7 @@ function clientIp(req: NextRequest): string {
   );
 }
 
-function randomCode(n = 7): string {
+function randomCode(n = 12): string {
   const alphabet =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const bytes = randomBytes(n);
@@ -65,7 +66,7 @@ async function allocateCode(
   }
 
   for (let i = 0; i < 8; i++) {
-    const candidate = randomCode(7);
+    const candidate = randomCode(12);
     if (!(await hasLink(candidate))) {
       return { code: candidate, isCustom: false };
     }
@@ -121,8 +122,6 @@ export async function POST(req: NextRequest) {
     if (allocated instanceof NextResponse) return allocated;
     const { code, isCustom } = allocated;
 
-    const origin = req.nextUrl.origin;
-
     if (batch.urls.length >= 2) {
       const record = await putListLink(code, batch.urls, { userId, isCustom });
       if (userId) {
@@ -139,7 +138,8 @@ export async function POST(req: NextRequest) {
           kind: "list" as const,
           dest: record.dest,
           urls: record.urls,
-          shortUrl: `${origin}/r/${record.code}`,
+          shortUrl: publicLinkUrl(record.code),
+          shareUrl: publicLinkUrl(record.code),
           createdAt: record.createdAt,
           isCustom,
         },
@@ -163,7 +163,8 @@ export async function POST(req: NextRequest) {
         code,
         kind: "single" as const,
         dest,
-        shortUrl: `${origin}/r/${record.code}`,
+        shortUrl: publicLinkUrl(record.code),
+        shareUrl: publicLinkUrl(record.code),
         createdAt: record.createdAt,
         isCustom,
       },
@@ -177,7 +178,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error: kvCapped
-          ? "Short-link storage is temporarily busy. Please try again in a moment."
+          ? "Link storage is temporarily busy. Please try again in a moment."
           : msg,
       },
       { status: kvCapped ? 503 : 400 },

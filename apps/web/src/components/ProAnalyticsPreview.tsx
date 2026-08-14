@@ -75,14 +75,14 @@ const REFERRERS = [
 ];
 
 const TIMELINE = [
-  { city: "Mumbai", country: "IN", ago: "2 min ago", path: "/r/launch" },
-  { city: "Bengaluru", country: "IN", ago: "5 min ago", path: "/r/deck" },
-  { city: "Austin", country: "US", ago: "8 min ago", path: "/r/launch" },
-  { city: "London", country: "GB", ago: "12 min ago", path: "/r/bio" },
-  { city: "Delhi", country: "IN", ago: "14 min ago", path: "/r/qr-camp" },
-  { city: "Singapore", country: "SG", ago: "19 min ago", path: "/r/launch" },
-  { city: "Berlin", country: "DE", ago: "23 min ago", path: "/r/newsletter" },
-  { city: "Dubai", country: "AE", ago: "28 min ago", path: "/r/deck" },
+  { city: "Mumbai", country: "IN", ago: "2 min ago", path: "/p/launch" },
+  { city: "Bengaluru", country: "IN", ago: "5 min ago", path: "/p/deck" },
+  { city: "Austin", country: "US", ago: "8 min ago", path: "/p/launch" },
+  { city: "London", country: "GB", ago: "12 min ago", path: "/p/bio" },
+  { city: "Delhi", country: "IN", ago: "14 min ago", path: "/p/qr-camp" },
+  { city: "Singapore", country: "SG", ago: "19 min ago", path: "/p/launch" },
+  { city: "Berlin", country: "DE", ago: "23 min ago", path: "/p/newsletter" },
+  { city: "Dubai", country: "AE", ago: "28 min ago", path: "/p/deck" },
 ];
 
 function ProBadge() {

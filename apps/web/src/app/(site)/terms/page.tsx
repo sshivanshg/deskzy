@@ -15,7 +15,7 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/terms",
 });
 
-const updated = "28 July 2026";
+const updated = "14 August 2026";
 
 export default function TermsPage() {
   return (
@@ -111,7 +111,25 @@ export default function TermsPage() {
 
         <section>
           <h2 className="font-display text-xl font-semibold tracking-tight">
-            5. Your content and responsibility
+            5. Advertising and review-safe use
+          </h2>
+          <p className="mt-2 text-[var(--muted)]">
+            {SITE_NAME} may display ads to keep free tools available. Do not
+            click ads to support us, ask others to click ads, automate ad
+            interactions, or interfere with ad measurement. Ads must not be
+            treated as endorsements of third-party products or destinations.
+          </p>
+          <p className="mt-2 text-[var(--muted)]">
+            We may remove or change ad placements, disable monetization on
+            pages, or remove links when needed to comply with Google Publisher
+            Policies, search quality requirements, law, or platform safety
+            rules.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="font-display text-xl font-semibold tracking-tight">
+            6. Your content and responsibility
           </h2>
           <p className="mt-2 text-[var(--muted)]">
             You are solely responsible for files you process locally and for
@@ -123,7 +141,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="font-display text-xl font-semibold tracking-tight">
-            6. Intellectual property
+            7. Intellectual property
           </h2>
           <p className="mt-2 text-[var(--muted)]">
             {SITE_NAME} branding, site design, and software remain ours (or our
@@ -135,7 +153,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="font-display text-xl font-semibold tracking-tight">
-            7. Abuse reports
+            8. Abuse reports
           </h2>
           <p className="mt-2 text-[var(--muted)]">
             Report phishing or abusive short links via{" "}
@@ -154,7 +172,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="font-display text-xl font-semibold tracking-tight">
-            8. Indemnity
+            9. Indemnity
           </h2>
           <p className="mt-2 text-[var(--muted)]">
             You agree to defend and hold harmless {SITE_NAME} and its operators
@@ -165,7 +183,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="font-display text-xl font-semibold tracking-tight">
-            9. Governing law
+            10. Governing law
           </h2>
           <p className="mt-2 text-[var(--muted)]">
             These terms are governed by the laws of India, without regard to
@@ -178,7 +196,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="font-display text-xl font-semibold tracking-tight">
-            10. Changes
+            11. Changes
           </h2>
           <p className="mt-2 text-[var(--muted)]">
             We may update these terms. The “Last updated” date will change.
@@ -188,7 +206,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="font-display text-xl font-semibold tracking-tight">
-            11. Privacy
+            12. Privacy
           </h2>
           <p className="mt-2 text-[var(--muted)]">
             Our{" "}

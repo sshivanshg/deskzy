@@ -1,33 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  ArrowSquareOut,
-  Check,
-  CopySimple,
-  LinkSimple,
-  ListBullets,
-  ShieldCheck,
-} from "@phosphor-icons/react";
-import { motion, useReducedMotion } from "motion/react";
-import { BrandLogo } from "@/components/BrandLogo";
-import { HopAdSlot } from "@/components/HopAdSlot";
+import { Check, CopySimple } from "@phosphor-icons/react";
+import { HopDiscoverFooter } from "@/components/HopDiscoverFooter";
+import { HopDiscoverHeader } from "@/components/HopDiscoverHeader";
+import { HopPublishCanvas } from "@/components/HopPublishCanvas";
+import { HopShareBar } from "@/components/HopShareBar";
 
 type LinkListHopProps = {
   urls: string[];
   code: string;
 };
-
-function splitDest(dest: string): { host: string; rest: string } {
-  try {
-    const u = new URL(dest);
-    const rest = `${u.pathname === "/" ? "" : u.pathname}${u.search}${u.hash}`;
-    return { host: u.host, rest: rest || "/" };
-  } catch {
-    return { host: dest, rest: "" };
-  }
-}
 
 function trackHopClick(code: string) {
   const url = `/api/links/${encodeURIComponent(code)}/click`;
@@ -42,23 +25,7 @@ function trackHopClick(code: string) {
   void fetch(url, { method: "POST", keepalive: true }).catch(() => {});
 }
 
-function ListRow({
-  dest,
-  index,
-  itemVariants,
-}: {
-  dest: string;
-  index: number;
-  itemVariants: {
-    initial: { opacity: number; y?: number };
-    animate: {
-      opacity: number;
-      y?: number;
-      transition?: { type: "spring"; stiffness: number; damping: number };
-    };
-  };
-}) {
-  const { host, rest } = splitDest(dest);
+function PasteLinkRow({ dest, index }: { dest: string; index: number }) {
   const [copied, setCopied] = useState(false);
 
   const copyDest = useCallback(async () => {
@@ -72,66 +39,45 @@ function ListRow({
   }, [dest]);
 
   return (
-    <motion.li variants={itemVariants} className="list-none">
-      <div className="rounded-[1.2rem] border border-[var(--stroke)] bg-[color-mix(in_srgb,var(--bg-elevated)_90%,white)] px-4 py-4 shadow-[var(--shadow)] sm:px-5">
-        <div className="flex items-start gap-3">
-          <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)] text-xs font-semibold text-[var(--accent-ink)]">
-            {index + 1}
-          </span>
-          <a
-            href={dest}
-            rel="noopener noreferrer"
-            className="min-w-0 flex-1 group"
-          >
-            <p className="font-display text-lg font-semibold tracking-tight text-[var(--ink)] group-hover:text-[var(--accent-ink)] sm:text-xl">
-              {host}
-            </p>
-            {rest ? (
-              <p className="mt-1 break-all font-mono text-xs leading-relaxed text-[var(--muted)] sm:text-sm">
-                {rest.length > 80 ? `${rest.slice(0, 80)}…` : rest}
-              </p>
-            ) : null}
-          </a>
-        </div>
-        <div className="mt-3 flex gap-2 pl-10">
-          <a
-            href={dest}
-            rel="noopener noreferrer"
-            className="btn-primary !min-h-10 flex-1 !py-2 text-sm"
-          >
-            Open
-            <ArrowSquareOut size={14} weight="bold" />
-          </a>
-          <button
-            type="button"
-            onClick={() => void copyDest()}
-            className="btn-secondary !min-h-10 sm:min-w-[6.5rem] !py-2 text-sm"
-            aria-label={
-              copied ? `Copied link ${index + 1}` : `Copy link ${index + 1}`
-            }
-          >
-            {copied ? (
-              <>
-                <span className="text-[var(--accent)]">
-                  <Check size={14} weight="bold" />
-                </span>
-                Copied
-              </>
-            ) : (
-              <>
-                <CopySimple size={14} weight="bold" />
-                Copy
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-    </motion.li>
+    <li className="group flex flex-col gap-1.5 border-b border-[var(--stroke)] py-4 last:border-b-0 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+      <p className="min-w-0 flex-1 text-[1.05rem] leading-relaxed">
+        <span className="mr-2 text-sm text-[var(--muted)]">{index + 1}.</span>
+        <a
+          href={dest}
+          rel="noopener noreferrer"
+          className="break-all font-medium text-[var(--accent-ink)] underline decoration-[var(--stroke-strong)] underline-offset-4 hover:decoration-[var(--accent)]"
+        >
+          {dest}
+        </a>
+      </p>
+      <button
+        type="button"
+        onClick={() => void copyDest()}
+        className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-md px-2 py-1 text-xs font-medium text-[var(--muted)] transition-colors hover:bg-[var(--bg-elevated)] hover:text-[var(--ink)]"
+        aria-label={copied ? `Copied link ${index + 1}` : `Copy link ${index + 1}`}
+      >
+        {copied ? (
+          <>
+            <span className="text-[var(--accent)]">
+              <Check size={13} weight="bold" />
+            </span>
+            Copied
+          </>
+        ) : (
+          <>
+            <CopySimple size={13} weight="bold" />
+            Copy
+          </>
+        )}
+      </button>
+    </li>
   );
 }
 
+/**
+ * Pastelink-style multi-link paste — canvas + reshare + publish tease.
+ */
 export function LinkListHop({ urls, code }: LinkListHopProps) {
-  const reduceMotion = useReducedMotion();
   const tracked = useRef(false);
   const count = urls.length;
 
@@ -141,97 +87,44 @@ export function LinkListHop({ urls, code }: LinkListHopProps) {
     trackHopClick(code);
   }, [code]);
 
-  const fade = reduceMotion
-    ? { initial: false, animate: { opacity: 1 } }
-    : {
-        initial: { opacity: 0, y: 14 },
-        animate: { opacity: 1, y: 0 },
-      };
-
-  const container = {
-    initial: {},
-    animate: {
-      transition: reduceMotion
-        ? { duration: 0 }
-        : { staggerChildren: 0.06, delayChildren: 0.04 },
-    },
-  };
-
-  const item = reduceMotion
-    ? { initial: { opacity: 1 }, animate: { opacity: 1 } }
-    : {
-        initial: { opacity: 0, y: 12 },
-        animate: {
-          opacity: 1,
-          y: 0,
-          transition: { type: "spring" as const, stiffness: 380, damping: 28 },
-        },
-      };
-
   return (
-    <div className="relative mx-auto flex min-h-[100dvh] w-full max-w-lg flex-col px-4 py-8 sm:px-6">
-      <motion.header
-        className="flex items-center justify-between"
-        {...fade}
-        transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
-      >
-        <BrandLogo priority />
-        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--muted)]">
-          <span className="text-[var(--accent)]">
-            <ShieldCheck size={14} weight="bold" />
-          </span>
-          Safe hop
-        </span>
-      </motion.header>
+    <div className="relative mx-auto flex min-h-[100dvh] w-full max-w-2xl flex-col px-4 py-8 sm:px-6 sm:py-10">
+      <HopDiscoverHeader />
 
-      <motion.div
-        className="flex flex-1 flex-col py-8"
-        variants={container}
-        initial="initial"
-        animate="animate"
-      >
-        <motion.div className="mb-6" variants={item}>
-          <p className="inline-flex items-center gap-1.5 text-sm font-medium tracking-wide text-[var(--muted)]">
-            <ListBullets size={16} weight="bold" />
-            {count} {count === 1 ? "link" : "links"}
+      <article className="flex flex-1 flex-col">
+        <div className="rounded-2xl border border-[var(--stroke)] bg-[var(--panel)] p-5 shadow-[0_1px_0_rgba(0,0,0,0.03)] sm:p-6">
+          <header className="border-b border-[var(--stroke)] pb-4">
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-[var(--muted)]">
+              Published
+            </p>
+            <h1 className="mt-2 font-display text-2xl font-semibold tracking-tight text-[var(--ink)] sm:text-3xl">
+              {count} {count === 1 ? "link" : "links"}
+            </h1>
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              Shared content — open any link below.
+            </p>
+          </header>
+
+          <ol className="mt-2 list-none">
+            {urls.map((dest, i) => (
+              <PasteLinkRow key={`${i}-${dest}`} dest={dest} index={i} />
+            ))}
+          </ol>
+        </div>
+
+        <div className="mt-5 rounded-2xl border border-[var(--stroke)] bg-[var(--panel)] p-4 sm:p-5">
+          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+            Page link
           </p>
-          <p className="mt-1 font-display text-2xl font-semibold tracking-tight text-[var(--ink)] sm:text-3xl">
-            Pick a destination
-          </p>
-          <p className="mt-1 font-mono text-xs text-[var(--muted)] opacity-80">
-            deskzy.xyz/r/{code}
-          </p>
-        </motion.div>
+          <HopShareBar code={code} />
+        </div>
 
-        <ul className="flex flex-col gap-3">
-          {urls.map((dest, i) => (
-            <ListRow
-              key={`${i}-${dest}`}
-              dest={dest}
-              index={i}
-              itemVariants={item}
-            />
-          ))}
-        </ul>
+        <div className="mt-5">
+          <HopPublishCanvas />
+        </div>
 
-        <motion.div variants={item}>
-          <HopAdSlot />
-        </motion.div>
-
-        <motion.p
-          className="mt-10 text-center text-sm leading-relaxed text-[var(--muted)]"
-          variants={item}
-        >
-          Shared with Deskzy.{" "}
-          <Link
-            href="/tools/link-list"
-            className="inline-flex items-center gap-1 font-medium text-[var(--accent-ink)] underline-offset-4 hover:underline"
-          >
-            <LinkSimple size={14} weight="bold" />
-            Share your own list
-          </Link>
-        </motion.p>
-      </motion.div>
+        <HopDiscoverFooter />
+      </article>
     </div>
   );
 }

@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title =
     tool.slug === "url-shortener"
-      ? "URL shortener free — shorten links online"
+      ? "Share a link free — publish on deskzy.xyz"
       : `${tool.seoTitle} — private, no upload`;
 
   return buildPageMetadata({
@@ -39,7 +39,7 @@ export default async function ToolPage({ params }: Props) {
 
   const h1 =
     tool.slug === "url-shortener"
-      ? "URL shortener free — shorten links online"
+      ? "Share a link free — publish on deskzy.xyz"
       : tool.seoTitle;
 
   return (

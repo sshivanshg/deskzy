@@ -22,7 +22,9 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/privacy",
 });
 
-const updated = "28 July 2026";
+const updated = "14 August 2026";
+const googlePartnerDataUrl =
+  "https://www.google.com/policies/privacy/partners/";
 
 export default function PrivacyPage() {
   return (
@@ -134,13 +136,35 @@ export default function PrivacyPage() {
 
         <section>
           <h2 className="font-display text-xl font-semibold tracking-tight">
-            6. Cookies and similar technologies
+            6. Advertising, cookies, and similar technologies
           </h2>
           <p className="mt-2 text-[var(--muted)]">
             Essential operation of the site does not require login cookies.
             Third-party analytics (if enabled) may set cookies or use local
             storage. You can block cookies in your browser; browser tools will
             still work.
+          </p>
+          <p className="mt-2 text-[var(--muted)]">
+            If Google AdSense or another Google advertising product is enabled,
+            Google and its advertising partners may place and read cookies,
+            use web beacons, or process IP addresses and other identifiers to
+            serve ads, measure performance, prevent fraud, and comply with
+            advertising policies. Ads are served against the page and site
+            context, not the contents of files processed locally in browser
+            tools.
+          </p>
+          <p className="mt-2 text-[var(--muted)]">
+            Learn more about{" "}
+            <a
+              href={googlePartnerDataUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-[var(--ink)] underline-offset-4 hover:underline"
+            >
+              how Google uses data on partners’ sites or apps
+            </a>
+            . You can manage ad personalisation in your Google account and
+            control cookies through your browser settings.
           </p>
         </section>
 

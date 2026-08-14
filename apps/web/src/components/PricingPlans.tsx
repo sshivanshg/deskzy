@@ -328,7 +328,7 @@ export function PricingPlans({
                 ["Best for", "Simple use", "Advanced use", "Growing teams"],
                 ["Tools", "Essential", "All tools", "All tools"],
                 ["Document processing", "Limited daily", "Unlimited", "Unlimited"],
-                ["Short links", "Unlimited", "Unlimited", "Unlimited"],
+                ["Shared links", "Unlimited", "Unlimited", "Unlimited"],
                 ["Files leave device", "Never*", "Never*", "Never*"],
                 ["Link analytics", "—", "Yes", "Yes"],
                 ["Custom short slugs", "—", "Yes", "Yes"],
@@ -352,7 +352,7 @@ export function PricingPlans({
           </table>
         </div>
         <p className="mt-2 text-xs text-[var(--muted)]">
-          * Browser PDF &amp; image tools process locally. The URL shortener only
+          * Browser PDF &amp; image tools process locally. Share Link only
           sends the URL string.
         </p>
       </section>

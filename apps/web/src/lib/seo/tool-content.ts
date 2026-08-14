@@ -4,61 +4,146 @@ export type ToolSeoContent = {
   intro: string;
   steps: [string, string, string];
   privacy: string;
+  bestFor?: string[];
+  limits?: string[];
   faqs: { q: string; a: string }[];
 };
+
+const FILE_BEST_FOR = {
+  pdf: [
+    "Combining scans, contracts, invoices, and forms before sending them by email.",
+    "Preparing a smaller document when a portal or mail client rejects the original size.",
+    "Extracting or organizing only the pages someone actually needs to review.",
+  ],
+  image: [
+    "Making product photos, avatars, thumbnails, and chat attachments easier to upload.",
+    "Converting images when a CMS, email client, or marketplace only accepts specific formats.",
+    "Reducing page weight before publishing images on a website or landing page.",
+  ],
+  media: [
+    "Extracting audio from clips for notes, podcasts, transcripts, and lightweight sharing.",
+    "Converting everyday audio and video formats without handing files to a remote converter.",
+    "Preparing smaller media assets when a platform rejects the original container or format.",
+  ],
+} as const;
+
+const FILE_LIMITS = [
+  "Very large files depend on your device memory because processing happens locally.",
+  "Keep a copy of the original file until you have checked the downloaded result.",
+  "Encrypted, corrupted, or unusual files may not process correctly in every browser.",
+];
+
+const TEXT_BEST_FOR = [
+  "Quick one-off formatting, generation, and conversion tasks during everyday work.",
+  "Cleaning copied text before it goes into docs, code reviews, tickets, or campaigns.",
+  "Avoiding account walls for small utilities that should be fast and disposable.",
+];
+
+const TEXT_LIMITS = [
+  "Avoid pasting live production secrets if your team policy forbids using browser tools.",
+  "Check generated or transformed output before using it in production systems.",
+  "Browser storage, extensions, and clipboard tools are still controlled by your device.",
+];
+
+function bestForTool(tool: ToolDefinition): string[] | undefined {
+  if (
+    tool.category === "pdf" ||
+    tool.category === "image" ||
+    tool.category === "media"
+  ) {
+    return [...FILE_BEST_FOR[tool.category]];
+  }
+  if (tool.category === "links") {
+    return [
+      "Creating shareable URLs, QR codes, campaign links, WhatsApp click-to-chat links, and bio pages.",
+      "Preparing links for flyers, newsletters, ads, social posts, and customer support replies.",
+      "Keeping small link workflows fast without a dashboard or signup step.",
+    ];
+  }
+  return TEXT_BEST_FOR;
+}
+
+function limitsForTool(tool: ToolDefinition): string[] {
+  if (
+    tool.category === "pdf" ||
+    tool.category === "image" ||
+    tool.category === "media"
+  ) {
+    return FILE_LIMITS;
+  }
+  if (tool.runtime === "hybrid") {
+    return [
+      "Only shorten or publish URLs you are allowed to share.",
+      "Do not use shared links for phishing, malware, spam, copyright abuse, or deceptive redirects.",
+      "Short links may be removed for abuse, operational reasons, or legal requests.",
+    ];
+  }
+  return TEXT_LIMITS;
+}
+
+function withReviewContent(
+  tool: ToolDefinition,
+  content: ToolSeoContent,
+): ToolSeoContent {
+  return {
+    ...content,
+    bestFor: content.bestFor ?? bestForTool(tool),
+    limits: content.limits ?? limitsForTool(tool),
+  };
+}
 
 const OVERRIDES: Record<string, ToolSeoContent> = {
   "url-shortener": {
     intro:
-      "Shorten long URLs into clean deskzy.xyz links. Free, instant, no account required. Only the URL string is sent to our API — never your files.",
+      "Publish a clean share page for any URL. Free, instant, no account required. Only the URL string is sent to our API — never your files.",
     steps: [
-      "Paste the full URL you want to shorten.",
-      "Click Shorten to create a deskzy.xyz short link.",
+      "Paste the full URL you want to share.",
+      "Click Publish to create a share page.",
       "Copy or share the link. Use our QR code tool for print-ready codes.",
     ],
     privacy:
-      "The URL shortener is a hybrid tool: only the URL text is sent to Deskzy's edge API and stored in Cloudflare KV so redirects work. We do not upload files. Short links use the /r/ path on deskzy.xyz.",
+      "Share Link is a hybrid tool: only the URL text is sent to Deskzy's edge API and stored in Cloudflare KV so the page works. We do not upload files. New pages use yoururl.buzz/p/… (older deskzy.xyz /r/ and /p/ links still work).",
     faqs: [
       {
-        q: "Is the URL shortener free?",
-        a: "Yes. Deskzy's URL shortener is free with no signup or daily limits for normal use.",
+        q: "Is Share Link free?",
+        a: "Yes. Publishing a link on Deskzy is free with no signup or daily limits for normal use.",
       },
       {
         q: "Can I paste multiple links?",
-        a: "For one short link that opens a list of destinations, use the Multi-Link Shortener (or tap “Add more links” on the home shortener). The single URL shortener stays one link at a time.",
+        a: "For one page that lists several destinations, use Share Links (or tap “Add more links” on the home dock). Share Link stays one URL at a time.",
       },
       {
-        q: "Do you upload my files when I shorten a link?",
+        q: "Do you upload my files when I publish a link?",
         a: "No. Only the URL string is processed. All PDF, image, and most text tools run entirely in your browser.",
       },
       {
-        q: "What domain do short links use?",
-        a: "Short links are served on deskzy.xyz (for example deskzy.xyz/r/your-code). Visitors land on a Deskzy hop page that shows the destination, then open the original URL from there.",
+        q: "What domain do shared links use?",
+        a: "Shared pages are on yoururl.buzz (for example yoururl.buzz/p/your-code). Visitors land on a published page that shows the destination links.",
       },
       {
-        q: "Can I create a QR code for my short link?",
-        a: "Yes. After shortening, use Deskzy's free QR code generator to turn the link into a downloadable PNG.",
+        q: "Can I create a QR code for my shared link?",
+        a: "Yes. After publishing, use Deskzy's free QR code generator to turn the link into a downloadable PNG.",
       },
       {
-        q: "Is there an alternative to bit.ly without signup?",
-        a: "Deskzy offers a free link shortener with no account wall — paste a URL and copy your short link immediately.",
+        q: "Do I need an account to publish?",
+        a: "No. Paste a URL and copy your yoururl.buzz link immediately — no account wall.",
       },
     ],
   },
   "link-list": {
     intro:
-      "Share several long URLs as one short deskzy.xyz link. Recipients open a list page and pick which destination to visit. Free, no signup.",
+      "Share several URLs as one published page. Recipients open the list and pick which destination to visit. Free, no signup.",
     steps: [
       "Add each link with the Add button (or paste several at once into the field).",
-      "Click Shorten list to create one deskzy.xyz short link.",
-      "Share the short link — recipients see every destination on one page.",
+      "Click Publish list to create one share page.",
+      "Share the page — recipients see every destination in one place.",
     ],
     privacy:
-      "Only the URL strings are sent to Deskzy's edge API and stored in Cloudflare KV so the list page works. We do not upload files.",
+      "Only the URL strings are sent to Deskzy's edge API and stored in Cloudflare KV so the list page works. We do not upload files. New pages use yoururl.buzz/p/…",
     faqs: [
       {
-        q: "Is the multi-link shortener free?",
-        a: "Yes. Creating list short links is free with no signup. Abuse is rate-limited per IP like other short links.",
+        q: "Is Share Links free?",
+        a: "Yes. Creating list pages is free with no signup. Abuse is rate-limited per IP like other shared links.",
       },
       {
         q: "How do I add links on my phone?",
@@ -66,7 +151,7 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
       },
       {
         q: "What do recipients see?",
-        a: "They open deskzy.xyz/r/your-code and see a list of destinations. Each link opens externally when they tap it.",
+        a: "They open yoururl.buzz/p/your-code and see a list of destinations. Each link opens externally when they tap it.",
       },
     ],
   },
@@ -820,14 +905,16 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
 
 function browserFileContent(tool: ToolDefinition): ToolSeoContent {
   return {
-    intro: `${tool.description} Use Deskzy's free ${tool.name.toLowerCase()} tool online — private, no signup, files stay in your browser.`,
+    intro: `${tool.description} Use Deskzy's free ${tool.name.toLowerCase()} tool online when you need a focused result without creating an account or uploading files to an unknown server. The workspace is built around a single job, clear download output, and related tools for the next step.`,
     steps: [
       `Select ${tool.input === "files" ? "your files" : "a file"} from your device.`,
       "Configure options if needed, then run the tool.",
       "Download the result instantly.",
     ],
     privacy:
-      "This tool runs entirely in your browser. Files are not uploaded to Deskzy servers.",
+      "This tool runs entirely in your browser. Files are not uploaded to Deskzy servers, and the document or media contents are not used for ad targeting.",
+    bestFor: bestForTool(tool),
+    limits: FILE_LIMITS,
     faqs: [
       {
         q: `Is ${tool.name.toLowerCase()} free?`,
@@ -850,7 +937,7 @@ function textToolContent(tool: ToolDefinition): ToolSeoContent {
     tool.slug.includes("generator") || tool.slug === "qr-code";
 
   return {
-    intro: `${tool.description} Free, instant, and private — runs in your browser with no signup.`,
+    intro: `${tool.description} Free, instant, and private for everyday work. Deskzy keeps the page focused on the task: enter the input, choose the mode, copy the result, and move on without creating an account.`,
     steps: isGenerator
       ? [
           "Set options if available (length, count, etc.).",
@@ -866,6 +953,16 @@ function textToolContent(tool: ToolDefinition): ToolSeoContent {
       tool.runtime === "hybrid"
         ? "Only URL strings are sent to the API for hybrid tools. All other text tools run locally."
         : "Text is processed in your browser and is never sent to a server.",
+    bestFor:
+      tool.category === "links"
+        ? [
+            "Creating shareable URLs, QR codes, campaign links, WhatsApp click-to-chat links, and bio pages.",
+            "Preparing links for flyers, newsletters, ads, social posts, and customer support replies.",
+            "Keeping small link workflows fast without a dashboard or signup step.",
+          ]
+        : TEXT_BEST_FOR,
+    limits:
+      tool.runtime === "hybrid" ? limitsForTool(tool) : TEXT_LIMITS,
     faqs: [
       {
         q: `Is this ${tool.name.toLowerCase()} free?`,
@@ -884,7 +981,9 @@ function textToolContent(tool: ToolDefinition): ToolSeoContent {
 }
 
 export function getToolSeoContent(tool: ToolDefinition): ToolSeoContent {
-  if (OVERRIDES[tool.slug]) return OVERRIDES[tool.slug]!;
+  if (OVERRIDES[tool.slug]) {
+    return withReviewContent(tool, OVERRIDES[tool.slug]!);
+  }
   if (tool.input === "file" || tool.input === "files") {
     return browserFileContent(tool);
   }

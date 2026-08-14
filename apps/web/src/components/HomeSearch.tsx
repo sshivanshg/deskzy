@@ -30,7 +30,7 @@ export function HomeSearch({
             id={id}
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="shorten url, compress pdf, qr…"
+            placeholder="share link, compress pdf, qr…"
             className="field !rounded-xl !py-3 !pl-11 !pr-4 !text-base sm:!rounded-2xl sm:!py-3.5"
             autoComplete="off"
             autoCorrect="off"
@@ -41,7 +41,7 @@ export function HomeSearch({
           <div className="mt-3 max-h-64 overflow-auto overscroll-contain rounded-xl border border-[var(--stroke)] bg-[var(--panel-soft)] sm:max-h-72 sm:rounded-2xl">
             {results.length === 0 ? (
               <p className="px-4 py-4 text-sm text-[var(--muted)]">
-                No tools matched. Try “shorten”, “pdf”, or “image”.
+                No tools matched. Try “share”, “pdf”, or “image”.
               </p>
             ) : (
               results.slice(0, 7).map((t) => (
@@ -67,7 +67,7 @@ export function HomeSearch({
           </div>
         ) : (
           <div className="mt-3 flex gap-2 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden">
-            {["shorten url", "compress pdf", "webp to png", "qr code"].map(
+            {["share link", "compress pdf", "webp to png", "qr code"].map(
               (hint) => (
                 <button
                   key={hint}

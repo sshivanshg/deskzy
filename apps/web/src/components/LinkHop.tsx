@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, CopySimple } from "@phosphor-icons/react";
 import { AdsterraShareExtras } from "@/components/Adsterra";
+import { AdsterraSoftRail } from "@/components/Adsterra";
 import { HopDiscoverFooter } from "@/components/HopDiscoverFooter";
 import { HopDiscoverHeader } from "@/components/HopDiscoverHeader";
 import { HopPublishCanvas } from "@/components/HopPublishCanvas";
@@ -113,6 +114,8 @@ export function LinkHop({ dest, code }: LinkHopProps) {
           </p>
           <HopShareBar code={code} />
         </div>
+
+        <AdsterraSoftRail className="mt-5" />
 
         <div className="mt-5">
           <HopPublishCanvas />

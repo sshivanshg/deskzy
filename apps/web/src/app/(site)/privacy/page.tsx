@@ -23,9 +23,6 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 const updated = "14 August 2026";
-const googlePartnerDataUrl =
-  "https://www.google.com/policies/privacy/partners/";
-
 export default function PrivacyPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 md:py-16">
@@ -145,26 +142,18 @@ export default function PrivacyPage() {
             still work.
           </p>
           <p className="mt-2 text-[var(--muted)]">
-            If Google AdSense or another Google advertising product is enabled,
-            Google and its advertising partners may place and read cookies,
-            use web beacons, or process IP addresses and other identifiers to
-            serve ads, measure performance, prevent fraud, and comply with
-            advertising policies. Ads are served against the page and site
-            context, not the contents of files processed locally in browser
-            tools.
+            If Adsterra or another third-party advertising network is enabled,
+            that provider and its advertising partners may place and read
+            cookies, use web beacons, or process IP addresses and other
+            identifiers to serve ads, measure performance, prevent fraud, and
+            comply with advertising policies. Ads are served against the page
+            and site context, not the contents of files processed locally in
+            browser tools.
           </p>
           <p className="mt-2 text-[var(--muted)]">
-            Learn more about{" "}
-            <a
-              href={googlePartnerDataUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-[var(--ink)] underline-offset-4 hover:underline"
-            >
-              how Google uses data on partners’ sites or apps
-            </a>
-            . You can manage ad personalisation in your Google account and
-            control cookies through your browser settings.
+            You can control cookies through your browser settings and review
+            the third-party provider’s own privacy disclosures for more detail
+            about ad personalisation and data handling.
           </p>
         </section>
 

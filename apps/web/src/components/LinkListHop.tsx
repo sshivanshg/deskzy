@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, CopySimple } from "@phosphor-icons/react";
+import { AdsterraBanner } from "@/components/Adsterra";
 import { HopDiscoverFooter } from "@/components/HopDiscoverFooter";
 import { HopDiscoverHeader } from "@/components/HopDiscoverHeader";
 import { HopPublishCanvas } from "@/components/HopPublishCanvas";
@@ -121,6 +122,10 @@ export function LinkListHop({ urls, code }: LinkListHopProps) {
 
         <div className="mt-5">
           <HopPublishCanvas />
+        </div>
+
+        <div className="mt-5">
+          <AdsterraBanner size="300x250" />
         </div>
 
         <HopDiscoverFooter />

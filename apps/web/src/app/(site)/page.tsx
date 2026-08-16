@@ -17,7 +17,11 @@ import { HomePopularStrip } from "@/components/HomePopularStrip";
 import { HomeSearch } from "@/components/HomeSearch";
 import { HomeShortenDock } from "@/components/HomeShortenDock";
 import { JsonLd } from "@/components/JsonLd";
-import { MonetizationSlot } from "@/components/MonetizationSlot";
+import {
+  AdsterraBanner,
+  AdsterraNativeBanner,
+  AdsterraMobileBanner,
+} from "@/components/Adsterra";
 import { buildWebsiteJsonLd } from "@/lib/seo/json-ld";
 import {
   buildPageMetadata,
@@ -242,10 +246,13 @@ export default function HomePage() {
           <HomeSearch id="home-tool-search" />
           <HomeCategoryChips />
         </div>
+        <div className="mt-6 flex justify-center">
+          <AdsterraMobileBanner className="w-full max-w-[320px]" />
+        </div>
         <HomePopularStrip tools={popular} />
 
         <div className="mt-10">
-          <MonetizationSlot slot="home" size="banner" />
+          <AdsterraNativeBanner className="mt-10" />
         </div>
       </div>
 
@@ -438,8 +445,10 @@ export default function HomePage() {
           </div>
         </section>
 
-        <div className="mt-14 reveal reveal-delay-3 md:mt-16">
-          <MonetizationSlot slot="home" size="banner" />
+        <div className="mt-14 grid gap-4 reveal reveal-delay-3 md:mt-16 lg:grid-cols-[1fr_auto_1fr] lg:items-start">
+          <AdsterraBanner size="300x250" className="lg:justify-self-start" />
+          <AdsterraBanner size="728x90" className="hidden lg:block lg:justify-self-center lg:mt-10" />
+          <AdsterraBanner size="160x600" className="lg:justify-self-end" />
         </div>
       </div>
     </>

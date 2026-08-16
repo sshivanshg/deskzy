@@ -34,7 +34,7 @@ import {
   WhatsAppLinkForm,
 } from "./LinkToolForms";
 import { Dropzone } from "./Dropzone";
-import { MonetizationSlot } from "./MonetizationSlot";
+import { AdsterraBanner } from "./Adsterra";
 import { ShareResultPanel } from "./ShareResultPanel";
 import { ToolBusyEffect } from "./ToolBusyEffect";
 import { UpgradeModal, gateToolUsage } from "./UpgradeModal";
@@ -588,7 +588,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                 )}
 
                 <div className="mt-6">
-                  <MonetizationSlot slot="tool" size="compact" />
+                  <AdsterraBanner size="300x250" />
                 </div>
               </div>
             </div>

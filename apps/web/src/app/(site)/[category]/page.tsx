@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { JsonLd } from "@/components/JsonLd";
-import { MonetizationSlot } from "@/components/MonetizationSlot";
+import { AdsterraBanner } from "@/components/Adsterra";
 import { buildCategoryJsonLd } from "@/lib/seo/json-ld";
 import { CATEGORY_SEO } from "@/lib/seo/category-content";
 import { buildPageMetadata } from "@/lib/seo/site";
@@ -118,7 +118,7 @@ export default async function CategoryPage({ params }: Props) {
         </div>
 
         <div className="mt-10">
-          <MonetizationSlot slot="category" size="banner" />
+          <AdsterraBanner size="468x60" />
         </div>
 
         <section className="mt-12 max-w-3xl">

@@ -93,6 +93,9 @@ export function HopSponsoredContinue({
           </div>
           <AdsterraSoftRail className="mt-4" />
           <AdsterraSmartlinkCta />
+          <div className="mt-4">
+            <AdsterraBanner size="320x50" />
+          </div>
         </div>
       </div>
     </div>

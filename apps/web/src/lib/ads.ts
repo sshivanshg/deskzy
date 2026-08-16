@@ -29,6 +29,33 @@ export const ADSTERRA_SITES = {
   banner728x90Key:
     process.env.NEXT_PUBLIC_ADSTERRA_BANNER_728X90_KEY ||
     "fbeb42bb4cae56ff0055f01d8a2423dd",
+  popunderPageKey:
+    process.env.NEXT_PUBLIC_ADSTERRA_POPUNDER_PAGE_KEY ||
+    "2734a01a3f819930c8d935220a678213",
+  nativeBannerPageKey:
+    process.env.NEXT_PUBLIC_ADSTERRA_NATIVE_BANNER_PAGE_KEY ||
+    "be07d4749a39c3a2e8a8437fb5df0287",
+  nativeBanner2PageKey:
+    process.env.NEXT_PUBLIC_ADSTERRA_NATIVE_BANNER_2_PAGE_KEY ||
+    "385e4e06654555edc2cc79b3765b5ae3",
+  smartlinkPageUrl:
+    process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_PAGE_URL ||
+    "https://www.effectivecpmnetwork.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e",
+  banner300x250PageKey:
+    process.env.NEXT_PUBLIC_ADSTERRA_BANNER_300X250_PAGE_KEY ||
+    "3a3cf26e6024c1039ab8271055a0c71b",
+  banner160x600PageKey:
+    process.env.NEXT_PUBLIC_ADSTERRA_BANNER_160X600_PAGE_KEY ||
+    "6d86f55adae4e0a1ec0c09acafd81f42",
+  banner160x300PageKey:
+    process.env.NEXT_PUBLIC_ADSTERRA_BANNER_160X300_PAGE_KEY ||
+    "49941b5f377ac4321531b075aa2aa782",
+  banner320x50PageKey:
+    process.env.NEXT_PUBLIC_ADSTERRA_BANNER_320X50_PAGE_KEY ||
+    "567be273117ae4454cc60b7b3d5729e0",
+  banner728x90PageKey:
+    process.env.NEXT_PUBLIC_ADSTERRA_BANNER_728X90_PAGE_KEY ||
+    "1cdf877070ef9a0d013ed3e2686c63d8",
 } as const;
 
 // Backward-compatible exports for legacy ad helpers that still exist in the tree.

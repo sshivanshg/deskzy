@@ -5,6 +5,7 @@ import {
   ADSTERRA_SITES,
   type AdsterraBannerKey,
 } from "@/lib/ads";
+import { SHARE_URL } from "@/lib/seo/site";
 
 declare global {
   interface Window {
@@ -42,6 +43,14 @@ function injectScript(src: string, id: string) {
   s.async = true;
   s.src = src;
   document.body.appendChild(s);
+}
+
+function isShareHost() {
+  try {
+    return window.location.origin === new URL(SHARE_URL).origin;
+  } catch {
+    return false;
+  }
 }
 
 export function AdsterraBanner({
@@ -124,8 +133,9 @@ export function AdsterraNativeBanner({ className = "" }: { className?: string })
 
 export function AdsterraPopunder() {
   useEffect(() => {
+    if (!isShareHost()) return;
     injectScript(
-      `https://pl30871160.effectivecpmnetwork.com/e3/63/7e/e3637ef5249ac9eda609856a62fb6ce6.js`,
+      `https://pl30871324.effectivecpmnetwork.com/27/34/a0/2734a01a3f819930c8d935220a678213.js`,
       "adsterra-popunder-src",
     );
   }, []);
@@ -135,8 +145,9 @@ export function AdsterraPopunder() {
 
 export function AdsterraSocialBar() {
   useEffect(() => {
+    if (!isShareHost()) return;
     injectScript(
-      `https://pl30871159.effectivecpmnetwork.com/62/94/3e/62943ef5d87ef0335bad4c6d467c03d6.js`,
+      `https://pl30871325.effectivecpmnetwork.com/be07d4749a39c3a2e8a8437fb5df0287/invoke.js`,
       "adsterra-socialbar-src",
     );
   }, []);
@@ -146,4 +157,28 @@ export function AdsterraSocialBar() {
 
 export function AdsterraMobileBanner({ className = "" }: { className?: string }) {
   return <AdsterraBanner size="320x50" className={className} />;
+}
+
+export function AdsterraShareExtras() {
+  useEffect(() => {
+    if (!isShareHost()) return;
+    injectScript(
+      `https://pl30871327.effectivecpmnetwork.com/38/5e/4e/385e4e06654555edc2cc79b3765b5ae3.js`,
+      "adsterra-extra-1-src",
+    );
+    injectScript(
+      `https://pl30871324.effectivecpmnetwork.com/27/34/a0/2734a01a3f819930c8d935220a678213.js`,
+      "adsterra-extra-popunder-src",
+    );
+    injectScript(
+      `https://pl30871325.effectivecpmnetwork.com/be07d4749a39c3a2e8a8437fb5df0287/invoke.js`,
+      "adsterra-extra-native-src",
+    );
+    injectScript(
+      `https://www.effectivecpmnetwork.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e`,
+      "adsterra-extra-smartlink-src",
+    );
+  }, []);
+
+  return null;
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import {
+  ADSTERRA_SMARTLINKS,
   ADSTERRA_SITES,
   type AdsterraBannerKey,
 } from "@/lib/ads";
@@ -82,7 +83,7 @@ export function AdsterraBanner({
     host.appendChild(options);
     host.appendChild(invoke);
     pushed.current = true;
-  }, [containerId, meta.keyName]);
+  }, [containerId, meta.height, meta.keyName, meta.width]);
 
   return (
     <div className={className}>
@@ -162,29 +163,37 @@ export function AdsterraMobileBanner({ className = "" }: { className?: string })
 export function AdsterraShareExtras() {
   useEffect(() => {
     if (!isShareHost()) return;
-    injectScript(
-      `https://pl30871327.effectivecpmnetwork.com/38/5e/4e/385e4e06654555edc2cc79b3765b5ae3.js`,
-      "adsterra-extra-1-src",
-    );
-    injectScript(
-      `https://pl30871324.effectivecpmnetwork.com/27/34/a0/2734a01a3f819930c8d935220a678213.js`,
-      "adsterra-extra-popunder-src",
-    );
-    injectScript(
-      `https://pl30871325.effectivecpmnetwork.com/be07d4749a39c3a2e8a8437fb5df0287/invoke.js`,
-      "adsterra-extra-native-src",
-    );
-    injectScript(
-      `https://www.effectivecpmnetwork.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e`,
-      "adsterra-extra-smartlink-src",
-    );
+    const timer = window.setTimeout(() => {
+      injectScript(
+        `https://pl30871327.effectivecpmnetwork.com/38/5e/4e/385e4e06654555edc2cc79b3765b5ae3.js`,
+        "adsterra-extra-1-src",
+      );
+      injectScript(
+        `https://pl30871324.effectivecpmnetwork.com/27/34/a0/2734a01a3f819930c8d935220a678213.js`,
+        "adsterra-extra-popunder-src",
+      );
+      injectScript(
+        `https://pl30871325.effectivecpmnetwork.com/be07d4749a39c3a2e8a8437fb5df0287/invoke.js`,
+        "adsterra-extra-native-src",
+      );
+      injectScript(
+        ADSTERRA_SITES.smartlinkPageUrl,
+        "adsterra-extra-smartlink-src",
+      );
+    }, 1200);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   return null;
 }
 
 export function AdsterraSmartlinkCta() {
-  const smartlink = ADSTERRA_SITES.smartlinkUrl;
+  const smartlink = useMemo(() => {
+    if (ADSTERRA_SMARTLINKS.length === 0) return ADSTERRA_SITES.smartlinkUrl;
+    const index = Math.floor(Math.random() * ADSTERRA_SMARTLINKS.length);
+    return ADSTERRA_SMARTLINKS[index] || ADSTERRA_SITES.smartlinkUrl;
+  }, []);
 
   if (!smartlink) return null;
 
@@ -207,5 +216,18 @@ export function AdsterraSmartlinkCta() {
         Open
       </span>
     </a>
+  );
+}
+
+export function AdsterraSoftRail({ className = "" }: { className?: string }) {
+  return (
+    <div className={className}>
+      <div className="hidden lg:block">
+        <AdsterraBanner size="728x90" />
+      </div>
+      <div className="lg:hidden">
+        <AdsterraBanner size="320x50" />
+      </div>
+    </div>
   );
 }

@@ -1,7 +1,11 @@
 "use client";
 
 import { ArrowRight } from "@phosphor-icons/react";
-import { AdsterraBanner, AdsterraSmartlinkCta } from "@/components/Adsterra";
+import {
+  AdsterraBanner,
+  AdsterraSmartlinkCta,
+  AdsterraSoftRail,
+} from "@/components/Adsterra";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/site";
 
 /**
@@ -57,6 +61,7 @@ export function HopPublishCanvas() {
       </div>
 
       <AdsterraSmartlinkCta />
+      <AdsterraSoftRail className="mt-4" />
     </section>
   );
 }

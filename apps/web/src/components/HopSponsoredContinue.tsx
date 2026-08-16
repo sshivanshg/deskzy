@@ -2,7 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ArrowSquareOut, X } from "@phosphor-icons/react";
-import { AdsterraBanner, AdsterraSmartlinkCta } from "@/components/Adsterra";
+import {
+  AdsterraBanner,
+  AdsterraSmartlinkCta,
+  AdsterraSoftRail,
+} from "@/components/Adsterra";
 
 type HopSponsoredContinueProps = {
   dest: string | null;
@@ -87,6 +91,7 @@ export function HopSponsoredContinue({
           <div className="mt-4">
             <AdsterraBanner size="300x250" />
           </div>
+          <AdsterraSoftRail className="mt-4" />
           <AdsterraSmartlinkCta />
         </div>
       </div>

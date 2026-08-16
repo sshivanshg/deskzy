@@ -182,3 +182,30 @@ export function AdsterraShareExtras() {
 
   return null;
 }
+
+export function AdsterraSmartlinkCta() {
+  const smartlink = ADSTERRA_SITES.smartlinkUrl;
+
+  if (!smartlink) return null;
+
+  return (
+    <a
+      href={smartlink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-[var(--stroke)] bg-[var(--panel)] px-4 py-3 transition-colors hover:border-[var(--accent)]/40 hover:bg-[var(--accent-soft)]/35"
+    >
+      <span>
+        <span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+          Sponsored
+        </span>
+        <span className="mt-0.5 block text-sm font-medium text-[var(--ink)]">
+          Discover more offers
+        </span>
+      </span>
+      <span className="text-xs font-semibold text-[var(--accent)]">
+        Open
+      </span>
+    </a>
+  );
+}

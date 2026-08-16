@@ -8,8 +8,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
 /** Adsterra + analytics live only on the product site — never on share/hop pages. */
-export const metadata: Metadata = {
-};
+export const metadata: Metadata = {};
 
 /** Marketing / tools shell — header + footer. */
 export default function SiteLayout({ children }: { children: ReactNode }) {

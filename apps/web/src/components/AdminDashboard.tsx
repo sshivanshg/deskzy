@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   ArrowClockwise,
+  CopySimple,
   LockSimple,
   MagnifyingGlass,
   ShieldCheck,
@@ -11,6 +12,12 @@ import {
 } from "@phosphor-icons/react";
 
 type AdminPayload = {
+  pagination: {
+    page: number;
+    pageSize: number;
+    totalLinks: number;
+    totalPages: number;
+  };
   totals: {
     links: number;
     clicks: number;
@@ -93,6 +100,10 @@ function hostFromUrl(url: string | null | undefined) {
   }
 }
 
+async function copyText(text: string) {
+  await navigator.clipboard.writeText(text);
+}
+
 export function AdminDashboard() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
@@ -101,12 +112,18 @@ export function AdminDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<AdminPayload | null>(null);
   const [query, setQuery] = useState("");
+  const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/dashboard", { cache: "no-store" });
+      const res = await fetch(
+        `/api/admin/dashboard?page=${page}&pageSize=${pageSize}`,
+        { cache: "no-store" },
+      );
       const json = (await res.json()) as AdminPayload & { error?: string };
       if (res.status === 403) {
         setUnlocked(false);
@@ -121,11 +138,11 @@ export function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, pageSize]);
 
   useEffect(() => {
     void load();
-  }, []);
+  }, [load]);
 
   const unlock = async (e: FormEvent) => {
     e.preventDefault();
@@ -169,6 +186,19 @@ export function AdminDashboard() {
       return blob.includes(q);
     });
   }, [data, query]);
+
+  const copyLink = async (url: string) => {
+    await copyText(url);
+    setCopiedUrl(url);
+    window.setTimeout(() => setCopiedUrl((current) => (current === url ? null : current)), 1200);
+  };
+
+  const pagination = data?.pagination ?? {
+    page,
+    pageSize,
+    totalLinks: 0,
+    totalPages: 1,
+  };
 
   if (!unlocked) {
     return (
@@ -311,40 +341,76 @@ export function AdminDashboard() {
             </div>
 
             <div className="mt-5 overflow-hidden rounded-2xl border border-[var(--stroke)]">
-              <div className="grid grid-cols-12 gap-3 border-b border-[var(--stroke)] bg-[var(--surface)]/40 px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                <div className="col-span-3">Short</div>
-                <div className="col-span-4">Destination</div>
-                <div className="col-span-1 text-right">Hits</div>
-                <div className="col-span-2">Source</div>
-                <div className="col-span-2 text-right">Created</div>
+              <div className="flex flex-col gap-3 border-b border-[var(--stroke)] bg-[var(--surface)]/40 px-4 py-3 md:flex-row md:items-center md:justify-between">
+                <div className="grid grid-cols-2 gap-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)] md:flex md:items-center md:gap-6">
+                  <div>Total links: {pagination.totalLinks.toLocaleString("en-IN")}</div>
+                  <div>Page {pagination.page} of {pagination.totalPages}</div>
+                </div>
+                <label className="flex items-center gap-2 text-xs text-[var(--muted)]">
+                  <span>Rows</span>
+                  <select
+                    value={pageSize}
+                    onChange={(e) => {
+                      setPage(1);
+                      setPageSize(Number(e.target.value));
+                    }}
+                    className="field rounded-full px-3 py-2 text-xs"
+                  >
+                    {[10, 20, 50, 100].map((n) => (
+                      <option key={n} value={n}>
+                        {n}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <div className="grid grid-cols-[1.25fr_2fr_0.75fr_1fr_0.85fr] gap-3 border-b border-[var(--stroke)] bg-[var(--surface)]/40 px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+                <div>Short</div>
+                <div>Destination</div>
+                <div className="text-right">Hits</div>
+                <div>Source</div>
+                <div className="text-right">Created</div>
               </div>
               <div className="divide-y divide-[var(--stroke)]">
                 {filteredLinks.length ? (
-                  filteredLinks.slice(0, 50).map((link) => (
-                      <div key={link.code} className="grid grid-cols-12 gap-3 px-4 py-3 text-sm">
-                      <div className="col-span-3 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="shrink-0 text-[var(--accent)]">
+                  filteredLinks.map((link) => (
+                    <div key={link.code} className="grid grid-cols-[1.25fr_2fr_0.75fr_1fr_0.85fr] gap-3 px-4 py-3 text-sm">
+                      <div className="min-w-0">
+                        <div className="flex items-start gap-2">
+                          <span className="mt-0.5 shrink-0 text-[var(--accent)]">
                             <LinkSimple size={15} weight="bold" />
                           </span>
                           <div className="min-w-0">
-                            <p className="truncate font-semibold text-[var(--ink)]">{link.shortUrl}</p>
-                            <p className="truncate text-xs text-[var(--muted)]">/{link.code}</p>
+                            <p className="break-all font-semibold text-[var(--ink)]">{link.shortUrl}</p>
+                            <p className="mt-0.5 text-xs text-[var(--muted)]">/{link.code}</p>
                           </div>
                         </div>
                       </div>
-                      <div className="col-span-4 min-w-0">
-                        <p className="truncate font-medium text-[var(--ink)]">{link.dest}</p>
-                        <p className="mt-0.5 truncate text-xs text-[var(--muted)]">
-                          {link.destHost ?? hostFromUrl(link.dest)} · {link.kind || "single"} · {link.urlCount} URL{link.urlCount === 1 ? "" : "s"}
-                        </p>
+                      <div className="min-w-0">
+                        <div className="flex items-start gap-2">
+                          <div className="min-w-0 flex-1">
+                            <p className="break-all font-medium text-[var(--ink)]">{link.dest}</p>
+                            <p className="mt-0.5 text-xs text-[var(--muted)]">
+                              {link.destHost ?? hostFromUrl(link.dest)} · {link.kind || "single"} · {link.urlCount} URL{link.urlCount === 1 ? "" : "s"}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => void copyLink(link.dest)}
+                            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--stroke)] bg-[var(--panel-soft)] px-2.5 py-1 text-[11px] font-medium text-[var(--ink)] transition-transform hover:-translate-y-px"
+                            aria-label={`Copy destination for ${link.code}`}
+                          >
+                            <CopySimple size={13} weight="bold" />
+                            {copiedUrl === link.dest ? "Copied" : "Copy"}
+                          </button>
+                        </div>
                       </div>
-                      <div className="col-span-1 text-right font-mono text-[var(--ink)]">{link.hits.toLocaleString("en-IN")}</div>
-                      <div className="col-span-2 truncate text-xs text-[var(--muted)]">
+                      <div className="text-right font-mono text-[var(--ink)]">{link.hits.toLocaleString("en-IN")}</div>
+                      <div className="min-w-0 text-xs text-[var(--muted)]">
                         {link.is_custom ? "custom" : "random"}
                         {link.user_id ? ` · ${link.user_id.slice(0, 8)}` : ""}
                       </div>
-                      <div className="col-span-2 text-right text-xs text-[var(--muted)]">{formatDate(link.created_at)}</div>
+                      <div className="text-right text-xs text-[var(--muted)]">{formatDate(link.created_at)}</div>
                     </div>
                   ))
                 ) : (
@@ -352,6 +418,29 @@ export function AdminDashboard() {
                     No links match this filter.
                   </div>
                 )}
+              </div>
+            </div>
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs text-[var(--muted)]">
+                Showing {filteredLinks.length} link{filteredLinks.length === 1 ? "" : "s"} on this page.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  className="btn-secondary !px-4 !py-2 text-sm disabled:opacity-40"
+                  disabled={page <= 1}
+                  onClick={() => setPage((n) => Math.max(1, n - 1))}
+                >
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  className="btn-secondary !px-4 !py-2 text-sm disabled:opacity-40"
+                  disabled={page >= pagination.totalPages}
+                  onClick={() => setPage((n) => Math.min(pagination.totalPages, n + 1))}
+                >
+                  Next
+                </button>
               </div>
             </div>
           </div>
@@ -473,10 +562,10 @@ export function AdminDashboard() {
               <div className="border-t border-[var(--stroke)] pt-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">Invites</p>
                 <div className="mt-2 space-y-2">
-                  {data?.invites?.length ? data.invites.map((invite) => (
+                {data?.invites?.length ? data.invites.map((invite) => (
                     <div key={invite.id} className="rounded-2xl border border-[var(--stroke)] px-3 py-3 text-sm">
                       <div className="flex items-center justify-between gap-3">
-                        <span className="truncate font-medium text-[var(--ink)]">{invite.email}</span>
+                        <span className="break-all font-medium text-[var(--ink)]">{invite.email}</span>
                         <span className="font-mono text-xs text-[var(--muted)]">{invite.status}</span>
                       </div>
                       <p className="mt-1 text-xs text-[var(--muted)]">{invite.subscription_id.slice(0, 8)} · {formatDate(invite.created_at)}</p>

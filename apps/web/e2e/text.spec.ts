@@ -64,20 +64,20 @@ test.describe("Text tools", () => {
   test("url-shortener end-to-end", async ({ page, request }) => {
     await gotoTool(page, "url-shortener");
     await fillTextarea(page, "https://example.com/e2e-shorten");
-    await clickPrimary(page, /Shorten/i);
+    await clickPrimary(page, /Publish/i);
     await expectDone(page);
-    const shortUrl = (await page.locator("pre").innerText()).trim();
-    expect(shortUrl).toMatch(/\/r\/[A-Za-z0-9]+$/);
+    await expect(page.getByText(/Only visible to you/i)).toBeVisible();
+    const shortUrl = (await page.getByLabel(/Direct link/i).inputValue()).trim();
+    expect(shortUrl).toMatch(/yoururl\.buzz\/p\/[A-Za-z0-9]+$/);
 
     const res = await request.get(shortUrl, { maxRedirects: 0 });
     expect(res.status()).toBe(200);
     const hop = await page.goto(shortUrl);
     expect(hop?.ok()).toBeTruthy();
-    await expect(page.getByRole("link", { name: /Open link/i })).toHaveAttribute(
-      "href",
-      /example\.com/,
-    );
-    await expect(page.getByText("example.com")).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Shared content/i })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /example\.com\/e2e-shorten/i }),
+    ).toHaveAttribute("href", /example\.com/);
   });
 
   test("url-encode", async ({ page }) => {

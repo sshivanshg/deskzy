@@ -1,7 +1,7 @@
 export const ADSTERRA_SITES = {
   smartlinkUrl:
     process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_URL ||
-    "https://www.effectivecpmnetwork.com/zj2sps8whc?key=3cec01f882a153082fb93f4e78f6c660",
+    "https://www.effectivecpmnetwork.com/xj135rghz?key=92e7b2d975bf4b928cd8a0c22ce32fa7",
   nativeBannerKey:
     process.env.NEXT_PUBLIC_ADSTERRA_NATIVE_BANNER_KEY ||
     "fd742868294a438150076ea4a3ccfcfa",
@@ -40,7 +40,7 @@ export const ADSTERRA_SITES = {
     "385e4e06654555edc2cc79b3765b5ae3",
   smartlinkPageUrl:
     process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_PAGE_URL ||
-    "https://www.effectivecpmnetwork.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e",
+    "https://www.effectivecpmnetwork.com/xj135rghz?key=92e7b2d975bf4b928cd8a0c22ce32fa7",
   banner300x250PageKey:
     process.env.NEXT_PUBLIC_ADSTERRA_BANNER_300X250_PAGE_KEY ||
     "3a3cf26e6024c1039ab8271055a0c71b",
@@ -57,6 +57,13 @@ export const ADSTERRA_SITES = {
     process.env.NEXT_PUBLIC_ADSTERRA_BANNER_728X90_PAGE_KEY ||
     "1cdf877070ef9a0d013ed3e2686c63d8",
 } as const;
+
+export const ADSTERRA_SMARTLINKS = [
+  process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_URL ||
+    "https://www.effectivecpmnetwork.com/xj135rghz?key=92e7b2d975bf4b928cd8a0c22ce32fa7",
+  process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_ALT_URL ||
+    "https://www.effectivecpmnetwork.com/y4tfnbii?key=576de01255fd68ede722c60f770ebfa2",
+].filter(Boolean);
 
 // Backward-compatible exports for legacy ad helpers that still exist in the tree.
 export const ADSENSE_CLIENT = "";

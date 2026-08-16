@@ -7,6 +7,7 @@ import { HopDiscoverFooter } from "@/components/HopDiscoverFooter";
 import { HopDiscoverHeader } from "@/components/HopDiscoverHeader";
 import { HopPublishCanvas } from "@/components/HopPublishCanvas";
 import { HopShareBar } from "@/components/HopShareBar";
+import { HopSponsoredContinue } from "@/components/HopSponsoredContinue";
 
 type LinkListHopProps = {
   urls: string[];
@@ -26,7 +27,15 @@ function trackHopClick(code: string) {
   void fetch(url, { method: "POST", keepalive: true }).catch(() => {});
 }
 
-function PasteLinkRow({ dest, index }: { dest: string; index: number }) {
+function PasteLinkRow({
+  dest,
+  index,
+  onOpen,
+}: {
+  dest: string;
+  index: number;
+  onOpen: (dest: string) => void;
+}) {
   const [copied, setCopied] = useState(false);
 
   const copyDest = useCallback(async () => {
@@ -46,6 +55,10 @@ function PasteLinkRow({ dest, index }: { dest: string; index: number }) {
         <a
           href={dest}
           rel="noopener noreferrer"
+          onClick={(event) => {
+            event.preventDefault();
+            onOpen(dest);
+          }}
           className="break-all font-medium text-[var(--accent-ink)] underline decoration-[var(--stroke-strong)] underline-offset-4 hover:decoration-[var(--accent)]"
         >
           {dest}
@@ -79,6 +92,7 @@ function PasteLinkRow({ dest, index }: { dest: string; index: number }) {
  * Pastelink-style multi-link paste — canvas + reshare + publish tease.
  */
 export function LinkListHop({ urls, code }: LinkListHopProps) {
+  const [pendingDest, setPendingDest] = useState<string | null>(null);
   const tracked = useRef(false);
   const count = urls.length;
 
@@ -108,7 +122,12 @@ export function LinkListHop({ urls, code }: LinkListHopProps) {
 
           <ol className="mt-2 list-none">
             {urls.map((dest, i) => (
-              <PasteLinkRow key={`${i}-${dest}`} dest={dest} index={i} />
+              <PasteLinkRow
+                key={`${i}-${dest}`}
+                dest={dest}
+                index={i}
+                onOpen={setPendingDest}
+              />
             ))}
           </ol>
         </div>
@@ -131,6 +150,10 @@ export function LinkListHop({ urls, code }: LinkListHopProps) {
         <HopDiscoverFooter />
         <AdsterraShareExtras />
       </article>
+      <HopSponsoredContinue
+        dest={pendingDest}
+        onClose={() => setPendingDest(null)}
+      />
     </div>
   );
 }

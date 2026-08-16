@@ -9,11 +9,11 @@ test.describe("Navigation & shell", () => {
     await expect(
       page.getByRole("heading", {
         level: 1,
-        name: /Own short links on deskzy\.xyz — plus private file tools/i,
+        name: /Own shared links on deskzy\.xyz — plus private file tools/i,
       }),
     ).toBeVisible();
     await expect(page.locator("#home-shorten-url")).toBeVisible();
-    await expect(page.getByRole("button", { name: /^Shorten$/i })).toBeVisible();
+    await expect(page.getByRole("button", { name: /^Publish$/i })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Share stack" })).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Also free file tools" }),
@@ -27,7 +27,7 @@ test.describe("Navigation & shell", () => {
   test("shortcut /shorten lands on url shortener", async ({ page }) => {
     await page.goto("/shorten");
     await expect(page).toHaveURL(/\/tools\/url-shortener/);
-    await expect(page.getByRole("heading", { name: "URL Shortener" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Share Link" })).toBeVisible();
   });
 
   test("header search finds compress pdf and navigates", async ({ page }) => {
@@ -87,7 +87,7 @@ test.describe("Navigation & shell", () => {
     await expect(
       page.getByRole("heading", { name: /Frequently asked questions/i }),
     ).toBeVisible();
-    await expect(page.getByText(/Short links are served on deskzy\.xyz/i)).toBeVisible();
+    await expect(page.getByText(/yoururl\.buzz/i)).toBeVisible();
   });
 
   test("privacy and terms pages", async ({ page }) => {

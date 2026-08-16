@@ -40,7 +40,7 @@ test.describe("Auth + Pro account UI", () => {
     await expect(page.getByText("Free").first()).toBeVisible();
     await expect(page.getByRole("heading", { name: /What Pro unlocks/i })).toBeVisible();
     await page.getByRole("button", { name: /^Links/i }).click();
-    await expect(page.getByRole("heading", { name: /Your short links/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Your shared links/i })).toBeVisible();
 
     await admin
       .from("subscriptions")

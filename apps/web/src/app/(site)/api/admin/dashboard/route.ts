@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { publicLinkUrl } from "@/lib/link-path";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -15,8 +15,23 @@ function hostFromUrl(url: string | null | undefined): string | null {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const page = Math.max(
+      1,
+      Number.parseInt(req.nextUrl.searchParams.get("page") ?? "1", 10) || 1,
+    );
+    const pageSize = Math.min(
+      100,
+      Math.max(
+        10,
+        Number.parseInt(req.nextUrl.searchParams.get("pageSize") ?? "20", 10) ||
+          20,
+      ),
+    );
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize - 1;
+
     const supabase = await createClient();
     const {
       data: { user },
@@ -39,13 +54,19 @@ export async function GET() {
     }
 
     const admin = createServiceClient();
-    const [{ data: links, error: linksError }, { data: clicks, error: clicksError }, { data: subs, error: subsError }, { data: keys, error: keysError }, { data: invites, error: invitesError }] =
+    const [
+      { data: links, error: linksError, count: linksCount },
+      { data: clicks, error: clicksError },
+      { data: subs, error: subsError },
+      { data: keys, error: keysError },
+      { data: invites, error: invitesError },
+    ] =
       await Promise.all([
         admin
           .from("short_links")
           .select("code,dest,hits,created_at,user_id,is_custom,kind,urls")
           .order("created_at", { ascending: false })
-          .limit(250),
+          .range(start, end),
         admin
           .from("link_clicks")
           .select("code,referrer,user_agent,country,colo,clicked_at")
@@ -120,6 +141,12 @@ export async function GET() {
         destHost: hostFromUrl(link.dest),
         urlCount: Array.isArray(link.urls) ? link.urls.length : link.kind === "list" ? 2 : 1,
       })),
+      pagination: {
+        page,
+        pageSize,
+        totalLinks: linksCount ?? totals.links,
+        totalPages: Math.max(1, Math.ceil((linksCount ?? totals.links) / pageSize)),
+      },
       clicks: recentClicks,
       subscriptions: subs ?? [],
       apiKeys: keys ?? [],

@@ -79,18 +79,17 @@ test.describe("Link tools", () => {
     await page.getByRole("button", { name: /^Add$/i }).click();
     await draft.fill("https://example.com/two");
     await page.getByRole("button", { name: /^Add$/i }).click();
-    await clickPrimary(page, /Shorten list/i);
+    await clickPrimary(page, /Publish list/i);
     await expectDone(page);
-    const shortUrl = (await page.locator("pre").innerText()).trim();
-    expect(shortUrl).toMatch(/\/r\/[A-Za-z0-9]+$/);
+    await expect(page.getByText(/Only visible to you/i)).toBeVisible();
+    const shortUrl = (await page.getByLabel(/Direct link/i).inputValue()).trim();
+    expect(shortUrl).toMatch(/yoururl\.buzz\/p\/[A-Za-z0-9]+$/);
 
     await page.goto(shortUrl);
     await expect(page.getByText(/2 links/i)).toBeVisible();
-    await expect(page.getByText("Pick a destination")).toBeVisible();
-    await expect(page.getByRole("link", { name: /^Open$/ }).first()).toHaveAttribute(
-      "href",
-      /example\.com\/one/,
-    );
+    await expect(
+      page.getByRole("link", { name: /example\.com\/one/i }),
+    ).toHaveAttribute("href", /example\.com\/one/);
   });
 
   test("shortcuts /utm /whatsapp /bio /list", async ({ page }) => {

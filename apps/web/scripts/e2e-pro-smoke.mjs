@@ -70,7 +70,7 @@ async function main() {
 
   // --- Hop page + click tracking ---
   if (s1.body?.code) {
-    const hop = await fetch(`${BASE}/r/${s1.body.code}`);
+    const hop = await fetch(`${BASE}/p/${s1.body.code}`);
     if (hop.ok) ok("Hop page renders", String(hop.status));
     else fail("Hop page renders", String(hop.status));
 

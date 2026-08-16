@@ -7,6 +7,7 @@ import { HopDiscoverFooter } from "@/components/HopDiscoverFooter";
 import { HopDiscoverHeader } from "@/components/HopDiscoverHeader";
 import { HopPublishCanvas } from "@/components/HopPublishCanvas";
 import { HopShareBar } from "@/components/HopShareBar";
+import { HopSponsoredContinue } from "@/components/HopSponsoredContinue";
 
 type LinkHopProps = {
   dest: string;
@@ -31,6 +32,7 @@ function trackHopClick(code: string) {
  */
 export function LinkHop({ dest, code }: LinkHopProps) {
   const [copied, setCopied] = useState(false);
+  const [pendingDest, setPendingDest] = useState<string | null>(null);
   const tracked = useRef(false);
 
   useEffect(() => {
@@ -70,6 +72,10 @@ export function LinkHop({ dest, code }: LinkHopProps) {
               <a
                 href={dest}
                 rel="noopener noreferrer"
+                onClick={(event) => {
+                  event.preventDefault();
+                  setPendingDest(dest);
+                }}
                 className="break-all font-medium text-[var(--accent-ink)] underline decoration-[var(--stroke-strong)] underline-offset-4 hover:decoration-[var(--accent)]"
               >
                 {dest}
@@ -115,6 +121,10 @@ export function LinkHop({ dest, code }: LinkHopProps) {
         <HopDiscoverFooter />
         <AdsterraShareExtras />
       </article>
+      <HopSponsoredContinue
+        dest={pendingDest}
+        onClose={() => setPendingDest(null)}
+      />
     </div>
   );
 }

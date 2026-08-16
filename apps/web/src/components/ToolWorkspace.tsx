@@ -475,7 +475,11 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                 (tool.slug === "url-shortener" || tool.slug === "link-list") &&
                 !resultText.startsWith("data:image") ? (
                   <div className="mt-4">
-                    <ShareResultPanel shareUrlOrCode={resultText} density="roomy" />
+                    <ShareResultPanel
+                      shareUrlOrCode={resultText}
+                      density="roomy"
+                      sponsoredReveal
+                    />
                   </div>
                 ) : resultText ? (
                   <div className="mt-4 overflow-hidden rounded-2xl border border-[var(--stroke)] bg-[var(--bg)]">
@@ -587,9 +591,11 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                   </div>
                 )}
 
-                <div className="mt-6">
-                  <AdsterraBanner size="300x250" />
-                </div>
+                {tool.slug !== "url-shortener" && tool.slug !== "link-list" ? (
+                  <div className="mt-6">
+                    <AdsterraBanner size="300x250" />
+                  </div>
+                ) : null}
               </div>
             </div>
           )}

@@ -62,6 +62,9 @@ export function HopPublishCanvas() {
 
       <AdsterraSmartlinkCta />
       <AdsterraSoftRail className="mt-4" />
+      <div className="mt-4 hidden lg:block">
+        <AdsterraBanner size="160x300" />
+      </div>
     </section>
   );
 }

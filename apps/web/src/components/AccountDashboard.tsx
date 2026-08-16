@@ -16,6 +16,7 @@ import {
   LockSimple,
   Plus,
   Sparkle,
+  ShieldCheck,
   Trash,
   UsersThree,
   WarningCircle,
@@ -389,6 +390,10 @@ export function AccountDashboard(props: AccountDashboardProps) {
                   <Link href="/tools/url-shortener" className="btn-primary !rounded-full">
                     <LinkSimple size={16} weight="bold" />
                     Create short link
+                  </Link>
+                  <Link href="/account/admin" className="btn-secondary !rounded-full">
+                    <ShieldCheck size={16} weight="bold" />
+                    Admin
                   </Link>
                   <a
                     href={CONTACT_X_URL}

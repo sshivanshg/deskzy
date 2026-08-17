@@ -1,8 +1,21 @@
 import type { Metadata } from "next";
 
 export const SITE_NAME = "Deskzy";
-export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://deskzy.xyz";
+
+function normalizeSiteUrl(value: string | undefined): string {
+  const fallback = "https://deskzy.xyz";
+  const raw = value?.trim() || fallback;
+  const withProtocol = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+
+  try {
+    const url = new URL(withProtocol);
+    return url.origin.replace(/\/$/, "");
+  } catch {
+    return fallback;
+  }
+}
+
+export const SITE_URL = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
 
 /** Share/paste host for published links (dedicated domain). */
 export const SHARE_URL =

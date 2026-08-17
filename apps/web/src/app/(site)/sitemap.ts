@@ -1,51 +1,56 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/lib/seo/site";
+import { absoluteUrl } from "@/lib/seo/site";
 import { getAllGuides } from "@/lib/seo/guides";
 import { CATEGORIES, TOOLS } from "@/lib/tools/registry";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastMod = new Date("2026-07-29");
+  const lastMod = "2026-07-29";
 
   const staticPages: MetadataRoute.Sitemap = [
-    { url: `${SITE_URL}/`, lastModified: lastMod, changeFrequency: "weekly", priority: 1 },
     {
-      url: `${SITE_URL}/guides`,
+      url: absoluteUrl("/"),
+      lastModified: lastMod,
+      changeFrequency: "weekly",
+      priority: 1,
+    },
+    {
+      url: absoluteUrl("/guides"),
       lastModified: lastMod,
       changeFrequency: "weekly",
       priority: 0.85,
     },
     {
-      url: `${SITE_URL}/pricing`,
+      url: absoluteUrl("/pricing"),
       lastModified: lastMod,
       changeFrequency: "weekly",
       priority: 0.9,
     },
     {
-      url: `${SITE_URL}/business`,
+      url: absoluteUrl("/business"),
       lastModified: lastMod,
       changeFrequency: "weekly",
       priority: 0.85,
     },
     {
-      url: `${SITE_URL}/link-analytics`,
+      url: absoluteUrl("/link-analytics"),
       lastModified: lastMod,
       changeFrequency: "weekly",
       priority: 0.85,
     },
     {
-      url: `${SITE_URL}/about`,
+      url: absoluteUrl("/about"),
       lastModified: lastMod,
       changeFrequency: "monthly",
       priority: 0.5,
     },
     {
-      url: `${SITE_URL}/privacy`,
+      url: absoluteUrl("/privacy"),
       lastModified: lastMod,
       changeFrequency: "monthly",
       priority: 0.4,
     },
     {
-      url: `${SITE_URL}/terms`,
+      url: absoluteUrl("/terms"),
       lastModified: lastMod,
       changeFrequency: "monthly",
       priority: 0.4,
@@ -53,14 +58,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const categories: MetadataRoute.Sitemap = CATEGORIES.map((c) => ({
-    url: `${SITE_URL}/${c.id}`,
+    url: absoluteUrl(`/${c.id}`),
     lastModified: lastMod,
     changeFrequency: "weekly",
     priority: 0.85,
   }));
 
   const tools: MetadataRoute.Sitemap = TOOLS.map((t) => ({
-    url: `${SITE_URL}/tools/${t.slug}`,
+    url: absoluteUrl(`/tools/${t.slug}`),
     lastModified: lastMod,
     changeFrequency: "weekly",
     priority: t.popular ? 0.9 : 0.75,
@@ -74,8 +79,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
 
   const guides: MetadataRoute.Sitemap = getAllGuides().map((g) => ({
-    url: `${SITE_URL}/guides/${g.slug}`,
-    lastModified: new Date(g.updatedAt ?? g.publishedAt),
+    url: absoluteUrl(`/guides/${g.slug}`),
+    lastModified: g.updatedAt ?? g.publishedAt,
     changeFrequency: "monthly",
     priority: 0.8,
   }));

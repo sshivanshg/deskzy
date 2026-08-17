@@ -34,7 +34,7 @@ import {
   WhatsAppLinkForm,
 } from "./LinkToolForms";
 import { Dropzone } from "./Dropzone";
-import { AdsterraBanner } from "./Adsterra";
+import { AdsterraRevenueStack } from "./Adsterra";
 import { ShareResultPanel } from "./ShareResultPanel";
 import { ToolBusyEffect } from "./ToolBusyEffect";
 import { UpgradeModal, gateToolUsage } from "./UpgradeModal";
@@ -288,6 +288,8 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         <p className="mt-3 max-w-2xl text-[var(--muted)] leading-relaxed">
           {tool.description}
         </p>
+
+        <AdsterraRevenueStack className="mt-6" />
 
         <div className="mt-8 space-y-4">
           <ToolBusyEffect active={busy} slug={tool.slug}>
@@ -592,9 +594,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                 )}
 
                 {tool.slug !== "url-shortener" && tool.slug !== "link-list" ? (
-                  <div className="mt-6">
-                    <AdsterraBanner size="300x250" />
-                  </div>
+                  <AdsterraRevenueStack className="mt-6" />
                 ) : null}
               </div>
             </div>

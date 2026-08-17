@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useId, useMemo, useRef } from "react";
 import {
+  ADSTERRA_POPUNDER_SCRIPT_URLS,
   ADSTERRA_SMARTLINKS,
   ADSTERRA_SITES,
   type AdsterraBannerKey,
@@ -60,10 +61,11 @@ export function AdsterraBanner({
   label = "Advertisement",
 }: AdsterraBannerProps) {
   const meta = BANNER_META[size];
+  const reactId = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const pushed = useRef(false);
   const containerId = useMemo(
-    () => `adsterra-${meta.keyName}-${meta.width}x${meta.height}`,
-    [meta.height, meta.keyName, meta.width],
+    () => `adsterra-${meta.keyName}-${meta.width}x${meta.height}-${reactId}`,
+    [meta.height, meta.keyName, meta.width, reactId],
   );
 
   useEffect(() => {
@@ -135,10 +137,9 @@ export function AdsterraNativeBanner({ className = "" }: { className?: string })
 export function AdsterraPopunder() {
   useEffect(() => {
     if (!isShareHost()) return;
-    injectScript(
-      `https://pl30871324.effectivecpmnetwork.com/27/34/a0/2734a01a3f819930c8d935220a678213.js`,
-      "adsterra-popunder-src",
-    );
+    ADSTERRA_POPUNDER_SCRIPT_URLS.forEach((src, index) => {
+      injectScript(src, `adsterra-popunder-${index}-src`);
+    });
   }, []);
 
   return null;
@@ -165,15 +166,14 @@ export function AdsterraShareExtras() {
     if (!isShareHost()) return;
     const timer = window.setTimeout(() => {
       injectScript(
-        `https://pl30871327.effectivecpmnetwork.com/38/5e/4e/385e4e06654555edc2cc79b3765b5ae3.js`,
+        `https://pl30871327.effectivecpmnetwork.com/38/5e/4e/${ADSTERRA_SITES.nativeBanner2PageKey}.js`,
         "adsterra-extra-1-src",
       );
+      ADSTERRA_POPUNDER_SCRIPT_URLS.forEach((src, index) => {
+        injectScript(src, `adsterra-extra-popunder-${index}-src`);
+      });
       injectScript(
-        `https://pl30871324.effectivecpmnetwork.com/27/34/a0/2734a01a3f819930c8d935220a678213.js`,
-        "adsterra-extra-popunder-src",
-      );
-      injectScript(
-        `https://pl30871325.effectivecpmnetwork.com/be07d4749a39c3a2e8a8437fb5df0287/invoke.js`,
+        `https://pl30871325.effectivecpmnetwork.com/${ADSTERRA_SITES.nativeBannerPageKey}/invoke.js`,
         "adsterra-extra-native-src",
       );
       injectScript(
@@ -224,6 +224,24 @@ export function AdsterraSoftRail({ className = "" }: { className?: string }) {
     <div className={className}>
       <div className="hidden lg:block">
         <AdsterraBanner size="728x90" />
+      </div>
+      <div className="lg:hidden">
+        <AdsterraBanner size="320x50" />
+      </div>
+    </div>
+  );
+}
+
+export function AdsterraRevenueStack({ className = "" }: { className?: string }) {
+  return (
+    <div className={`space-y-4 ${className}`}>
+      <AdsterraSoftRail />
+      <AdsterraSmartlinkCta />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <AdsterraBanner size="300x250" />
+        <div className="hidden sm:block">
+          <AdsterraBanner size="300x250" />
+        </div>
       </div>
       <div className="lg:hidden">
         <AdsterraBanner size="320x50" />

@@ -2,7 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { ArrowSquareOut, Check, CopySimple } from "@phosphor-icons/react";
-import { AdsterraBanner, AdsterraSmartlinkCta } from "@/components/Adsterra";
+import {
+  AdsterraBanner,
+  AdsterraRevenueStack,
+  AdsterraSmartlinkCta,
+} from "@/components/Adsterra";
 import {
   codeFromShareUrl,
   shareVariantsForCode,
@@ -147,6 +151,7 @@ export function ShareResultPanel({
           <AdsterraBanner size="300x250" />
         </div>
         <AdsterraSmartlinkCta />
+        <AdsterraRevenueStack className="mt-4" />
 
         <p className="mt-3 text-center text-xs text-[var(--muted)]">
           Revealing links in {secondsLeft}s
@@ -186,6 +191,8 @@ export function ShareResultPanel({
           <VariantRow key={v.id} variant={v} density={density} />
         ))}
       </div>
+
+      <AdsterraRevenueStack className="mt-4" />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 export const ADSTERRA_SITES = {
   smartlinkUrl:
     process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_URL ||
-    "https://www.effectivecpmnetwork.com/xj135rghz?key=92e7b2d975bf4b928cd8a0c22ce32fa7",
+    "https://consistinvention.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e",
   nativeBannerKey:
     process.env.NEXT_PUBLIC_ADSTERRA_NATIVE_BANNER_KEY ||
     "fd742868294a438150076ea4a3ccfcfa",
@@ -11,6 +11,9 @@ export const ADSTERRA_SITES = {
   popunderKey:
     process.env.NEXT_PUBLIC_ADSTERRA_POPUNDER_KEY ||
     "e3637ef5249ac9eda609856a62fb6ce6",
+  popunderScriptUrl:
+    process.env.NEXT_PUBLIC_ADSTERRA_POPUNDER_SCRIPT_URL ||
+    "https://consistinvention.com/e3/63/7e/e3637ef5249ac9eda609856a62fb6ce6.js",
   banner468x60Key:
     process.env.NEXT_PUBLIC_ADSTERRA_BANNER_468X60_KEY ||
     "7d7f699a1423ea2c632d24a8044e78cd",
@@ -32,6 +35,9 @@ export const ADSTERRA_SITES = {
   popunderPageKey:
     process.env.NEXT_PUBLIC_ADSTERRA_POPUNDER_PAGE_KEY ||
     "2734a01a3f819930c8d935220a678213",
+  popunderPageScriptUrl:
+    process.env.NEXT_PUBLIC_ADSTERRA_POPUNDER_PAGE_SCRIPT_URL ||
+    "https://consistinvention.com/27/34/a0/2734a01a3f819930c8d935220a678213.js",
   nativeBannerPageKey:
     process.env.NEXT_PUBLIC_ADSTERRA_NATIVE_BANNER_PAGE_KEY ||
     "be07d4749a39c3a2e8a8437fb5df0287",
@@ -40,7 +46,7 @@ export const ADSTERRA_SITES = {
     "385e4e06654555edc2cc79b3765b5ae3",
   smartlinkPageUrl:
     process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_PAGE_URL ||
-    "https://www.effectivecpmnetwork.com/xj135rghz?key=92e7b2d975bf4b928cd8a0c22ce32fa7",
+    "https://consistinvention.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e",
   banner300x250PageKey:
     process.env.NEXT_PUBLIC_ADSTERRA_BANNER_300X250_PAGE_KEY ||
     "3a3cf26e6024c1039ab8271055a0c71b",
@@ -59,10 +65,25 @@ export const ADSTERRA_SITES = {
 } as const;
 
 export const ADSTERRA_SMARTLINKS = [
+  process.env.NEXT_PUBLIC_ADSTERRA_YOURURL_SMARTLINK_URL ||
+    "https://consistinvention.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e",
+  process.env.NEXT_PUBLIC_ADSTERRA_YOURURL_SMARTLINK_URL ||
+    "https://consistinvention.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e",
+  process.env.NEXT_PUBLIC_ADSTERRA_YOURURL_SMARTLINK_URL ||
+    "https://consistinvention.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e",
+  process.env.NEXT_PUBLIC_ADSTERRA_YOURURL_SMARTLINK_URL ||
+    "https://consistinvention.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e",
   process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_URL ||
-    "https://www.effectivecpmnetwork.com/xj135rghz?key=92e7b2d975bf4b928cd8a0c22ce32fa7",
+    "https://consistinvention.com/zj2sps8whc?key=3cec01f882a153082fb93f4e78f6c660",
   process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_ALT_URL ||
-    "https://www.effectivecpmnetwork.com/y4tfnbii?key=576de01255fd68ede722c60f770ebfa2",
+    "https://consistinvention.com/y4tfnbii?key=576de01255fd68ede722c60f770ebfa2",
+  process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_ALT_2_URL ||
+    "https://consistinvention.com/xj135rghz?key=92e7b2d975bf4b928cd8a0c22ce32fa7",
+].filter(Boolean);
+
+export const ADSTERRA_POPUNDER_SCRIPT_URLS = [
+  ADSTERRA_SITES.popunderScriptUrl,
+  ADSTERRA_SITES.popunderPageScriptUrl,
 ].filter(Boolean);
 
 // Backward-compatible exports for legacy ad helpers that still exist in the tree.

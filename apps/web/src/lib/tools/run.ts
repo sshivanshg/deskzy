@@ -27,6 +27,7 @@ export type RunInput = {
   files: File[];
   text: string;
   options: Record<string, string>;
+  turnstileToken?: string;
 };
 
 export type RunOutput =
@@ -42,7 +43,7 @@ export async function runTool(
   slug: string,
   input: RunInput,
 ): Promise<RunOutput> {
-  const { files, text, options } = input;
+  const { files, text, options, turnstileToken } = input;
 
   switch (slug) {
     case "merge-pdf":
@@ -123,6 +124,7 @@ export async function runTool(
         kind: "text",
         ...(await shortenUrl(text, apiBase(), {
           slug: options.slug || undefined,
+          turnstileToken,
         })),
       };
     case "link-list": {
@@ -140,6 +142,7 @@ export async function runTool(
         kind: "text",
         ...(await shortenUrlList(urls, apiBase(), {
           slug: options.slug || undefined,
+          turnstileToken,
         })),
       };
     }

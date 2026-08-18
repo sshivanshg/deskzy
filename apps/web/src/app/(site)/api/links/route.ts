@@ -15,6 +15,7 @@ import {
 import { publicLinkUrl } from "@/lib/link-path";
 import { getUserPlan, persistOwnedLink } from "@/lib/pro-links";
 import { createClient } from "@/lib/supabase/server";
+import { TURNSTILE_TOKEN_FIELD, verifyTurnstileToken } from "@/lib/turnstile";
 
 function clientIp(req: NextRequest): string {
   return (
@@ -38,6 +39,7 @@ type CreateBody = {
   url?: string;
   urls?: string[];
   slug?: string;
+  turnstileToken?: string;
 };
 
 async function allocateCode(
@@ -82,9 +84,17 @@ export async function POST(req: NextRequest) {
     const apiAuth = await resolveLinksApiAuth(
       req.headers.get("authorization"),
     );
+    const body = (await req.json()) as CreateBody;
 
     // Public creates are IP rate-limited; API keys (global or Pro user) bypass.
     if (!apiAuth.ok) {
+      const turnstileError = await verifyTurnstileToken(
+        body[TURNSTILE_TOKEN_FIELD],
+        req,
+        "publish_link",
+      );
+      if (turnstileError) return turnstileError;
+
       const ip = clientIp(req);
       if (!(await allowLinkCreate(ip))) {
         return NextResponse.json(
@@ -110,7 +120,6 @@ export async function POST(req: NextRequest) {
     }
 
     const { plan } = await getUserPlan(userId);
-    const body = (await req.json()) as CreateBody;
 
     const rawList = resolveCreateUrlTokens(body);
     const batch = normalizeUrlBatch(rawList);

@@ -121,7 +121,11 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           </p>
         ) : null}
 
-        <button type="submit" className="btn-primary w-full !rounded-full" disabled={busy}>
+        <button
+          type="submit"
+          className="btn-primary w-full !rounded-full"
+          disabled={busy}
+        >
           {busy ? "Please wait…" : mode === "signup" ? "Create account" : "Log in"}
         </button>
 

@@ -40,6 +40,7 @@ import { ToolBusyEffect } from "./ToolBusyEffect";
 import { UpgradeModal, gateToolUsage } from "./UpgradeModal";
 import { SavedPresetsBar } from "./SavedPresetsBar";
 import { runTool } from "@/lib/tools/run";
+import { Turnstile, isTurnstileEnabled } from "@/components/Turnstile";
 
 function formatBytes(n: number) {
   if (n < 1024) return `${n} B`;
@@ -95,6 +96,8 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
     limit?: number;
     message?: string;
   }>({});
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
 
   useEffect(() => {
     if (tool.slug === "qr-code") {
@@ -154,7 +157,12 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         }
       }
 
-      const out = await runTool(tool.slug, { files, text, options: merged });
+      const out = await runTool(tool.slug, {
+        files,
+        text,
+        options: merged,
+        turnstileToken,
+      });
       if (out.kind === "file") {
         const url = URL.createObjectURL(out.blob);
         setResultUrl(url);
@@ -190,6 +198,10 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         setError(e instanceof Error ? e.message : "Something went wrong");
       }
     } finally {
+      if (requiresTurnstile(tool.slug)) {
+        setTurnstileToken("");
+        setTurnstileResetKey((key) => key + 1);
+      }
       setBusy(false);
     }
   }
@@ -231,6 +243,8 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         : tool.input === "files"
           ? files.length > 0
           : files.length === 1;
+  const turnstileNeeded = requiresTurnstile(tool.slug) && isTurnstileEnabled();
+  const canSubmit = canRun && (!turnstileNeeded || Boolean(turnstileToken));
 
   const done = Boolean(resultUrl || resultText);
 
@@ -350,11 +364,20 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
           </ToolBusyEffect>
 
           <div className="flex flex-wrap gap-3 pt-1">
+            {turnstileNeeded ? (
+              <Turnstile
+                action="publish_link"
+                className="w-full"
+                onToken={setTurnstileToken}
+                onExpire={() => setTurnstileToken("")}
+                resetKey={turnstileResetKey}
+              />
+            ) : null}
             {tool.slug === "bio-link" ? (
               <>
                 <button
                   type="button"
-                  disabled={!canRun || busy}
+                  disabled={!canSubmit || busy}
                   onClick={() => onRun({ format: "html" })}
                   className="btn-primary"
                 >
@@ -374,7 +397,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                 </button>
                 <button
                   type="button"
-                  disabled={!canRun || busy}
+                  disabled={!canSubmit || busy}
                   className="btn-secondary"
                   onClick={() => onRun({ format: "markdown" })}
                 >
@@ -384,7 +407,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
                 </button>
                 <button
                   type="button"
-                  disabled={!canRun || busy}
+                  disabled={!canSubmit || busy}
                   className="btn-secondary"
                   onClick={() => onRun({ format: "json" })}
                 >
@@ -396,7 +419,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
             ) : (
               <button
                 type="button"
-                disabled={!canRun || busy}
+                disabled={!canSubmit || busy}
                 onClick={() => onRun()}
                 className="btn-primary"
               >
@@ -638,6 +661,10 @@ function actionLabel(slug: string) {
   if (slug.includes("generator") || slug === "qr-code") return "Generate";
   if (slug === "json-formatter") return "Format";
   return "Run";
+}
+
+function requiresTurnstile(slug: string) {
+  return slug === "url-shortener" || slug === "link-list";
 }
 
 function ToolOptions({

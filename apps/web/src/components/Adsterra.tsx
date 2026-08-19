@@ -2,12 +2,10 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
-  ADSTERRA_POPUNDER_SCRIPT_URLS,
   ADSTERRA_SMARTLINKS,
   ADSTERRA_SITES,
   type AdsterraBannerKey,
 } from "@/lib/ads";
-import { SHARE_URL } from "@/lib/seo/site";
 
 declare global {
   interface Window {
@@ -45,14 +43,6 @@ function injectScript(src: string, id: string) {
   s.async = true;
   s.src = src;
   document.body.appendChild(s);
-}
-
-function isShareHost() {
-  try {
-    return window.location.origin === new URL(SHARE_URL).origin;
-  } catch {
-    return false;
-  }
 }
 
 export function AdsterraBanner({
@@ -159,25 +149,12 @@ export function AdsterraNativeBanner({ className = "" }: { className?: string })
 }
 
 export function AdsterraPopunder() {
-  useEffect(() => {
-    if (!isShareHost()) return;
-    ADSTERRA_POPUNDER_SCRIPT_URLS.forEach((src, index) => {
-      injectScript(src, `adsterra-popunder-${index}-src`);
-    });
-  }, []);
-
+  // Intentionally disabled: popunders interrupt the task and damage retention.
   return null;
 }
 
 export function AdsterraSocialBar() {
-  useEffect(() => {
-    if (!isShareHost()) return;
-    injectScript(
-      `https://pl30871325.effectivecpmnetwork.com/be07d4749a39c3a2e8a8437fb5df0287/invoke.js`,
-      "adsterra-socialbar-src",
-    );
-  }, []);
-
+  // Intentionally disabled: floating ad chrome competes with app controls.
   return null;
 }
 

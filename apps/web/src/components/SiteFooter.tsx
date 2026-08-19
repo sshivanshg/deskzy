@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { XLogo } from "@phosphor-icons/react/dist/ssr";
-import { AdsterraSoftRail } from "@/components/Adsterra";
 import { BrandLogo } from "@/components/BrandLogo";
 import { CONTACT_X_HANDLE, CONTACT_X_URL } from "@/lib/seo/site";
 import {
@@ -16,7 +15,6 @@ export function SiteFooter() {
     <footer className="relative z-0 mx-auto mt-8 max-w-6xl px-4 pb-12 pt-4">
       <div className="shell">
         <div className="shell-core px-5 py-8">
-          <AdsterraSoftRail className="mb-8" />
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <BrandLogo className="opacity-95" />

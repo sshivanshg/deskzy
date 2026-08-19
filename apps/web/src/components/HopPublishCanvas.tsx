@@ -1,11 +1,6 @@
 "use client";
 
 import { ArrowRight } from "@phosphor-icons/react";
-import {
-  AdsterraBanner,
-  AdsterraSmartlinkCta,
-  AdsterraSoftRail,
-} from "@/components/Adsterra";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/site";
 
 /**
@@ -56,15 +51,6 @@ export function HopPublishCanvas() {
         </a>
       </p>
 
-      <div className="mt-4">
-        <AdsterraBanner size="300x250" />
-      </div>
-
-      <AdsterraSmartlinkCta />
-      <AdsterraSoftRail className="mt-4" />
-      <div className="mt-4 hidden lg:block">
-        <AdsterraBanner size="160x300" />
-      </div>
     </section>
   );
 }

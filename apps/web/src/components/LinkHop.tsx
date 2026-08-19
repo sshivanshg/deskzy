@@ -4,15 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, CopySimple } from "@phosphor-icons/react";
 import {
   AdsterraRevenueStack,
-  AdsterraShareExtras,
-  AdsterraSmartlinkCta,
   AdsterraSoftRail,
 } from "@/components/Adsterra";
 import { HopDiscoverFooter } from "@/components/HopDiscoverFooter";
 import { HopDiscoverHeader } from "@/components/HopDiscoverHeader";
 import { HopPublishCanvas } from "@/components/HopPublishCanvas";
 import { HopShareBar } from "@/components/HopShareBar";
-import { HopSponsoredContinue } from "@/components/HopSponsoredContinue";
 
 type LinkHopProps = {
   dest: string;
@@ -37,7 +34,6 @@ function trackHopClick(code: string) {
  */
 export function LinkHop({ dest, code }: LinkHopProps) {
   const [copied, setCopied] = useState(false);
-  const [pendingDest, setPendingDest] = useState<string | null>(null);
   const tracked = useRef(false);
 
   useEffect(() => {
@@ -76,11 +72,8 @@ export function LinkHop({ dest, code }: LinkHopProps) {
             <p>
               <a
                 href={dest}
+                target="_blank"
                 rel="noopener noreferrer"
-                onClick={(event) => {
-                  event.preventDefault();
-                  setPendingDest(dest);
-                }}
                 className="break-all font-medium text-[var(--accent-ink)] underline decoration-[var(--stroke-strong)] underline-offset-4 hover:decoration-[var(--accent)]"
               >
                 {dest}
@@ -120,7 +113,6 @@ export function LinkHop({ dest, code }: LinkHopProps) {
         </div>
 
         <AdsterraSoftRail className="mt-5" />
-        <AdsterraSmartlinkCta />
 
         <div className="mt-5">
           <HopPublishCanvas />
@@ -129,12 +121,7 @@ export function LinkHop({ dest, code }: LinkHopProps) {
         <AdsterraRevenueStack className="mt-5" />
 
         <HopDiscoverFooter />
-        <AdsterraShareExtras />
       </article>
-      <HopSponsoredContinue
-        dest={pendingDest}
-        onClose={() => setPendingDest(null)}
-      />
     </div>
   );
 }

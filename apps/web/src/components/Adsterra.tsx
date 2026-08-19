@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   ADSTERRA_POPUNDER_SCRIPT_URLS,
   ADSTERRA_SMARTLINKS,
@@ -63,13 +63,36 @@ export function AdsterraBanner({
   const meta = BANNER_META[size];
   const reactId = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const pushed = useRef(false);
+  const hostRef = useRef<HTMLDivElement>(null);
+  const [isNearViewport, setIsNearViewport] = useState(false);
   const containerId = useMemo(
     () => `adsterra-${meta.keyName}-${meta.width}x${meta.height}-${reactId}`,
     [meta.height, meta.keyName, meta.width, reactId],
   );
 
   useEffect(() => {
-    if (pushed.current) return;
+    const host = hostRef.current;
+    if (!host) return;
+
+    if (!("IntersectionObserver" in window)) {
+      setIsNearViewport(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setIsNearViewport(true);
+        observer.disconnect();
+      },
+      { rootMargin: "500px 0px" },
+    );
+    observer.observe(host);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isNearViewport || pushed.current) return;
     const key = ADSTERRA_SITES[meta.keyName];
     if (!key) return;
 
@@ -85,7 +108,7 @@ export function AdsterraBanner({
     host.appendChild(options);
     host.appendChild(invoke);
     pushed.current = true;
-  }, [containerId, meta.height, meta.keyName, meta.width]);
+  }, [containerId, isNearViewport, meta.height, meta.keyName, meta.width]);
 
   return (
     <div className={className}>
@@ -98,6 +121,7 @@ export function AdsterraBanner({
         </p>
         <div className="flex items-center justify-center px-2 pb-2">
           <div
+            ref={hostRef}
             id={containerId}
             className="flex min-h-[60px] items-center justify-center"
             style={{ width: "100%", maxWidth: meta.width }}
@@ -162,29 +186,8 @@ export function AdsterraMobileBanner({ className = "" }: { className?: string })
 }
 
 export function AdsterraShareExtras() {
-  useEffect(() => {
-    if (!isShareHost()) return;
-    const timer = window.setTimeout(() => {
-      injectScript(
-        `https://pl30871327.effectivecpmnetwork.com/38/5e/4e/${ADSTERRA_SITES.nativeBanner2PageKey}.js`,
-        "adsterra-extra-1-src",
-      );
-      ADSTERRA_POPUNDER_SCRIPT_URLS.forEach((src, index) => {
-        injectScript(src, `adsterra-extra-popunder-${index}-src`);
-      });
-      injectScript(
-        `https://pl30871325.effectivecpmnetwork.com/${ADSTERRA_SITES.nativeBannerPageKey}/invoke.js`,
-        "adsterra-extra-native-src",
-      );
-      injectScript(
-        ADSTERRA_SITES.smartlinkPageUrl,
-        "adsterra-extra-smartlink-src",
-      );
-    }, 1200);
-
-    return () => window.clearTimeout(timer);
-  }, []);
-
+  // Retained as a compatibility shim. Background, popunder, and page-overlay
+  // formats made shared pages difficult to use, so only visible in-flow ads run.
   return null;
 }
 
@@ -234,18 +237,8 @@ export function AdsterraSoftRail({ className = "" }: { className?: string }) {
 
 export function AdsterraRevenueStack({ className = "" }: { className?: string }) {
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={className}>
       <AdsterraSoftRail />
-      <AdsterraSmartlinkCta />
-      <div className="grid gap-4 sm:grid-cols-2">
-        <AdsterraBanner size="300x250" />
-        <div className="hidden sm:block">
-          <AdsterraBanner size="300x250" />
-        </div>
-      </div>
-      <div className="lg:hidden">
-        <AdsterraBanner size="320x50" />
-      </div>
     </div>
   );
 }

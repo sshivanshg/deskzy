@@ -1,12 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { ArrowSquareOut, Check, CopySimple } from "@phosphor-icons/react";
-import {
-  AdsterraBanner,
-  AdsterraRevenueStack,
-  AdsterraSmartlinkCta,
-} from "@/components/Adsterra";
+import { AdsterraSoftRail } from "@/components/Adsterra";
 import {
   codeFromShareUrl,
   shareVariantsForCode,
@@ -21,8 +17,6 @@ type ShareResultPanelProps = {
   sponsoredReveal?: boolean;
   className?: string;
 };
-
-const REVEAL_SECONDS = 4;
 
 async function copyText(text: string) {
   await navigator.clipboard.writeText(text);
@@ -93,72 +87,18 @@ function VariantRow({
 export function ShareResultPanel({
   shareUrlOrCode,
   density = "roomy",
-  sponsoredReveal = false,
   className = "",
 }: ShareResultPanelProps) {
-  const [showLinks, setShowLinks] = useState(!sponsoredReveal);
-  const [secondsLeft, setSecondsLeft] = useState(REVEAL_SECONDS);
   const code =
     codeFromShareUrl(shareUrlOrCode) ||
     (/^[A-Za-z0-9_-]{3,64}$/.test(shareUrlOrCode.trim())
       ? shareUrlOrCode.trim()
       : null);
 
-  useEffect(() => {
-    if (!sponsoredReveal || showLinks || secondsLeft <= 0) return;
-    const timer = window.setTimeout(() => {
-      setSecondsLeft((current) => {
-        if (current <= 1) {
-          setShowLinks(true);
-          return 0;
-        }
-        return current - 1;
-      });
-    }, 1000);
-    return () => window.clearTimeout(timer);
-  }, [secondsLeft, showLinks, sponsoredReveal]);
-
   if (!code) return null;
 
   const variants = shareVariantsForCode(code);
   const primary = variants[0]?.url;
-
-  if (sponsoredReveal && !showLinks) {
-    return (
-      <div
-        className={`rounded-2xl border border-[var(--stroke)] bg-[var(--panel)] p-3 sm:p-4 ${className}`}
-      >
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
-              Page published
-            </p>
-            <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">
-              Your links are ready. A short sponsored break keeps publishing
-              free.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setShowLinks(true)}
-            className="rounded-full border border-[var(--stroke)] bg-[var(--panel-faint)] px-3 py-1.5 text-xs font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)]/40 hover:bg-[var(--accent-soft)]"
-          >
-            Show links now
-          </button>
-        </div>
-
-        <div className="mt-4">
-          <AdsterraBanner size="300x250" />
-        </div>
-        <AdsterraSmartlinkCta />
-        <AdsterraRevenueStack className="mt-4" />
-
-        <p className="mt-3 text-center text-xs text-[var(--muted)]">
-          Revealing links in {secondsLeft}s
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div
@@ -192,7 +132,7 @@ export function ShareResultPanel({
         ))}
       </div>
 
-      <AdsterraRevenueStack className="mt-4" />
+      <AdsterraSoftRail className="mt-5 border-t border-[var(--stroke)] pt-5" />
     </div>
   );
 }

@@ -303,8 +303,6 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
           {tool.description}
         </p>
 
-        <AdsterraRevenueStack className="mt-6" />
-
         <div className="mt-8 space-y-4">
           <ToolBusyEffect active={busy} slug={tool.slug}>
             <div className={busy ? "min-h-[12rem]" : undefined}>

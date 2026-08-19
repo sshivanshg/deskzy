@@ -3,17 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, CopySimple } from "@phosphor-icons/react";
 import {
-  AdsterraBanner,
   AdsterraRevenueStack,
-  AdsterraShareExtras,
-  AdsterraSmartlinkCta,
   AdsterraSoftRail,
 } from "@/components/Adsterra";
 import { HopDiscoverFooter } from "@/components/HopDiscoverFooter";
 import { HopDiscoverHeader } from "@/components/HopDiscoverHeader";
 import { HopPublishCanvas } from "@/components/HopPublishCanvas";
 import { HopShareBar } from "@/components/HopShareBar";
-import { HopSponsoredContinue } from "@/components/HopSponsoredContinue";
 
 type LinkListHopProps = {
   urls: string[];
@@ -36,11 +32,9 @@ function trackHopClick(code: string) {
 function PasteLinkRow({
   dest,
   index,
-  onOpen,
 }: {
   dest: string;
   index: number;
-  onOpen: (dest: string) => void;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -60,11 +54,8 @@ function PasteLinkRow({
         <span className="mr-2 text-sm text-[var(--muted)]">{index + 1}.</span>
         <a
           href={dest}
+          target="_blank"
           rel="noopener noreferrer"
-          onClick={(event) => {
-            event.preventDefault();
-            onOpen(dest);
-          }}
           className="break-all font-medium text-[var(--accent-ink)] underline decoration-[var(--stroke-strong)] underline-offset-4 hover:decoration-[var(--accent)]"
         >
           {dest}
@@ -98,7 +89,6 @@ function PasteLinkRow({
  * Pastelink-style multi-link paste — canvas + reshare + publish tease.
  */
 export function LinkListHop({ urls, code }: LinkListHopProps) {
-  const [pendingDest, setPendingDest] = useState<string | null>(null);
   const tracked = useRef(false);
   const count = urls.length;
 
@@ -132,7 +122,6 @@ export function LinkListHop({ urls, code }: LinkListHopProps) {
                 key={`${i}-${dest}`}
                 dest={dest}
                 index={i}
-                onOpen={setPendingDest}
               />
             ))}
           </ol>
@@ -146,25 +135,15 @@ export function LinkListHop({ urls, code }: LinkListHopProps) {
         </div>
 
         <AdsterraSoftRail className="mt-5" />
-        <AdsterraSmartlinkCta />
 
         <div className="mt-5">
           <HopPublishCanvas />
         </div>
 
-        <div className="mt-5">
-          <AdsterraBanner size="300x250" />
-        </div>
-        <AdsterraSmartlinkCta />
         <AdsterraRevenueStack className="mt-5" />
 
         <HopDiscoverFooter />
-        <AdsterraShareExtras />
       </article>
-      <HopSponsoredContinue
-        dest={pendingDest}
-        onClose={() => setPendingDest(null)}
-      />
     </div>
   );
 }

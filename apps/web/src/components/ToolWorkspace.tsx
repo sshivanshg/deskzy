@@ -40,8 +40,6 @@ import { ToolBusyEffect } from "./ToolBusyEffect";
 import { UpgradeModal, gateToolUsage } from "./UpgradeModal";
 import { SavedPresetsBar } from "./SavedPresetsBar";
 import { runTool } from "@/lib/tools/run";
-import { Turnstile, isTurnstileEnabled } from "@/components/Turnstile";
-
 function formatBytes(n: number) {
   if (n < 1024) return `${n} B`;
   if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
@@ -96,8 +94,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
     limit?: number;
     message?: string;
   }>({});
-  const [turnstileToken, setTurnstileToken] = useState("");
-  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
+
 
   useEffect(() => {
     if (tool.slug === "qr-code") {
@@ -161,7 +158,6 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         files,
         text,
         options: merged,
-        turnstileToken,
       });
       if (out.kind === "file") {
         const url = URL.createObjectURL(out.blob);
@@ -198,10 +194,6 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         setError(e instanceof Error ? e.message : "Something went wrong");
       }
     } finally {
-      if (requiresTurnstile(tool.slug)) {
-        setTurnstileToken("");
-        setTurnstileResetKey((key) => key + 1);
-      }
       setBusy(false);
     }
   }
@@ -243,8 +235,7 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
         : tool.input === "files"
           ? files.length > 0
           : files.length === 1;
-  const turnstileNeeded = requiresTurnstile(tool.slug) && isTurnstileEnabled();
-  const canSubmit = canRun && (!turnstileNeeded || Boolean(turnstileToken));
+  const canSubmit = canRun;
 
   const done = Boolean(resultUrl || resultText);
 
@@ -362,15 +353,6 @@ export function ToolWorkspace({ tool }: { tool: ToolDefinition }) {
           </ToolBusyEffect>
 
           <div className="flex flex-wrap gap-3 pt-1">
-            {turnstileNeeded ? (
-              <Turnstile
-                action="publish_link"
-                className="w-full"
-                onToken={setTurnstileToken}
-                onExpire={() => setTurnstileToken("")}
-                resetKey={turnstileResetKey}
-              />
-            ) : null}
             {tool.slug === "bio-link" ? (
               <>
                 <button
@@ -661,9 +643,7 @@ function actionLabel(slug: string) {
   return "Run";
 }
 
-function requiresTurnstile(slug: string) {
-  return slug === "url-shortener" || slug === "link-list";
-}
+
 
 function ToolOptions({
   slug,

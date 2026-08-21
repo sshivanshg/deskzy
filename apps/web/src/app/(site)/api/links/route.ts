@@ -15,8 +15,6 @@ import {
 import { publicLinkUrl } from "@/lib/link-path";
 import { getUserPlan, persistOwnedLink } from "@/lib/pro-links";
 import { createClient } from "@/lib/supabase/server";
-import { TURNSTILE_TOKEN_FIELD, verifyTurnstileToken } from "@/lib/turnstile";
-
 function clientIp(req: NextRequest): string {
   return (
     req.headers.get("cf-connecting-ip") ||
@@ -39,7 +37,6 @@ type CreateBody = {
   url?: string;
   urls?: string[];
   slug?: string;
-  turnstileToken?: string;
 };
 
 async function allocateCode(
@@ -88,13 +85,6 @@ export async function POST(req: NextRequest) {
 
     // Public creates are IP rate-limited; API keys (global or Pro user) bypass.
     if (!apiAuth.ok) {
-      const turnstileError = await verifyTurnstileToken(
-        body[TURNSTILE_TOKEN_FIELD],
-        req,
-        "publish_link",
-      );
-      if (turnstileError) return turnstileError;
-
       const ip = clientIp(req);
       if (!(await allowLinkCreate(ip))) {
         return NextResponse.json(

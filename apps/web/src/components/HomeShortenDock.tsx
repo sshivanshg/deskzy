@@ -13,7 +13,7 @@ import {
 } from "@phosphor-icons/react";
 import { MultiLinkBuilder } from "@/components/MultiLinkBuilder";
 import { ShareResultPanel } from "@/components/ShareResultPanel";
-import { Turnstile, isTurnstileEnabled } from "@/components/Turnstile";
+
 import { ClippedAreaChart } from "@/components/ui/advanced-stats-utils/charts";
 import { looksLikeUrl } from "@/lib/normalize-url";
 import { formatInr, PRO_MONTHLY_INR } from "@/lib/pricing";
@@ -162,13 +162,9 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
   const [resultUrls, setResultUrls] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState("");
-  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
-
-  const turnstileNeeded = isTurnstileEnabled();
   const canShorten =
     mode === "single" ? looksLikeUrl(url) : links.length >= 2;
-  const canSubmit = canShorten && (!turnstileNeeded || Boolean(turnstileToken));
+  const canSubmit = canShorten;
 
   const reset = () => {
     setShortUrl(null);
@@ -209,14 +205,14 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
     setError(null);
     try {
       if (mode === "multi") {
-        const result = await shortenUrlList(links, "/api", { turnstileToken });
+        const result = await shortenUrlList(links, "/api");
         setShortUrl(result.text);
         setResultKind("list");
         setResultUrls(links);
       } else {
         const raw = url.trim();
         const normalized = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
-        const result = await shortenUrl(normalized, "/api", { turnstileToken });
+        const result = await shortenUrl(normalized, "/api");
         setShortUrl(result.text);
         setResultKind("single");
         setResultUrls([normalized]);
@@ -224,8 +220,6 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to publish link");
     } finally {
-      setTurnstileToken("");
-      setTurnstileResetKey((key) => key + 1);
       setBusy(false);
     }
   };
@@ -384,15 +378,7 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
               {busy ? "…" : "Publish"}
             </button>
           </div>
-          {turnstileNeeded ? (
-            <Turnstile
-              action="publish_link"
-              className="mt-3"
-              onToken={setTurnstileToken}
-              onExpire={() => setTurnstileToken("")}
-              resetKey={turnstileResetKey}
-            />
-          ) : null}
+
           <button
             type="button"
             className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--accent)] underline-offset-2 hover:underline"
@@ -435,15 +421,7 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
               Add at least one more link to create a list.
             </p>
           ) : null}
-          {turnstileNeeded ? (
-            <Turnstile
-              action="publish_link"
-              className="mt-3"
-              onToken={setTurnstileToken}
-              onExpire={() => setTurnstileToken("")}
-              resetKey={turnstileResetKey}
-            />
-          ) : null}
+
         </>
       )}
 

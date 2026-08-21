@@ -137,11 +137,10 @@ export function generatePassword(
 export async function shortenUrl(
   url: string,
   apiBase: string,
-  opts?: { slug?: string; turnstileToken?: string },
+  opts?: { slug?: string },
 ): Promise<TextResult> {
-  const body: { url: string; slug?: string; turnstileToken?: string } = { url };
+  const body: { url: string; slug?: string } = { url };
   if (opts?.slug?.trim()) body.slug = opts.slug.trim();
-  if (opts?.turnstileToken) body.turnstileToken = opts.turnstileToken;
 
   const res = await fetch(`${apiBase}/links`, {
     method: "POST",
@@ -193,13 +192,12 @@ export async function shortenUrl(
 export async function shortenUrlList(
   urls: string[],
   apiBase: string,
-  opts?: { slug?: string; turnstileToken?: string },
+  opts?: { slug?: string },
 ): Promise<TextResult> {
-  const body: { urls: string[]; slug?: string; turnstileToken?: string } = {
+  const body: { urls: string[]; slug?: string } = {
     urls,
   };
   if (opts?.slug?.trim()) body.slug = opts.slug.trim();
-  if (opts?.turnstileToken) body.turnstileToken = opts.turnstileToken;
 
   const res = await fetch(`${apiBase}/links`, {
     method: "POST",

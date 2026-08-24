@@ -81,7 +81,7 @@ function VariantRow({
 }
 
 /**
- * Creator-only box (Pastelink-style): multiple domain variants of the same paste.
+ * Creator-only box for the canonical share link.
  * Shown after publish — not on the public hop page.
  */
 export function ShareResultPanel({
@@ -122,8 +122,8 @@ export function ShareResultPanel({
       </div>
 
       <p className="mb-3 text-xs leading-relaxed text-[var(--muted)]">
-        Same published page, different domains. If one site blocks a link, copy
-        another variant below.
+        Copy the new canonical share link below. Old links still resolve, but
+        new shares use only this domain.
       </p>
 
       <div className="space-y-3">

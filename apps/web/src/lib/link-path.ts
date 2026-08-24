@@ -23,13 +23,6 @@ export const SHARE_HOST = SHARE_ORIGIN.replace(/^https?:\/\//i, "").replace(
   "",
 );
 
-/** Alternate hosts that serve the same /p and /r pages (creator copy options). */
-const SHARE_ALT_ORIGINS = [
-  "https://yoururl.buzz",
-  "https://go.deskzy.xyz",
-  SITE_ORIGIN.replace(/\/$/, ""),
-] as const;
-
 /** Legacy share hosts that still serve /p and /r (bookmarks). */
 const LEGACY_SHARE_HOSTS = new Set([
   "jfas.site",
@@ -64,43 +57,19 @@ export type ShareVariant = {
 };
 
 /**
- * Pastelink-style creator options: same paste, different domains.
- * Use another variant if a platform blocks the direct link.
+ * Canonical creator option for new shares.
+ * Legacy hosts still resolve, but we only present the new domain to creators.
  */
 export function shareVariantsForCode(code: string): ShareVariant[] {
   const path = publicLinkPath(code);
-  const primary = SHARE_ORIGIN.replace(/\/$/, "");
-  const alts = SHARE_ALT_ORIGINS.filter(
-    (o) => o.replace(/\/$/, "").toLowerCase() !== primary.toLowerCase(),
-  );
-
-  const variants: ShareVariant[] = [
+  return [
     {
       id: "direct",
-      label: "Direct link",
-      hint: "Best default — start with this",
-      url: `${primary}${path}`,
+      label: "Share link",
+      hint: "Use this new canonical domain",
+      url: `${SHARE_ORIGIN.replace(/\/$/, "")}${path}`,
     },
   ];
-
-  if (alts[0]) {
-    variants.push({
-      id: "facebook",
-      label: "Facebook sharing link",
-      hint: "Try if Facebook or similar blocks the direct link",
-      url: `${alts[0].replace(/\/$/, "")}${path}`,
-    });
-  }
-  if (alts[1]) {
-    variants.push({
-      id: "reddit",
-      label: "Reddit sharing link",
-      hint: "Backup domain for picky sites",
-      url: `${alts[1].replace(/\/$/, "")}${path}`,
-    });
-  }
-
-  return variants;
 }
 
 /** Extract /p/{code} or /r/{code} from a share URL. */

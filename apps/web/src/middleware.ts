@@ -43,7 +43,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
-  // Dedicated share domain (yoururl.buzz / legacy go.deskzy.xyz): hop pages only.
+  // Dedicated share domain (jfas.site / legacy share hosts): hop pages only.
   if (isShareHost(host)) {
     if (isHopPathname(pathname) || pathname === "/") {
       if (pathname === "/") {

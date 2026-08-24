@@ -83,7 +83,7 @@ test.describe("Link tools", () => {
     await expectDone(page);
     await expect(page.getByText(/Only visible to you/i)).toBeVisible();
     const shortUrl = (await page.getByLabel(/Direct link/i).inputValue()).trim();
-    expect(shortUrl).toMatch(/yoururl\.buzz\/p\/[A-Za-z0-9]+$/);
+    expect(shortUrl).toMatch(/jfas\.site\/p\/[A-Za-z0-9]+$/);
 
     await page.goto(shortUrl);
     await expect(page.getByText(/2 links/i)).toBeVisible();

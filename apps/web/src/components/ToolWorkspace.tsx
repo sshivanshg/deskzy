@@ -1131,7 +1131,7 @@ function ToolOptions({
           <span className="text-xs text-[var(--accent)]">(Pro)</span>
           <div className="mt-2 flex items-center gap-2">
             <span className="shrink-0 font-mono text-sm text-[var(--muted)]">
-              yoururl.buzz/p/
+              jfas.site/p/
             </span>
             <input
               value={options.slug || ""}

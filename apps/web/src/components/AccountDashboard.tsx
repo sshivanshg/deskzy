@@ -883,7 +883,7 @@ function LinksTab({
                         target="_blank"
                         rel="noreferrer"
                       >
-                        yoururl.buzz/p/{l.code}
+                        jfas.site/p/{l.code}
                       </a>
                       {l.is_custom ? (
                         <span className="rounded-full bg-[var(--accent-soft)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--accent)]">

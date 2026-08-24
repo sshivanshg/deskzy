@@ -71,31 +71,39 @@ export function HopShareBar({ code }: HopShareBarProps) {
 
   return (
     <div className="space-y-3">
-      <div className="flex gap-2">
-        <input
-          readOnly
-          value={pageUrl}
-          onFocus={(e) => e.currentTarget.select()}
-          className="min-w-0 flex-1 rounded-lg border border-[var(--stroke)] bg-[var(--bg)] px-3 py-2.5 font-mono text-xs text-[var(--ink)] sm:text-sm"
-          aria-label="Page link"
-        />
-        <button
-          type="button"
-          onClick={() => void onCopy()}
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-[var(--accent)] px-3.5 text-sm font-semibold text-white hover:opacity-90"
-        >
-          {copied ? (
-            <>
-              <Check size={15} weight="bold" />
-              Copied
-            </>
-          ) : (
-            <>
-              <CopySimple size={15} weight="bold" />
-              Copy
-            </>
-          )}
-        </button>
+      <div className="rounded-[1.4rem] border border-white/70 bg-white/75 p-2 shadow-[0_12px_28px_rgba(119,92,139,0.08)]">
+        <div className="mb-2 flex items-center justify-between gap-2 px-1.5 pt-1">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+            Link to share
+          </span>
+          <span className="text-[10px] text-[var(--muted)]">Copy or post</span>
+        </div>
+        <div className="flex gap-2">
+          <input
+            readOnly
+            value={pageUrl}
+            onFocus={(e) => e.currentTarget.select()}
+            className="min-w-0 flex-1 rounded-[1rem] border border-[rgba(185,162,197,0.28)] bg-white px-3 py-2.5 font-mono text-xs text-[var(--ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] sm:text-sm"
+            aria-label="Page link"
+          />
+          <button
+            type="button"
+            onClick={() => void onCopy()}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-[1rem] bg-[var(--accent)] px-3.5 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(131,103,153,0.22)] transition-transform hover:-translate-y-0.5 hover:opacity-95"
+          >
+            {copied ? (
+              <>
+                <Check size={15} weight="bold" />
+                Copied
+              </>
+            ) : (
+              <>
+                <CopySimple size={15} weight="bold" />
+                Copy
+              </>
+            )}
+          </button>
+        </div>
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
@@ -107,7 +115,7 @@ export function HopShareBar({ code }: HopShareBarProps) {
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--stroke)] bg-[var(--bg-elevated)] text-[var(--ink)] transition-colors hover:border-[var(--stroke-strong)] hover:text-[var(--accent-ink)]"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/70 bg-white/80 text-[var(--ink)] shadow-[0_8px_18px_rgba(119,92,139,0.08)] transition-transform transition-colors hover:-translate-y-0.5 hover:border-[color-mix(in_srgb,var(--accent)_24%,white)] hover:text-[var(--accent-ink)]"
             aria-label={`Share on ${label}`}
             title={label}
           >

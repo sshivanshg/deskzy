@@ -53,8 +53,8 @@ flowchart TB
 | Path | Flow |
 |------|------|
 | **Browser tools** | Page + JS from Worker/ASSETS → process files in-browser → download result (no upload) |
-| **Shorten** | `POST /api/links` → rate limit / optional `LINKS_API_KEY` → write `LINKS` KV (+ Supabase if signed in) → `deskzy.xyz/r/{code}` |
-| **Open short link** | `GET /r/{code}` → read KV → hop UI → click bumps KV hits; Pro links also write `link_clicks` in Supabase |
+| **Shorten** | `POST /api/links` → rate limit / optional `LINKS_API_KEY` → write `LINKS` KV (+ Supabase if signed in) → `jfas.site/p/{code}` |
+| **Open short link** | `GET /p/{code}` → read KV → hop UI → click bumps KV hits; Pro links also write `link_clicks` in Supabase |
 | **Auth / billing** | Supabase Auth for sessions; Razorpay for checkout; webhook updates `subscriptions` / seats / usage |
 
 ### Components
@@ -170,7 +170,7 @@ Response (`201`):
   "code": "Ab12CdE",
   "kind": "single",
   "dest": "https://example.com/",
-  "shortUrl": "https://deskzy.xyz/r/Ab12CdE",
+  "shortUrl": "https://jfas.site/p/Ab12CdE",
   "createdAt": "...",
   "isCustom": false
 }
@@ -204,7 +204,7 @@ Response (`201`):
     "https://example.com/b",
     "https://example.com/c"
   ],
-  "shortUrl": "https://deskzy.xyz/r/Xy98ZqW",
+  "shortUrl": "https://jfas.site/p/Xy98ZqW",
   "createdAt": "...",
   "isCustom": false
 }

@@ -5,7 +5,7 @@ import { buildPageMetadata } from "@/lib/seo/site";
 export const metadata: Metadata = buildPageMetadata({
   title: "Business — private file tools & short links for teams",
   description:
-    "Deskzy for teams: browser-first PDF and image tools, deskzy.xyz short links with analytics, Pro API keys, and Business plans with SSO and custom contracts.",
+    "Deskzy for teams: browser-first PDF and image tools, jfas.site short links with analytics, Pro API keys, and Business plans with SSO and custom contracts.",
   path: "/business",
   keywords: [
     "deskzy business",

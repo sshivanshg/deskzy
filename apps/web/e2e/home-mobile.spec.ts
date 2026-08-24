@@ -38,7 +38,7 @@ test.describe("Mobile home launcher", () => {
     await expect(
       page.getByRole("heading", {
         level: 1,
-        name: /Own shared links on deskzy\.xyz — plus private file tools/i,
+        name: /Own shared links on jfas\.site — plus private file tools/i,
       }),
     ).toBeAttached();
   });
@@ -57,7 +57,7 @@ test.describe("Mobile home launcher", () => {
     const directInput = page.getByLabel(/Direct link/i);
     await expect(directInput).toBeVisible();
     const shortUrl = (await directInput.inputValue()).trim();
-    expect(shortUrl).toMatch(/yoururl\.buzz\/p\/[A-Za-z0-9]+$/);
+    expect(shortUrl).toMatch(/jfas\.site\/p\/[A-Za-z0-9]+$/);
     await page.getByRole("button", { name: /^Copy$/i }).first().click();
     await expect(page.getByRole("button", { name: /^Copied$/i }).first()).toBeVisible();
 

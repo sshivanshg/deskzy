@@ -19,10 +19,10 @@ export const SITE_URL = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
 
 /** Share/paste host for published links (dedicated domain). */
 export const SHARE_URL =
-  process.env.NEXT_PUBLIC_SHARE_URL || "https://yoururl.buzz";
+  process.env.NEXT_PUBLIC_SHARE_URL || "https://jfas.site";
 
 export const DEFAULT_DESCRIPTION =
-  "Publish and share links on deskzy.xyz — plus private PDF and image tools in your browser. No signup. Most files never leave your device. Try Deskzy.";
+  "Publish and share links on jfas.site — plus private PDF and image tools in your browser. No signup. Most files never leave your device. Try Deskzy.";
 
 /** Founder / support contact (X). Prefer a product email later if you add one. */
 export const CONTACT_X_HANDLE = "sshivanshg";

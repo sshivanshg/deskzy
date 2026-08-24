@@ -21,7 +21,7 @@ const PILLARS = [
   },
   {
     icon: LinkSimple,
-    title: "Own short links on deskzy.xyz",
+    title: "Own short links on jfas.site",
     body: "Unlimited short links, custom Pro slugs, and click analytics so campaigns and share-outs are measurable.",
   },
   {
@@ -79,7 +79,7 @@ const SECTORS = [
   },
   {
     name: "Product & engineering",
-    body: "Automate deskzy.xyz short links from CI or internal tools with Pro API keys.",
+    body: "Automate jfas.site short links from CI or internal tools with Pro API keys.",
   },
 ] as const;
 
@@ -105,7 +105,7 @@ export function BusinessLanding() {
               Private file tools and measurable short links for teams
             </h1>
             <p className="mt-5 max-w-lg text-base leading-relaxed text-[var(--muted)] md:text-lg">
-              Browser-first PDF and image workflows, deskzy.xyz short links with
+              Browser-first PDF and image workflows, jfas.site short links with
               analytics, and an API for automation — without pretending we are a
               desktop suite or an e-sign platform.
             </p>

@@ -40,7 +40,16 @@ export const metadata: Metadata = {
   other: {},
 };
 
-/** Published paste pages — no header/footer/ads (avoids shortener fingerprints). */
 export default function HopLayout({ children }: { children: ReactNode }) {
-  return <main className="relative z-0 min-h-[100dvh]">{children}</main>;
+  return (
+    <main className="hop-shell relative z-0 min-h-[100dvh] overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute left-1/2 top-[-8rem] h-[26rem] w-[26rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(248,194,221,0.38),rgba(248,194,221,0)_68%)] blur-3xl" />
+        <div className="absolute right-[-10rem] top-[12rem] h-[24rem] w-[24rem] rounded-full bg-[radial-gradient(circle,rgba(200,223,255,0.34),rgba(200,223,255,0)_68%)] blur-3xl" />
+        <div className="absolute inset-x-0 bottom-[-8rem] h-[24rem] bg-[radial-gradient(ellipse_at_center,rgba(244,228,210,0.45),rgba(244,228,210,0)_72%)] blur-3xl" />
+        <div className="absolute inset-0 opacity-[0.18] [background-image:linear-gradient(rgba(255,255,255,0.65)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.45)_1px,transparent_1px)] [background-size:28px_28px] [mask-image:radial-gradient(circle_at_center,black,transparent_80%)]" />
+      </div>
+      <div className="relative">{children}</div>
+    </main>
+  );
 }

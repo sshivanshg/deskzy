@@ -36,13 +36,13 @@ import {
 } from "@/lib/tools/registry";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: `${SITE_NAME} — Share links on deskzy.xyz, private file tools`,
+  title: `${SITE_NAME} — Share links on jfas.site, private file tools`,
   description: DEFAULT_DESCRIPTION,
   path: "/",
   keywords: [
     "share link free",
     "publish links online",
-    "deskzy.xyz share",
+    "jfas.site share",
     "private file tools",
     "pdf tools online",
     "image compressor",
@@ -106,7 +106,7 @@ const TRUST = [
   },
   {
     icon: LinkSimple,
-    label: "Own deskzy.xyz links",
+    label: "Own jfas.site links",
     detail: "Free shared links you control",
   },
   {
@@ -137,7 +137,7 @@ export default function HomePage() {
               Deskzy
             </p>
             <h1 className="max-w-[22ch] font-display text-xl font-semibold tracking-tight text-[var(--ink)] leading-snug">
-              Own shared links on deskzy.xyz — plus private file tools
+              Own shared links on jfas.site — plus private file tools
             </h1>
             <p className="max-w-[34ch] text-[15px] leading-snug text-[var(--muted)]">
               Free, no signup. Files never leave your browser.
@@ -259,7 +259,7 @@ export default function HomePage() {
               Deskzy
             </p>
             <h1 className="mt-4 max-w-[20ch] font-display text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl md:leading-[1.1]">
-              Own shared links on deskzy.xyz — plus private file tools
+              Own shared links on jfas.site — plus private file tools
             </h1>
             <p className="mt-4 max-w-[38ch] text-lg leading-relaxed text-[var(--muted)]">
               Free, no signup. Paste a URL for a clean share page. PDF and image
@@ -429,7 +429,7 @@ export default function HomePage() {
                       </span>
                       <span className="mt-1 block text-sm leading-relaxed text-[var(--muted)]">
                         {isLinks
-                          ? "Publish links on deskzy.xyz, QR, UTM, WhatsApp, and bio pages."
+                          ? "Publish links on jfas.site, QR, UTM, WhatsApp, and bio pages."
                           : c.description}
                       </span>
                     </span>

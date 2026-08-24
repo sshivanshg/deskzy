@@ -68,7 +68,7 @@ test.describe("Text tools", () => {
     await expectDone(page);
     await expect(page.getByText(/Only visible to you/i)).toBeVisible();
     const shortUrl = (await page.getByLabel(/Direct link/i).inputValue()).trim();
-    expect(shortUrl).toMatch(/yoururl\.buzz\/p\/[A-Za-z0-9]+$/);
+    expect(shortUrl).toMatch(/jfas\.site\/p\/[A-Za-z0-9]+$/);
 
     const res = await request.get(shortUrl, { maxRedirects: 0 });
     expect(res.status()).toBe(200);

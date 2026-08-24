@@ -9,7 +9,7 @@ test.describe("Navigation & shell", () => {
     await expect(
       page.getByRole("heading", {
         level: 1,
-        name: /Own shared links on deskzy\.xyz — plus private file tools/i,
+        name: /Own shared links on jfas\.site — plus private file tools/i,
       }),
     ).toBeVisible();
     await expect(page.locator("#home-shorten-url")).toBeVisible();
@@ -87,7 +87,7 @@ test.describe("Navigation & shell", () => {
     await expect(
       page.getByRole("heading", { name: /Frequently asked questions/i }),
     ).toBeVisible();
-    await expect(page.getByText(/yoururl\.buzz/i)).toBeVisible();
+    await expect(page.getByText(/jfas\.site/i)).toBeVisible();
   });
 
   test("privacy and terms pages", async ({ page }) => {

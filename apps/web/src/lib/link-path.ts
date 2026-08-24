@@ -16,7 +16,7 @@ export const SITE_ORIGIN =
  * Host for newly created share URLs (dedicated domain — separate from deskzy.xyz).
  */
 export const SHARE_ORIGIN =
-  process.env.NEXT_PUBLIC_SHARE_URL || "https://yoururl.buzz";
+  process.env.NEXT_PUBLIC_SHARE_URL || "https://jfas.site";
 
 export const SHARE_HOST = SHARE_ORIGIN.replace(/^https?:\/\//i, "").replace(
   /\/$/,
@@ -25,12 +25,17 @@ export const SHARE_HOST = SHARE_ORIGIN.replace(/^https?:\/\//i, "").replace(
 
 /** Alternate hosts that serve the same /p and /r pages (creator copy options). */
 const SHARE_ALT_ORIGINS = [
+  "https://yoururl.buzz",
   "https://go.deskzy.xyz",
   SITE_ORIGIN.replace(/\/$/, ""),
 ] as const;
 
 /** Legacy share hosts that still serve /p and /r (bookmarks). */
 const LEGACY_SHARE_HOSTS = new Set([
+  "jfas.site",
+  "www.jfas.site",
+  "yoururl.buzz",
+  "www.yoururl.buzz",
   "go.deskzy.xyz",
   "www.go.deskzy.xyz",
 ]);
@@ -118,7 +123,7 @@ export function isHopPathname(pathname: string | null | undefined): boolean {
   );
 }
 
-/** True for the dedicated share domain (and legacy go.deskzy.xyz). */
+/** True for the dedicated share domain and legacy share hosts. */
 export function isShareHost(host: string | null | undefined): boolean {
   if (!host) return false;
   const h = host.split(":")[0].toLowerCase();

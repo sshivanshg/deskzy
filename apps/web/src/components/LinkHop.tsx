@@ -52,39 +52,52 @@ export function LinkHop({ dest, code }: LinkHopProps) {
   }, [dest]);
 
   return (
-    <div className="relative mx-auto flex min-h-[100dvh] w-full max-w-2xl flex-col px-4 py-8 sm:px-6 sm:py-10">
+    <div className="relative mx-auto flex min-h-[100dvh] w-full max-w-3xl flex-col px-4 py-8 sm:px-6 sm:py-10">
       <HopDiscoverHeader />
 
       <article className="flex flex-1 flex-col">
-        {/* Content canvas */}
-        <div className="rounded-2xl border border-[var(--stroke)] bg-[var(--panel)] p-5 shadow-[0_1px_0_rgba(0,0,0,0.03)] sm:p-6">
-          <header className="border-b border-[var(--stroke)] pb-4">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-[var(--muted)]">
-              Published
-            </p>
-            <h1 className="mt-2 font-display text-2xl font-semibold tracking-tight text-[var(--ink)] sm:text-3xl">
+        <div className="rounded-[2rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(250,244,248,0.9))] p-4 shadow-[0_20px_50px_rgba(120,93,139,0.1)] sm:p-6">
+          <header className="rounded-[1.5rem] border border-white/70 bg-white/70 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] sm:p-5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-[color-mix(in_srgb,var(--accent)_20%,white)] bg-[color-mix(in_srgb,var(--accent-soft)_65%,white)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--accent-ink)]">
+                Published page
+              </span>
+              <span className="rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[10px] font-medium tracking-[0.1em] text-[var(--muted)]">
+                PasteLink-inspired layout
+              </span>
+            </div>
+            <h1 className="mt-4 font-display text-[2rem] font-semibold tracking-tight text-[var(--ink)] sm:text-[2.35rem]">
               Shared content
             </h1>
+            <p className="mt-2 max-w-[44ch] text-sm leading-relaxed text-[var(--muted)]">
+              Open the destination, copy it, or share this page with a cleaner preview.
+            </p>
           </header>
 
-          <div className="prose-paste mt-6 text-[1.05rem] leading-relaxed text-[var(--ink)]">
-            <p>
+          <div className="mt-4 rounded-[1.5rem] border border-white/70 bg-white/70 p-4 shadow-[0_12px_28px_rgba(120,93,139,0.06)]">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+                Destination
+              </p>
+              <p className="text-[10px] text-[var(--muted)]">One tap away</p>
+            </div>
+            <div className="mt-3">
               <a
                 href={dest}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="break-all font-medium text-[var(--accent-ink)] underline decoration-[var(--stroke-strong)] underline-offset-4 hover:decoration-[var(--accent)]"
+                className="block break-all rounded-[1.15rem] border border-[rgba(185,162,197,0.32)] bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(251,247,250,0.92))] px-4 py-3 font-mono text-[14px] font-medium text-[var(--accent-ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] underline decoration-transparent underline-offset-4 transition-colors hover:decoration-[var(--accent)]"
               >
                 {dest}
               </a>
-            </p>
+            </div>
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-[var(--stroke)] pt-5">
+          <div className="mt-4 flex flex-wrap items-center gap-3 rounded-[1.5rem] border border-white/70 bg-white/65 px-4 py-4 shadow-[0_12px_26px_rgba(120,93,139,0.06)]">
             <button
               type="button"
               onClick={() => void copyDest()}
-              className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-[var(--stroke)] bg-[var(--bg-elevated)] px-3.5 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--stroke-strong)]"
+              className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--accent)_24%,white)] bg-white px-4 text-sm font-semibold text-[var(--ink)] shadow-[0_10px_18px_rgba(120,93,139,0.07)] transition-transform hover:-translate-y-0.5 hover:border-[color-mix(in_srgb,var(--accent)_36%,white)]"
               aria-label={copied ? "Copied destination" : "Copy destination"}
             >
               {copied ? (
@@ -101,10 +114,13 @@ export function LinkHop({ dest, code }: LinkHopProps) {
                 </>
               )}
             </button>
+            <span className="text-xs text-[var(--muted)]">
+              Tip: copy the page link below if the destination is private or long.
+            </span>
           </div>
         </div>
 
-        <div className="mt-5 rounded-2xl border border-[var(--stroke)] bg-[var(--panel)] p-4 sm:p-5">
+        <div className="mt-5 rounded-[1.75rem] border border-white/70 bg-white/55 p-4 shadow-[0_14px_32px_rgba(120,93,139,0.08)] backdrop-blur-xl sm:p-5">
           <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
             Page link
           </p>

@@ -102,7 +102,7 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
       "Copy or share the link. Use our QR code tool for print-ready codes.",
     ],
     privacy:
-      "Share Link is a hybrid tool: only the URL text is sent to Deskzy's edge API and stored in Cloudflare KV so the page works. We do not upload files. New pages use yoururl.buzz/p/… (older deskzy.xyz /r/ and /p/ links still work).",
+      "Share Link is a hybrid tool: only the URL text is sent to Deskzy's edge API and stored in Cloudflare KV so the page works. We do not upload files. New pages use jfas.site/p/… (older deskzy.xyz /r/ and /p/ links still work).",
     faqs: [
       {
         q: "Is Share Link free?",
@@ -118,7 +118,7 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
       },
       {
         q: "What domain do shared links use?",
-        a: "Shared pages are on yoururl.buzz (for example yoururl.buzz/p/your-code). Visitors land on a published page that shows the destination links.",
+        a: "Shared pages are on jfas.site (for example jfas.site/p/your-code). Visitors land on a published page that shows the destination links.",
       },
       {
         q: "Can I create a QR code for my shared link?",
@@ -126,7 +126,7 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
       },
       {
         q: "Do I need an account to publish?",
-        a: "No. Paste a URL and copy your yoururl.buzz link immediately — no account wall.",
+        a: "No. Paste a URL and copy your jfas.site link immediately — no account wall.",
       },
     ],
   },
@@ -139,7 +139,7 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
       "Share the page — recipients see every destination in one place.",
     ],
     privacy:
-      "Only the URL strings are sent to Deskzy's edge API and stored in Cloudflare KV so the list page works. We do not upload files. New pages use yoururl.buzz/p/…",
+      "Only the URL strings are sent to Deskzy's edge API and stored in Cloudflare KV so the list page works. We do not upload files. New pages use jfas.site/p/…",
     faqs: [
       {
         q: "Is Share Links free?",
@@ -151,7 +151,7 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
       },
       {
         q: "What do recipients see?",
-        a: "They open yoururl.buzz/p/your-code and see a list of destinations. Each link opens externally when they tap it.",
+        a: "They open jfas.site/p/your-code and see a list of destinations. Each link opens externally when they tap it.",
       },
     ],
   },
@@ -545,7 +545,7 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
     faqs: [
       {
         q: "Can I make a QR code for a shortened link?",
-        a: "Yes. Shorten your URL first, then paste the deskzy.xyz link into the QR generator.",
+        a: "Yes. Shorten your URL first, then paste the jfas.site link into the QR generator.",
       },
       {
         q: "What format is the download?",
@@ -582,7 +582,7 @@ const OVERRIDES: Record<string, ToolSeoContent> = {
       },
       {
         q: "Can I shorten a UTM link?",
-        a: "Yes. Use Shorten with Deskzy from the builder to create a deskzy.xyz short link that keeps your UTM query string.",
+        a: "Yes. Use Shorten with Deskzy from the builder to create a jfas.site short link that keeps your UTM query string.",
       },
       {
         q: "Is the UTM builder free?",

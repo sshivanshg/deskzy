@@ -116,16 +116,16 @@ Private merge is ideal for contracts, homework packs, and travel documents you w
   },
   {
     slug: "free-url-shortener-no-signup",
-    title: "Free URL shortener with no signup — short links on deskzy.xyz",
+    title: "Free URL shortener with no signup — short links on jfas.site",
     description:
-      "Shorten long URLs into clean deskzy.xyz links without creating an account. Free link shortener for sharing, bios, and QR codes.",
+      "Shorten long URLs into clean jfas.site links without creating an account. Free link shortener for sharing, bios, and QR codes.",
     toolSlug: "url-shortener",
     relatedToolSlugs: ["qr-code", "utm-builder", "bio-link"],
     keywords: [
       "free url shortener",
       "shorten link no signup",
       "bitly alternative free",
-      "deskzy.xyz short link",
+      "jfas.site short link",
     ],
     publishedAt: "2026-07-29",
     faqs: [
@@ -135,7 +135,7 @@ Private merge is ideal for contracts, homework packs, and travel documents you w
       },
       {
         q: "What domain do short links use?",
-        a: "Short links use deskzy.xyz with a /p/ path, for example deskzy.xyz/p/your-code.",
+        a: "Short links use jfas.site with a /p/ path, for example jfas.site/p/your-code.",
       },
       {
         q: "Do you upload my files when I shorten a link?",
@@ -148,7 +148,7 @@ Private merge is ideal for contracts, homework packs, and travel documents you w
 
 1. Open the [URL Shortener](/tools/url-shortener) (or go to \`/shorten\`).
 2. Paste your full URL and click Shorten.
-3. Copy the \`deskzy.xyz/p/...\` link and share it.
+3. Copy the \`jfas.site/p/...\` link and share it.
 
 ## Pair short links with other Deskzy tools
 
@@ -288,7 +288,7 @@ Private generation means your draft URLs never need to hit a third-party QR farm
 
 ## Share it everywhere
 
-- Add it to Instagram or LinkedIn bios via a [short deskzy.xyz link](/tools/url-shortener).
+- Add it to Instagram or LinkedIn bios via a [short jfas.site link](/tools/url-shortener).
 - Print it as a [QR code](/tools/qr-code) for stores and events.
 - Include it on a [bio link page](/tools/bio-link) you host yourself.
 

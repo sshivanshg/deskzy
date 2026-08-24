@@ -93,8 +93,8 @@ export function LinkAnalyticsLanding({ loggedIn = false }: { loggedIn?: boolean 
               Know who&apos;s clicking — then charge for the outcome
             </h1>
             <p className="mt-4 max-w-md text-base leading-relaxed text-[var(--muted)] md:text-lg">
-              Free short links are unlimited. Pro adds the dashboard that turns
-              every redirect into geography, referrers, and live proof your
+              Free published links are unlimited. Pro adds the dashboard that
+              turns every click into geography, referrers, and live proof your
               campaign worked.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -111,7 +111,7 @@ export function LinkAnalyticsLanding({ loggedIn = false }: { loggedIn?: boolean 
                 href="/tools/url-shortener"
                 className="btn-secondary !rounded-full !px-5 !py-3.5 text-sm"
               >
-                Shorten a link free
+                Publish a link free
               </Link>
             </div>
             <p className="mt-4 text-xs text-[var(--muted)]">

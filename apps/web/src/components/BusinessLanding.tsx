@@ -21,8 +21,8 @@ const PILLARS = [
   },
   {
     icon: LinkSimple,
-    title: "Own short links on jfas.site",
-    body: "Unlimited short links, custom Pro slugs, and click analytics so campaigns and share-outs are measurable.",
+    title: "Own published links on jfas.site",
+    body: "Unlimited published links, custom Pro slugs, and click analytics so campaigns and share-outs are measurable.",
   },
   {
     icon: Code,
@@ -55,7 +55,7 @@ const CAPABILITIES = [
   {
     icon: GlobeHemisphereWest,
     title: "Honest hybrid tools",
-    body: "When something touches our servers (like the shortener), we label it. No dark patterns or fake download buttons.",
+    body: "When something touches our servers (like link publishing), we label it. No dark patterns or fake download buttons.",
   },
   {
     icon: Buildings,
@@ -67,7 +67,7 @@ const CAPABILITIES = [
 const SECTORS = [
   {
     name: "Sales & marketing",
-    body: "Ship campaign short links with custom slugs, track clicks, and keep creative PDFs private in-browser.",
+    body: "Ship campaign links with custom slugs, track clicks, and keep creative PDFs private in-browser.",
   },
   {
     name: "People & ops",

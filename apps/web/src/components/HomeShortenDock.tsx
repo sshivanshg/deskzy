@@ -432,7 +432,7 @@ export function HomeShortenDock({ size = "compact" }: HomeShortenDockProps) {
       ) : null}
       {isHero && mode === "single" ? (
         <p className="mt-3 text-xs leading-relaxed text-[var(--accent-ink)]/75">
-          Free deskzy.xyz share pages. No signup. Only the URL string is sent —
+          Free jfas.site share pages. No signup. Only the URL string is sent —
           never your files.
         </p>
       ) : null}

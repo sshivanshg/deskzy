@@ -64,22 +64,20 @@ export const ADSTERRA_SITES = {
     "1cdf877070ef9a0d013ed3e2686c63d8",
 } as const;
 
-export const ADSTERRA_SMARTLINKS = [
-  process.env.NEXT_PUBLIC_ADSTERRA_YOURURL_SMARTLINK_URL ||
-    "https://consistinvention.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e",
-  process.env.NEXT_PUBLIC_ADSTERRA_YOURURL_SMARTLINK_URL ||
-    "https://consistinvention.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e",
-  process.env.NEXT_PUBLIC_ADSTERRA_YOURURL_SMARTLINK_URL ||
-    "https://consistinvention.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e",
-  process.env.NEXT_PUBLIC_ADSTERRA_YOURURL_SMARTLINK_URL ||
-    "https://consistinvention.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e",
+const SMARTLINK_CANDIDATES = [
   process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_URL ||
     "https://consistinvention.com/zj2sps8whc?key=3cec01f882a153082fb93f4e78f6c660",
   process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_ALT_URL ||
     "https://consistinvention.com/y4tfnbii?key=576de01255fd68ede722c60f770ebfa2",
   process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_ALT_2_URL ||
     "https://consistinvention.com/xj135rghz?key=92e7b2d975bf4b928cd8a0c22ce32fa7",
+  process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK_PAGE_URL ||
+    "https://consistinvention.com/qfb1kff3m?key=8a450f6d402314be8891210668fff57e",
 ].filter(Boolean);
+
+export const ADSTERRA_SMARTLINKS = Array.from(
+  new Set(SMARTLINK_CANDIDATES),
+);
 
 export const ADSTERRA_POPUNDER_SCRIPT_URLS = [
   ADSTERRA_SITES.popunderScriptUrl,

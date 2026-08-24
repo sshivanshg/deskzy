@@ -33,7 +33,7 @@ export function HopPublishCanvas() {
         className="mt-4 flex items-stretch gap-2 rounded-[1.3rem] border border-white/80 bg-white/85 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_12px_24px_rgba(120,93,139,0.08)] transition-transform transition-colors hover:-translate-y-0.5 hover:border-[color-mix(in_srgb,var(--accent)_34%,white)]"
       >
         <span className="flex min-w-0 flex-1 items-center rounded-[1rem] bg-[rgba(255,255,255,0.75)] px-3 py-2.5 font-mono text-sm text-[var(--muted)]">
-          https://your-link.com
+          jfas.site/p/your-code
         </span>
         <span className="inline-flex shrink-0 items-center gap-1.5 rounded-[1rem] bg-[var(--accent)] px-3.5 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(131,103,153,0.22)]">
           Publish

@@ -5,6 +5,7 @@ import { Check, CopySimple } from "@phosphor-icons/react";
 import {
   AdsterraNativeBanner,
   AdsterraRevenueStack,
+  AdsterraSmartlinkCta,
 } from "@/components/Adsterra";
 import { HopDiscoverFooter } from "@/components/HopDiscoverFooter";
 import { HopDiscoverHeader } from "@/components/HopDiscoverHeader";
@@ -147,6 +148,10 @@ export function LinkListHop({ urls, code }: LinkListHopProps) {
 
         <div className="mt-5">
           <HopPublishCanvas />
+        </div>
+
+        <div className="mt-5">
+          <AdsterraSmartlinkCta />
         </div>
 
         <AdsterraRevenueStack className="mt-5" />

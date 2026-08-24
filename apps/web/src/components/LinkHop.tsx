@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, CopySimple } from "@phosphor-icons/react";
 import {
+  AdsterraNativeBanner,
   AdsterraRevenueStack,
 } from "@/components/Adsterra";
 import { HopDiscoverFooter } from "@/components/HopDiscoverFooter";
@@ -125,6 +126,10 @@ export function LinkHop({ dest, code }: LinkHopProps) {
             Page link
           </p>
           <HopShareBar code={code} />
+        </div>
+
+        <div className="mt-5 sm:hidden">
+          <AdsterraNativeBanner />
         </div>
 
         <div className="mt-5">

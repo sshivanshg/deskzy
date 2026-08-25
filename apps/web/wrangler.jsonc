@@ -59,7 +59,7 @@
     "NEXT_PUBLIC_SITE_URL": "https://deskzy.xyz",
     "NEXT_PUBLIC_SHARE_URL": "https://jfas.site",
     "NEXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAETkZlV-LimxQmiA",
-    "TURNSTILE_HOSTNAMES": "deskzy.xyz,www.deskzy.xyz,go.deskzy.xyz,yoururl.buzz,www.yoururl.buzz,jfas.site,www.jfas.site",
+    "TURNSTILE_HOSTNAMES": "deskzy.xyz,www.deskzy.xyz,go.deskzy.xyz,jfas.site,www.jfas.site",
     "NEXT_PUBLIC_SUPABASE_URL": "https://gvsbqgsqaslpnatorsnk.supabase.co",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2c2JxZ3NxYXNscG5hdG9yc25rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzMzg0ODEsImV4cCI6MjEwMDkxNDQ4MX0.8g8spIWqS3KdHRLHo9GaDyFjPwEOrEF0NieKi8zqA-Y",
     "NEXT_PUBLIC_RAZORPAY_KEY_ID": "rzp_live_TJNwMO22eWV2QV",

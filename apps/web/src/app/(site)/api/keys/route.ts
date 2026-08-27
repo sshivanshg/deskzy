@@ -7,7 +7,7 @@ import {
 import { getUserPlan } from "@/lib/pro-links";
 import { createClient } from "@/lib/supabase/server";
 
-async function requirePaidUser() {
+async function requireUser() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -16,24 +16,13 @@ async function requirePaidUser() {
     return { error: NextResponse.json({ error: "Login required" }, { status: 401 }) };
   }
   const { plan } = await getUserPlan(user.id);
-  if (plan === "free") {
-    return {
-      error: NextResponse.json(
-        {
-          error: "API keys are a Pro feature",
-          upgradeUrl: "/pricing",
-        },
-        { status: 402 },
-      ),
-    };
-  }
-  return { user };
+  return { user, plan };
 }
 
-/** List active API keys for the signed-in Pro/Business user. */
+/** List active API keys for the signed-in user. */
 export async function GET() {
   try {
-    const gate = await requirePaidUser();
+    const gate = await requireUser();
     if ("error" in gate) return gate.error;
 
     const keys = await listApiKeysForUser(gate.user.id);
@@ -46,10 +35,10 @@ export async function GET() {
   }
 }
 
-/** Create a new API key. Plaintext returned once in `secret`. */
+/** Create a new API key. Free gets one active key; paid plans get five. */
 export async function POST(req: NextRequest) {
   try {
-    const gate = await requirePaidUser();
+    const gate = await requireUser();
     if ("error" in gate) return gate.error;
 
     let name: string | undefined;
@@ -63,6 +52,7 @@ export async function POST(req: NextRequest) {
     const { key, plaintext } = await createApiKeyForUser({
       userId: gate.user.id,
       name,
+      maxKeys: gate.plan === "free" ? 1 : 5,
     });
 
     return NextResponse.json(
@@ -75,7 +65,7 @@ export async function POST(req: NextRequest) {
     );
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Failed";
-    const status = /maximum of 5/i.test(msg) ? 409 : 500;
+    const status = /maximum of \d+ api/i.test(msg) ? 409 : 500;
     return NextResponse.json({ error: msg }, { status });
   }
 }
@@ -83,7 +73,7 @@ export async function POST(req: NextRequest) {
 /** Revoke a key: DELETE /api/keys?id=<uuid> */
 export async function DELETE(req: NextRequest) {
   try {
-    const gate = await requirePaidUser();
+    const gate = await requireUser();
     if ("error" in gate) return gate.error;
 
     const id = req.nextUrl.searchParams.get("id");

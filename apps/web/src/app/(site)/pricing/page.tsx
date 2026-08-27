@@ -10,7 +10,7 @@ import { createClient } from "@/lib/supabase/server";
 export const metadata: Metadata = buildPageMetadata({
   title: "Pricing — Free, Pro & Business plans",
   description:
-    "Deskzy pricing: free tools with daily limits, Pro from ₹399/user/month (or ₹2,699/year), and Business for 25+ seats. Private browser tools. Pay with Razorpay.",
+    "Deskzy pricing: free tools plus a free API key with 25 daily requests, Pro from ₹399/user/month with unlimited API access, and Business for 25+ seats.",
   path: "/pricing",
   keywords: [
     "deskzy pricing",

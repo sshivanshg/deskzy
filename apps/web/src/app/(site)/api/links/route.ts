@@ -15,6 +15,7 @@ import {
 import { publicLinkUrl } from "@/lib/link-path";
 import { getUserPlan, persistOwnedLink } from "@/lib/pro-links";
 import { createClient } from "@/lib/supabase/server";
+import { checkAndIncrementUsage } from "@/lib/usage";
 function clientIp(req: NextRequest): string {
   return (
     req.headers.get("cf-connecting-ip") ||
@@ -109,7 +110,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const { plan } = await getUserPlan(userId);
+    const sessionPlan = await getUserPlan(userId);
+    const plan =
+      apiAuth.ok && apiAuth.kind === "user"
+        ? apiAuth.plan
+        : sessionPlan.plan;
 
     const rawList = resolveCreateUrlTokens(body);
     const batch = normalizeUrlBatch(rawList);
@@ -120,6 +125,36 @@ export async function POST(req: NextRequest) {
     const allocated = await allocateCode(body.slug, plan);
     if (allocated instanceof NextResponse) return allocated;
     const { code, isCustom } = allocated;
+
+    let apiHeaders: HeadersInit | undefined;
+    if (apiAuth.ok && apiAuth.kind === "user" && apiAuth.plan === "free") {
+      const usage = await checkAndIncrementUsage({
+        toolSlug: "api-links",
+        userId: apiAuth.userId,
+      });
+      if (!usage.ok) {
+        return NextResponse.json(
+          {
+            error: `Free API limit reached (${usage.limit} requests/day).`,
+            code: "free_api_limit_reached",
+            limit: usage.limit,
+            used: usage.used,
+            upgradeUrl: "/pricing",
+          },
+          {
+            status: 429,
+            headers: {
+              "X-RateLimit-Limit": String(usage.limit),
+              "X-RateLimit-Remaining": "0",
+            },
+          },
+        );
+      }
+      apiHeaders = {
+        "X-RateLimit-Limit": "25",
+        "X-RateLimit-Remaining": String(usage.remaining ?? 0),
+      };
+    }
 
     if (batch.urls.length >= 2) {
       const record = await putListLink(code, batch.urls, { userId, isCustom });
@@ -142,7 +177,7 @@ export async function POST(req: NextRequest) {
           createdAt: record.createdAt,
           isCustom,
         },
-        { status: 201 },
+        { status: 201, headers: apiHeaders },
       );
     }
 
@@ -167,7 +202,7 @@ export async function POST(req: NextRequest) {
         createdAt: record.createdAt,
         isCustom,
       },
-      { status: 201 },
+      { status: 201, headers: apiHeaders },
     );
   } catch (e) {
     const msg = e instanceof Error ? e.message : "invalid request";

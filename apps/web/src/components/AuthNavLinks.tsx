@@ -96,7 +96,7 @@ export function AuthNavLinks({ mobile = false }: { mobile?: boolean }) {
       <Link
         href="/account"
         title={email}
-        className={`hidden items-center gap-2 rounded-full py-1 pl-1 pr-2.5 text-sm sm:inline-flex ${
+        className={`hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-full p-1 text-sm sm:inline-flex min-[1380px]:pr-2.5 ${
           active
             ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
             : "text-[var(--muted)] hover:bg-[var(--panel-muted)] hover:text-[var(--ink)]"
@@ -109,9 +109,9 @@ export function AuthNavLinks({ mobile = false }: { mobile?: boolean }) {
         >
           {av}
         </span>
-        <span className="max-w-[6.5rem] truncate">{email.split("@")[0]}</span>
+        <span className="hidden max-w-[6.5rem] truncate min-[1380px]:inline">{email.split("@")[0]}</span>
         {paid ? (
-          <span className="rounded-full bg-[var(--accent)] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
+          <span className="hidden rounded-full bg-[var(--accent)] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white min-[1380px]:inline">
             Pro
           </span>
         ) : null}

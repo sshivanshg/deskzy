@@ -72,11 +72,11 @@ export function PricingPlans({
           Pricing
         </p>
         <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-          Choose the plan that suits you
+          Start free. Scale when agents take over.
         </h1>
         <p className="mt-4 text-base leading-relaxed text-[var(--muted)] md:text-lg">
-          Free tools with daily limits — like the PDF tools you already know.
-          Pro is slightly cheaper, private by default, and built for Deskzy.
+          Use Deskzy directly or call it from an agent. Every account gets a free
+          API key; Pro removes the ceilings for production workflows.
         </p>
       </div>
 
@@ -332,7 +332,7 @@ export function PricingPlans({
                 ["Files leave device", "Never*", "Never*", "Never*"],
                 ["Link analytics", "—", "Yes", "Yes"],
                 ["Custom short slugs", "—", "Yes", "Yes"],
-                ["API access", "—", "Yes", "Yes + higher limits"],
+                ["API access", "25 requests/day", "Unlimited", "Custom limits"],
                 ["Saved presets", "—", "Yes", "Yes"],
                 ["Team seats", "1", "1–25", "25+"],
                 ["Priority support", "—", "Yes", "Yes"],

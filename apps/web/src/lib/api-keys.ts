@@ -47,11 +47,15 @@ export async function listApiKeysForUser(userId: string): Promise<ApiKeyRow[]> {
 export async function createApiKeyForUser(input: {
   userId: string;
   name?: string;
+  maxKeys?: number;
 }): Promise<{ key: ApiKeyRow; plaintext: string }> {
   const admin = createServiceClient();
   const existing = await listApiKeysForUser(input.userId);
-  if (existing.length >= 5) {
-    throw new Error("Maximum of 5 API keys — revoke one to create another");
+  const maxKeys = input.maxKeys ?? 5;
+  if (existing.length >= maxKeys) {
+    throw new Error(
+      `Maximum of ${maxKeys} API ${maxKeys === 1 ? "key" : "keys"} — revoke one to create another`,
+    );
   }
 
   const { plaintext, prefix, hash } = generateApiKeySecret();
@@ -87,12 +91,16 @@ export async function revokeApiKeyForUser(input: {
 }
 
 /**
- * Resolve a Bearer token to a paid user id, or null if invalid / free / revoked.
+ * Resolve a Bearer token to a user and plan, or null if invalid / revoked.
  * Touches last_used_at on success (best-effort).
  */
 export async function resolveUserApiKey(
   token: string,
-): Promise<{ userId: string; keyId: string } | null> {
+): Promise<{
+  userId: string;
+  keyId: string;
+  plan: "free" | "pro" | "business";
+} | null> {
   if (!token.startsWith(KEY_PREFIX)) return null;
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) return null;
 
@@ -114,12 +122,17 @@ export async function resolveUserApiKey(
     .limit(1)
     .maybeSingle();
 
-  if (!isPaidActive((sub as SubscriptionRow | null) ?? null)) return null;
+  const subscription = (sub as SubscriptionRow | null) ?? null;
+  const plan = isPaidActive(subscription) ? subscription!.plan : "free";
 
   void admin
     .from("api_keys")
     .update({ last_used_at: new Date().toISOString() })
     .eq("id", key.id);
 
-  return { userId: key.user_id as string, keyId: key.id as string };
+  return {
+    userId: key.user_id as string,
+    keyId: key.id as string,
+    plan,
+  };
 }

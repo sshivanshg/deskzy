@@ -43,6 +43,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
+  // Move legacy share links onto the canonical share domain while preserving
+  // their code and query string. Old bookmarks keep working, but visitors only
+  // see the current domain.
+  if (
+    isShareHost(host) &&
+    host !== SHARE_HOST.toLowerCase() &&
+    isHopPathname(pathname)
+  ) {
+    const url = request.nextUrl.clone();
+    url.hostname = SHARE_HOST;
+    url.port = "";
+    url.protocol = "https:";
+    return NextResponse.redirect(url, 308);
+  }
+
   // Dedicated share domain (jfas.site / legacy share hosts): hop pages only.
   if (isShareHost(host)) {
     if (isHopPathname(pathname) || pathname === "/") {

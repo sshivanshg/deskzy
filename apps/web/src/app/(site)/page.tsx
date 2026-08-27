@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
+  Code,
   FilePdf,
   Image as ImageIcon,
   LinkSimple,
   LockSimple,
   MusicNotes,
   QrCode,
+  Robot,
   ShieldCheck,
   TextT,
 } from "@phosphor-icons/react/dist/ssr";
@@ -36,12 +38,12 @@ import {
 } from "@/lib/tools/registry";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: `${SITE_NAME} — The AI-native tool system`,
+  title: `${SITE_NAME} — Built for the agent era`,
   description: DEFAULT_DESCRIPTION,
   path: "/",
   keywords: [
-    "AI-native tool system",
-    "AI tools for everyday work",
+    "tools for AI agents",
+    "agent tools API",
     "intent-based tools",
     "share link free",
     "publish links online",
@@ -142,15 +144,15 @@ export default function HomePage() {
       <div className="mx-auto max-w-6xl px-4 pb-8 pt-5 md:hidden">
         <div className="reveal space-y-5">
           <div className="space-y-2.5">
-            <p className="font-display text-[2rem] font-semibold tracking-tight text-[var(--ink)] leading-[1.05]">
-              Deskzy
+            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--accent)]/25 bg-[var(--accent-soft)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--accent)]">
+              <Robot size={13} weight="duotone" /> AI-native tool system
             </p>
-            <h1 className="max-w-[22ch] font-display text-xl font-semibold tracking-tight text-[var(--ink)] leading-snug">
-              The AI-native tool system for everyday work
+            <h1 className="max-w-[16ch] font-display text-3xl font-semibold leading-[1.05] tracking-tight text-[var(--ink)]">
+              Built for the agent era.
             </h1>
             <p className="max-w-[34ch] text-[15px] leading-snug text-[var(--muted)]">
-              Turn intent into action: choose the right tool, get a clean output,
-              and keep sensitive work on your device.
+              Use it yourself or hand the action to an agent. Start free in the
+              browser, then connect the API when your workflow is ready.
             </p>
           </div>
 
@@ -199,6 +201,22 @@ export default function HomePage() {
               ))}
             </ol>
           </section>
+
+          <Link
+            href="/developers"
+            className="mt-5 flex items-center gap-3 rounded-2xl border border-[var(--accent)]/25 bg-[var(--accent-soft)] p-4"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--accent)] text-white">
+              <Code size={19} weight="bold" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-semibold text-[var(--ink)]">Free API for agents</span>
+              <span className="mt-0.5 block text-xs text-[var(--muted)]">1 key · 25 requests every day</span>
+            </span>
+            <span className="shrink-0 text-[var(--accent)]">
+              <ArrowRight size={16} />
+            </span>
+          </Link>
         </div>
 
         <section className="mt-14">
@@ -282,16 +300,16 @@ export default function HomePage() {
       <div className="mx-auto hidden max-w-6xl px-4 pb-8 pt-10 md:block md:pt-14">
         <section className="reveal grid min-h-[min(72dvh,40rem)] items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
           <div>
-            <p className="font-display text-5xl font-semibold tracking-tight text-[var(--ink)] md:text-6xl md:leading-[0.95]">
-              Deskzy
+            <p className="inline-flex items-center gap-2 rounded-full border border-[var(--accent)]/25 bg-[var(--accent-soft)] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
+              <Robot size={15} weight="duotone" /> Deskzy · AI-native tool system
             </p>
-            <h1 className="mt-4 max-w-[20ch] font-display text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl md:leading-[1.1]">
-              One intent. One focused tool. One clean output.
+            <h1 className="mt-5 max-w-[15ch] font-display text-4xl font-semibold leading-[1.02] tracking-tight text-[var(--ink)] lg:text-5xl">
+              Built for the agent era.
             </h1>
             <p className="mt-4 max-w-[38ch] text-lg leading-relaxed text-[var(--muted)]">
-              Deskzy is an AI-native tool system for the small jobs that slow you
-              down. Find the action you need, run it in context, and move on —
-              with private browser-first processing when files are involved.
+              Deskzy turns small, repeatable jobs into focused actions. Use them
+              directly in the browser or call them from agents and automations
+              through a predictable API.
             </p>
 
             <div className="reveal reveal-delay-1 mt-8 max-w-xl">
@@ -349,6 +367,44 @@ export default function HomePage() {
               </li>
             ))}
           </ol>
+        </section>
+
+        <section className="mt-14 grid overflow-hidden rounded-[var(--radius-shell)] border border-[var(--accent)]/25 bg-[var(--accent-soft)]/55 lg:grid-cols-[0.85fr_1.15fr]">
+          <div className="p-7 md:p-9">
+            <p className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
+              <Robot size={15} weight="duotone" /> Agent-ready API
+            </p>
+            <h2 className="mt-3 max-w-[16ch] font-display text-3xl font-semibold leading-tight tracking-tight">
+              Give your agent a dependable action.
+            </h2>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--muted)]">
+              Create share links from scripts, automations, or agent tool calls.
+              Structured JSON in, useful URL out.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <Link href="/signup?next=%2Faccount%3Ftab%3Dapi" className="btn-primary">
+                Get a free API key
+              </Link>
+              <Link href="/developers" className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--accent)]">
+                View developer docs <ArrowRight size={14} weight="bold" />
+              </Link>
+            </div>
+            <p className="mt-3 text-xs text-[var(--muted)]">25 requests/day · no card required</p>
+          </div>
+          <div className="border-t border-[var(--stroke)] bg-[var(--ink)] p-6 text-[#eceae4] lg:border-l lg:border-t-0 md:p-8">
+            <div className="flex items-center justify-between gap-3">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#a8b3aa]">POST /api/links</span>
+              <span className="rounded-full border border-[#455047] px-2 py-1 font-mono text-[9px] text-[#a8dccb]">201 CREATED</span>
+            </div>
+            <pre className="mt-5 overflow-x-auto font-mono text-xs leading-6 text-[#d8ded9]">{`{
+  "url": "https://example.com/report"
+}
+
+→ {
+  "kind": "single",
+  "shortUrl": "https://jfas.site/p/v4Yk9mP2Qa7L"
+}`}</pre>
+          </div>
         </section>
 
         <section className="mt-20 reveal reveal-delay-2 md:mt-24">

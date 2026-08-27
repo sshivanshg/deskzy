@@ -42,6 +42,12 @@ export function SiteFooter() {
                   Business
                 </Link>
                 <Link
+                  href="/developers"
+                  className="text-sm font-medium text-[var(--ink)] underline-offset-4 hover:underline"
+                >
+                  Developers
+                </Link>
+                <Link
                   href="/pricing"
                   className="text-sm font-medium text-[var(--ink)] underline-offset-4 hover:underline"
                 >
@@ -115,7 +121,7 @@ export function SiteFooter() {
 
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                All tools
+                Tool system
               </p>
               <ul className="mt-3 max-h-48 space-y-2 overflow-auto pr-2">
                 {TOOLS.map((t) => (
@@ -133,7 +139,11 @@ export function SiteFooter() {
           </div>
 
           <p className="mt-8 border-t border-[var(--stroke)] pt-6 text-xs text-[var(--muted)]">
-            Free online file tools · PDF · Image · Text · Share links ·{" "}
+            Built for the agent era · Free tools and API access ·{" "}
+            <Link href="/developers" className="hover:text-[var(--ink)]">
+              Developers
+            </Link>
+            {" · "}
             <Link href="/guides" className="hover:text-[var(--ink)]">
               Guides
             </Link>

@@ -1,21 +1,21 @@
 "use client";
 
-import { Desktop, Moon, Sun } from "@phosphor-icons/react";
+import { Moon, Sun } from "@phosphor-icons/react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-const ORDER = ["light", "dark", "system"] as const;
+const ORDER = ["light", "dark"] as const;
 type ThemeChoice = (typeof ORDER)[number];
 
 function nextTheme(current: string | undefined): ThemeChoice {
-  const idx = ORDER.indexOf((current as ThemeChoice) || "system");
+  const idx = ORDER.indexOf((current as ThemeChoice) || "light");
   return ORDER[(idx + 1) % ORDER.length];
 }
 
 function labelFor(theme: string | undefined): string {
   if (theme === "light") return "Light";
   if (theme === "dark") return "Dark";
-  return "System";
+  return "Light";
 }
 
 export function ThemeToggle({ className = "" }: { className?: string }) {
@@ -26,7 +26,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     setMounted(true);
   }, []);
 
-  const current = (theme as ThemeChoice | undefined) ?? "system";
+  const current = (theme as ThemeChoice | undefined) ?? "light";
   const next = nextTheme(current);
 
   return (
@@ -41,8 +41,6 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
         <Sun size={18} weight="duotone" aria-hidden />
       ) : current === "dark" ? (
         <Moon size={18} weight="duotone" aria-hidden />
-      ) : current === "system" ? (
-        <Desktop size={18} weight="duotone" aria-hidden />
       ) : (
         <Sun size={18} weight="duotone" aria-hidden />
       )}

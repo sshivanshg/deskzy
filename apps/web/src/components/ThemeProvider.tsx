@@ -19,9 +19,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   return (
     <Provider
       attribute="class"
-      defaultTheme="system"
-      enableSystem
-      storageKey="site-theme"
+      defaultTheme="light"
+      enableSystem={false}
+      storageKey="site-theme-v2"
       disableTransitionOnChange
     >
       {children}

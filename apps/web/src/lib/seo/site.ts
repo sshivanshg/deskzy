@@ -22,7 +22,7 @@ export const SHARE_URL =
   process.env.NEXT_PUBLIC_SHARE_URL || "https://jfas.site";
 
 export const DEFAULT_DESCRIPTION =
-  "Deskzy is an AI-native tool system for everyday work: one intent, one focused tool, one clean output. Publish links and process files privately in your browser, with no signup.";
+  "Deskzy is an AI-native tool system built for the agent era. Use focused actions directly or call them from agents and automations, with a free API tier and private browser-first file processing.";
 
 /** Founder / support contact (X). Prefer a product email later if you add one. */
 export const CONTACT_X_HANDLE = "sshivanshg";

@@ -133,9 +133,7 @@ export function AccountDashboard(props: AccountDashboardProps) {
   const initialTab = parseTab(searchParams.get("tab"));
   const [tab, setTabState] = useState<Tab>(
     initialTab &&
-      (initialTab === "team" ||
-        initialTab === "presets" ||
-        initialTab === "api") &&
+      (initialTab === "team" || initialTab === "presets") &&
       !paid
       ? "analytics"
       : (initialTab ?? "overview"),
@@ -180,7 +178,7 @@ export function AccountDashboard(props: AccountDashboardProps) {
         fetch("/api/links"),
         fetch("/api/seats"),
         paid ? fetch("/api/presets") : Promise.resolve(null),
-        paid ? fetch("/api/keys") : Promise.resolve(null),
+        fetch("/api/keys"),
       ]);
       if (linksRes.ok) {
         const data = (await linksRes.json()) as { links?: LinkRow[] };
@@ -296,6 +294,11 @@ export function AccountDashboard(props: AccountDashboardProps) {
       label: "Analytics",
       hint: paid ? undefined : "Pro",
     },
+    {
+      id: "api",
+      label: "API",
+      hint: apiKeys.length ? String(apiKeys.length) : "Free",
+    },
     ...(paid
       ? [
           {
@@ -307,11 +310,6 @@ export function AccountDashboard(props: AccountDashboardProps) {
             id: "presets" as const,
             label: "Presets",
             hint: presets.length ? String(presets.length) : undefined,
-          },
-          {
-            id: "api" as const,
-            label: "API",
-            hint: apiKeys.length ? String(apiKeys.length) : undefined,
           },
         ]
       : []),
@@ -558,8 +556,9 @@ export function AccountDashboard(props: AccountDashboardProps) {
           />
         ) : null}
 
-        {tab === "api" && paid ? (
+        {tab === "api" ? (
           <ApiTab
+            paid={paid}
             keys={apiKeys}
             loading={loading}
             busy={busy}
@@ -1150,6 +1149,7 @@ function PresetsTab({
 }
 
 function ApiTab({
+  paid,
   keys,
   loading,
   busy,
@@ -1161,6 +1161,7 @@ function ApiTab({
   onCopySecret,
   onCopyCurl,
 }: {
+  paid: boolean;
   keys: ApiKeyRow[];
   loading: boolean;
   busy: boolean;
@@ -1172,6 +1173,8 @@ function ApiTab({
   onCopySecret: (secret: string) => Promise<void>;
   onCopyCurl: () => Promise<void>;
 }) {
+  const keyLimit = paid ? 5 : 1;
+
   return (
     <section className="shell">
       <div className="shell-core p-5 md:p-6">
@@ -1181,17 +1184,20 @@ function ApiTab({
               Short-link API
             </h2>
             <p className="mt-1 max-w-xl text-sm text-[var(--muted)]">
-              Create shared links from scripts with{" "}
+              Give agents, scripts, and automations a small, dependable action with{" "}
               <code className="rounded bg-[var(--surface)] px-1 py-0.5 text-xs">
                 POST /api/links
               </code>
-              . Keys bypass the public IP rate limit and attach links to your account.
+              . Free includes 25 requests per day; Pro removes the daily limit.
+            </p>
+            <p className="mt-2 text-xs font-medium text-[var(--accent)]">
+              {paid ? "Unlimited API requests · up to 5 keys" : "25 API requests/day · 1 key"}
             </p>
           </div>
           <button
             type="button"
             className="btn-primary shrink-0 !rounded-full"
-            disabled={busy || keys.length >= 5}
+            disabled={busy || keys.length >= keyLimit}
             onClick={onCreate}
           >
             <Key size={16} weight="bold" />

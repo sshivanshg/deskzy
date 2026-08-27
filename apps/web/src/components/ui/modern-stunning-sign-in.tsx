@@ -137,8 +137,8 @@ const SignIn1 = ({ mode = "login" }: SignIn1Props) => {
         </h2>
         <p className="mb-6 text-center text-sm text-[var(--muted)]">
           {mode === "signup"
-            ? "Create an account to manage Pro and seats."
-            : "Access your account, billing, and Pro features."}
+            ? "Create an account for your free API key and tools."
+            : "Access your tools, API keys, links, and plan."}
         </p>
 
         <div className="flex w-full flex-col gap-4">

@@ -7,6 +7,7 @@ import {
   ArrowRight,
   Buildings,
   ChartLine,
+  Code,
   CurrencyInr,
   FilePdf,
   Image as ImageIcon,
@@ -101,15 +102,25 @@ export function SiteHeader() {
   return (
     <>
       <header className="sticky top-0 z-40 px-3 pt-3 md:px-4 md:pt-4">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-[1440px]">
           <div className="shell !rounded-2xl !p-1.5 backdrop-blur-xl md:!rounded-full">
             <div className="shell-core !rounded-[1.1rem] flex items-center gap-1.5 px-2 py-1.5 md:!rounded-full md:gap-2 md:px-3">
-              <BrandLogo onClick={closeOverlays} priority />
+              <BrandLogo
+                variant="mark"
+                onClick={closeOverlays}
+                priority
+                className="sm:hidden md:inline-flex xl:hidden"
+              />
+              <BrandLogo
+                onClick={closeOverlays}
+                priority
+                className="hidden sm:inline-flex md:hidden xl:inline-flex"
+              />
 
               <NavToolsMenu pathname={pathname} />
 
-              <div className="ml-auto flex items-center gap-1 sm:gap-1.5">
-                <div className="relative hidden w-[13rem] lg:block xl:w-[15rem]">
+              <div className="ml-auto flex min-w-0 items-center gap-1 sm:gap-1.5">
+                <div className="relative hidden w-[10.5rem] min-[1120px]:block min-[1380px]:w-[13rem] min-[1500px]:w-[15rem]">
                   <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]">
                     <MagnifyingGlass size={16} weight="bold" />
                   </span>
@@ -146,7 +157,7 @@ export function SiteHeader() {
 
                 <Link
                   href="/tools/url-shortener"
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors md:hidden ${
+                  className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1.5 text-sm transition-colors md:hidden sm:px-3 ${
                     pathname === "/tools/url-shortener"
                       ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
                       : "text-[var(--muted)] hover:text-[var(--ink)]"
@@ -157,8 +168,19 @@ export function SiteHeader() {
                 </Link>
 
                 <Link
+                  href="/developers"
+                  className={`hidden items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-sm transition-colors min-[1240px]:inline-flex ${
+                    pathname === "/developers"
+                      ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
+                      : "text-[var(--muted)] hover:text-[var(--ink)]"
+                  }`}
+                >
+                  Developers
+                </Link>
+
+                <Link
                   href="/pricing"
-                  className={`hidden items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors sm:inline-flex ${
+                  className={`hidden items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1.5 text-sm transition-colors lg:inline-flex xl:px-3 ${
                     pathname === "/pricing"
                       ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
                       : "text-[var(--muted)] hover:text-[var(--ink)]"
@@ -347,6 +369,20 @@ export function SiteHeader() {
                   >
                     <ChartLine size={18} weight="duotone" />
                     Link analytics
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/developers"
+                    onClick={closeOverlays}
+                    className={`flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] active:bg-[var(--surface)] ${
+                      pathname === "/developers"
+                        ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
+                        : "text-[var(--ink)]"
+                    }`}
+                  >
+                    <Code size={18} weight="duotone" />
+                    Developers
                   </Link>
                 </li>
                 <li>

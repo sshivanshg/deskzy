@@ -5,7 +5,7 @@ import { buildPageMetadata } from "@/lib/seo/site";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Sign up",
-  description: "Create a Deskzy account to upgrade to Pro with Razorpay.",
+  description: "Create a free Deskzy account and get an API key with 25 requests per day.",
   path: "/signup",
 });
 

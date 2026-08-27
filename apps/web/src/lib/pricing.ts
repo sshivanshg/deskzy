@@ -37,6 +37,7 @@ export function formatInr(amount: number): string {
 export const FREE_FEATURES = [
   "Access to essential Deskzy tools",
   "Unlimited free shared links on deskzy.xyz",
+  "Free API key · 25 requests per day",
   "Limited daily PDF & image processing",
   "Browser-first — files stay on your device",
 ] as const;
@@ -46,7 +47,7 @@ export const PRO_FEATURES = [
   "Unlimited PDF & image processing",
   "Custom share slugs (deskzy.xyz/you)",
   "Link click analytics dashboard",
-  "API access for shared links",
+  "Unlimited API requests · up to 5 keys",
   "Saved UTM & image presets",
   "Team seats — invite up to 25 members",
   "Priority customer support",
@@ -63,15 +64,15 @@ export const BUSINESS_FEATURES = [
 export const PRICING_FAQS = [
   {
     q: "What do I get with Free?",
-    a: "Free includes all core tools and unlimited shared links. PDF and image tools have daily processing limits. Files processed in the browser never leave your device.",
+    a: "Free includes all core tools, unlimited shared links, and one API key with 25 requests per day. PDF and image tools have daily processing limits. Files processed in the browser never leave your device.",
   },
   {
     q: "Why upgrade to Pro?",
     a: "Pro removes PDF/image daily limits, adds custom share slugs, click analytics, share-link API keys (Account → API), synced presets, and team seats. From ₹399 per user per month.",
   },
   {
-    q: "Does Pro include an API?",
-    a: "Yes. Pro and Business members can create API keys in Account → API and call POST /api/links with Authorization: Bearer <key> to create shared links from scripts or pipelines.",
+    q: "Can I use the API for free?",
+    a: "Yes. Every signed-in account can create one API key and call POST /api/links up to 25 times per day. Pro removes the daily request limit and supports up to five active keys.",
   },
   {
     q: "Can I cancel anytime?",

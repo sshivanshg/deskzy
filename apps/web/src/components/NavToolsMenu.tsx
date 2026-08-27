@@ -69,10 +69,10 @@ export function NavToolsMenu({ pathname }: NavToolsMenuProps) {
   }, [open]);
 
   return (
-    <div ref={rootRef} className="relative hidden items-center gap-0.5 md:flex">
+    <div ref={rootRef} className="relative hidden shrink-0 items-center gap-0.5 md:flex">
       <Link
         href="/tools/url-shortener"
-        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors ${
+        className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1.5 text-sm transition-colors xl:px-3 ${
           pathname === "/tools/url-shortener"
             ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
             : "text-[var(--muted)] hover:text-[var(--ink)]"
@@ -88,7 +88,7 @@ export function NavToolsMenu({ pathname }: NavToolsMenuProps) {
           <Link
             key={item.href}
             href={item.href}
-            className={`hidden rounded-full px-3 py-1.5 text-sm transition-colors xl:inline-flex ${
+            className={`hidden whitespace-nowrap rounded-full px-3 py-1.5 text-sm transition-colors min-[1500px]:inline-flex ${
               active
                 ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
                 : "text-[var(--muted)] hover:text-[var(--ink)]"
@@ -101,7 +101,7 @@ export function NavToolsMenu({ pathname }: NavToolsMenuProps) {
 
       <button
         type="button"
-        className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm transition-colors ${
+        className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1.5 text-sm transition-colors xl:px-3 ${
           open
             ? "bg-[var(--accent-soft)] font-medium text-[var(--accent)]"
             : "text-[var(--muted)] hover:text-[var(--ink)]"
@@ -110,7 +110,8 @@ export function NavToolsMenu({ pathname }: NavToolsMenuProps) {
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
       >
-        Tool system
+        <span className="xl:hidden">Tools</span>
+        <span className="hidden xl:inline">Tool system</span>
         <span
           className={`inline-flex transition-transform ${open ? "rotate-180" : ""}`}
         >

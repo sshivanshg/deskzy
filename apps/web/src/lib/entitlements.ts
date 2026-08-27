@@ -28,6 +28,7 @@ export function planFromSubscription(
 
 /** Free daily caps (iLovePDF-style). Unlimited tools use Infinity. */
 export const FREE_DAILY_CAPS: Record<string, number> = {
+  "api-links": 25,
   "merge-pdf": 2,
   "split-pdf": 2,
   "compress-pdf": 2,

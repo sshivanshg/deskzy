@@ -2,11 +2,11 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { resolveUserApiKey } from "@/lib/api-keys";
 
 /**
- * Machine / Pro API auth for POST /api/links.
+ * Machine / user API auth for POST /api/links.
  *
  * Accepts either:
  * - Global Worker secret `LINKS_API_KEY` (internal pipelines), or
- * - A Pro/Business user key from Account (`dz_…`)
+ * - A Free/Pro/Business user key from Account (`dz_…`)
  *
  * POST /api/links body:
  * - `{ "url": "https://…" }` — single short link
@@ -17,7 +17,12 @@ import { resolveUserApiKey } from "@/lib/api-keys";
 
 export type LinksApiAuth =
   | { ok: true; kind: "global" }
-  | { ok: true; kind: "user"; userId: string }
+  | {
+      ok: true;
+      kind: "user";
+      userId: string;
+      plan: "free" | "pro" | "business";
+    }
   | { ok: false };
 
 export async function getLinksApiKey(): Promise<string | null> {
@@ -56,7 +61,7 @@ export async function isLinksApiAuthorized(
   return result.ok;
 }
 
-/** Resolve Bearer token to global pipeline key or a paid user API key. */
+/** Resolve Bearer token to a global pipeline key or a user API key. */
 export async function resolveLinksApiAuth(
   authHeader: string | null,
 ): Promise<LinksApiAuth> {
@@ -70,7 +75,12 @@ export async function resolveLinksApiAuth(
 
   const userKey = await resolveUserApiKey(token);
   if (userKey) {
-    return { ok: true, kind: "user", userId: userKey.userId };
+    return {
+      ok: true,
+      kind: "user",
+      userId: userKey.userId,
+      plan: userKey.plan,
+    };
   }
 
   return { ok: false };

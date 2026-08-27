@@ -120,7 +120,7 @@ export function SiteHeader() {
                     onBlur={() =>
                       setTimeout(() => setDesktopSearchOpen(false), 160)
                     }
-                    placeholder="Search tools"
+                    placeholder="Find an action"
                     className="field !rounded-full !py-2 !pl-9 !pr-3 !text-sm"
                     aria-label="Search tools"
                   />
@@ -231,7 +231,7 @@ export function SiteHeader() {
                   ref={mobileSearchRef}
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search tools…"
+                  placeholder="Find an action…"
                   className="field !rounded-xl !border-[var(--stroke)] !bg-[var(--panel)] !py-3 !pl-11 !pr-10 !text-base"
                   aria-label="Search tools"
                   autoComplete="off"

@@ -110,7 +110,7 @@ export function NavToolsMenu({ pathname }: NavToolsMenuProps) {
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
       >
-        All tools
+        Tool system
         <span
           className={`inline-flex transition-transform ${open ? "rotate-180" : ""}`}
         >

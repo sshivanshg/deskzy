@@ -36,10 +36,13 @@ import {
 } from "@/lib/tools/registry";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: `${SITE_NAME} — Share links on jfas.site, private file tools`,
+  title: `${SITE_NAME} — The AI-native tool system`,
   description: DEFAULT_DESCRIPTION,
   path: "/",
   keywords: [
+    "AI-native tool system",
+    "AI tools for everyday work",
+    "intent-based tools",
     "share link free",
     "publish links online",
     "jfas.site share",
@@ -116,6 +119,12 @@ const TRUST = [
   },
 ] as const;
 
+const SYSTEM_FLOW = [
+  ["01", "Name the outcome", "Start from the job, not a software menu."],
+  ["02", "Open the focused action", "Use one purpose-built tool without setup."],
+  ["03", "Take the output", "Copy, download, or share and get back to work."],
+] as const;
+
 export default function HomePage() {
   const popular = getPopularTools();
   const shareUseCases = USE_CASES.filter((uc) =>
@@ -137,10 +146,11 @@ export default function HomePage() {
               Deskzy
             </p>
             <h1 className="max-w-[22ch] font-display text-xl font-semibold tracking-tight text-[var(--ink)] leading-snug">
-              Own shared links on jfas.site — plus private file tools
+              The AI-native tool system for everyday work
             </h1>
             <p className="max-w-[34ch] text-[15px] leading-snug text-[var(--muted)]">
-              Free, no signup. Files never leave your browser.
+              Turn intent into action: choose the right tool, get a clean output,
+              and keep sensitive work on your device.
             </p>
           </div>
 
@@ -167,11 +177,28 @@ export default function HomePage() {
             href="#file-tools"
             className="inline-flex items-center gap-1 text-sm font-medium text-[var(--accent)]"
           >
-            Browse PDF &amp; image tools
+            Explore the system
             <ArrowRight size={14} />
           </Link>
 
           <HomeGlobeTease size="compact" />
+
+          <section className="mt-12 border-y border-[var(--stroke)] py-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
+              How the system works
+            </p>
+            <ol className="mt-4 space-y-4">
+              {SYSTEM_FLOW.map(([number, title, detail]) => (
+                <li key={number} className="flex gap-3">
+                  <span className="font-mono text-xs text-[var(--accent)]">{number}</span>
+                  <span>
+                    <span className="block text-sm font-medium text-[var(--ink)]">{title}</span>
+                    <span className="mt-0.5 block text-xs text-[var(--muted)]">{detail}</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </section>
         </div>
 
         <section className="mt-14">
@@ -259,11 +286,12 @@ export default function HomePage() {
               Deskzy
             </p>
             <h1 className="mt-4 max-w-[20ch] font-display text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl md:leading-[1.1]">
-              Own shared links on jfas.site — plus private file tools
+              One intent. One focused tool. One clean output.
             </h1>
             <p className="mt-4 max-w-[38ch] text-lg leading-relaxed text-[var(--muted)]">
-              Free, no signup. Paste a URL for a clean share page. PDF and image
-              tools stay in your browser.
+              Deskzy is an AI-native tool system for the small jobs that slow you
+              down. Find the action you need, run it in context, and move on —
+              with private browser-first processing when files are involved.
             </p>
 
             <div className="reveal reveal-delay-1 mt-8 max-w-xl">
@@ -293,7 +321,7 @@ export default function HomePage() {
               href="#file-tools-desktop"
               className="reveal reveal-delay-1 mt-5 inline-flex items-center gap-1 text-sm font-medium text-[var(--accent)] transition-colors hover:text-[var(--accent-hover)]"
             >
-              Browse PDF &amp; image tools
+              Explore the system
               <ArrowRight size={14} />
             </Link>
           </div>
@@ -303,14 +331,34 @@ export default function HomePage() {
           </div>
         </section>
 
+        <section className="mt-12 grid gap-4 border-y border-[var(--stroke)] py-6 md:grid-cols-[0.8fr_2fr] md:items-start">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
+              The operating model
+            </p>
+            <h2 className="mt-2 font-display text-xl font-semibold tracking-tight">
+              Designed around intent, not apps
+            </h2>
+          </div>
+          <ol className="grid gap-5 sm:grid-cols-3">
+            {SYSTEM_FLOW.map(([number, title, detail]) => (
+              <li key={number} className="border-l border-[var(--stroke)] pl-4">
+                <span className="font-mono text-xs text-[var(--accent)]">{number}</span>
+                <p className="mt-2 text-sm font-semibold text-[var(--ink)]">{title}</p>
+                <p className="mt-1 text-xs leading-relaxed text-[var(--muted)]">{detail}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
         <section className="mt-20 reveal reveal-delay-2 md:mt-24">
           <div className="mb-5 flex items-end justify-between gap-4">
             <div>
               <h2 className="font-display text-2xl font-semibold tracking-tight">
-                Share stack
+                Share system
               </h2>
               <p className="mt-1 text-sm text-[var(--muted)]">
-                Pair your shared link with QR, campaigns, WhatsApp, or a bio page
+                Compose a complete outcome from small, focused actions
               </p>
             </div>
             <Link
@@ -359,11 +407,10 @@ export default function HomePage() {
           <div className="mb-5 flex items-end justify-between gap-4">
             <div>
               <h2 className="font-display text-2xl font-semibold tracking-tight">
-                Also free file tools
+                File actions
               </h2>
               <p className="mt-1 max-w-xl text-sm text-[var(--muted)]">
-                Compress PDFs and images privately in your browser — when you
-                need them
+                Focused utilities for the moments when a file needs a precise next step
               </p>
             </div>
           </div>
@@ -398,11 +445,11 @@ export default function HomePage() {
 
         <section className="mt-16 reveal reveal-delay-3 md:mt-20">
           <h2 className="font-display text-2xl font-semibold tracking-tight">
-            Browse by category
+            The Deskzy system
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--muted)]">
-            Links first — then PDF, image, media, and developer utilities. Most
-            file tools run privately in your browser.
+            Start with an intent, open the focused action, and keep moving. Links,
+            files, media, and developer utilities live in one consistent system.
           </p>
           <div className="mt-5 grid gap-3 md:grid-cols-2">
             {HOME_CATEGORIES.map((c) => {
@@ -421,7 +468,7 @@ export default function HomePage() {
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center justify-between gap-3">
                         <span className="font-display text-lg font-semibold tracking-tight">
-                          {isLinks ? "Links — share & publish tools" : c.name}
+                          {isLinks ? "Links — publish & share" : c.name}
                         </span>
                         <span className="text-[var(--muted)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-[var(--accent)]">
                           <ArrowRight size={16} />

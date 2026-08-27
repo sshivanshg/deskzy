@@ -17,7 +17,7 @@ const display = Syne({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — Every file tool. One place.`,
+    default: `${SITE_NAME} — The AI-native tool system`,
     template: `%s | ${SITE_NAME}`,
   },
   description: DEFAULT_DESCRIPTION,
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: SITE_NAME,
-    title: `${SITE_NAME} — Every file tool. One place.`,
+    title: `${SITE_NAME} — The AI-native tool system`,
     description: DEFAULT_DESCRIPTION,
     url: SITE_URL,
     images: [
@@ -44,13 +44,13 @@ export const metadata: Metadata = {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: `${SITE_NAME} — Every file tool. One place.`,
+        alt: `${SITE_NAME} — The AI-native tool system`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} — Every file tool. One place.`,
+    title: `${SITE_NAME} — The AI-native tool system`,
     description: DEFAULT_DESCRIPTION,
     images: ["/og.png"],
   },

@@ -22,7 +22,7 @@ export const SHARE_URL =
   process.env.NEXT_PUBLIC_SHARE_URL || "https://jfas.site";
 
 export const DEFAULT_DESCRIPTION =
-  "Publish and share links on jfas.site — plus private PDF and image tools in your browser. No signup. Most files never leave your device. Try Deskzy.";
+  "Deskzy is an AI-native tool system for everyday work: one intent, one focused tool, one clean output. Publish links and process files privately in your browser, with no signup.";
 
 /** Founder / support contact (X). Prefer a product email later if you add one. */
 export const CONTACT_X_HANDLE = "sshivanshg";
